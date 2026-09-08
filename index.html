@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Was spielen wir heute?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ground:#EDEFEA; --surface:#FBFBF8; --surface-2:#E3E7DF; --sunk:#E7EAE3;
+  --ink:#16201C; --muted:#5D6B62; --line:#D2D8CC; --line-strong:#B9C2B2;
+  --accent:#A96C12; --accent-ink:#7A4E0B; --accent-soft:#F2E4C8;
+  --teal:#1B665F; --warn:#9C3B33;
+  --shadow:0 1px 2px rgba(22,32,28,.06), 0 8px 24px -18px rgba(22,32,28,.5);
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#121715; --surface:#1A201D; --surface-2:#242B27; --sunk:#161C19;
+    --ink:#E7EDE6; --muted:#95A399; --line:#2E3733; --line-strong:#414D47;
+    --accent:#DDA349; --accent-ink:#F0C787; --accent-soft:#372B18;
+    --teal:#5FB6A8; --warn:#DE8B82;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -20px #000;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#121715; --surface:#1A201D; --surface-2:#242B27; --sunk:#161C19;
+  --ink:#E7EDE6; --muted:#95A399; --line:#2E3733; --line-strong:#414D47;
+  --accent:#DDA349; --accent-ink:#F0C787; --accent-soft:#372B18;
+  --teal:#5FB6A8; --warn:#DE8B82;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -20px #000;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:Karla, "Segoe UI", system-ui, sans-serif;
+  font-size:16px; line-height:1.5;
+}
+.wrap{max-width:1040px; margin:0 auto; padding:28px 20px 64px; display:flex; flex-direction:column; gap:26px}
+
+/* ---------- Kopf ---------- */
+.masthead{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px}
+.eyebrow{
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 4px; font-weight:700;
+}
+h1{
+  font-family:Fraunces, Georgia, serif; font-weight:600;
+  font-size:clamp(30px, 5.4vw, 44px); line-height:1.05; margin:0;
+  text-wrap:balance; letter-spacing:-.01em;
+}
+.masthead p{margin:6px 0 0; color:var(--muted); max-width:46ch}
+.theme-toggle{
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--muted);
+  border-radius:99px; padding:7px 14px; font:inherit; font-size:13px; cursor:pointer;
+}
+.theme-toggle:hover{color:var(--ink); border-color:var(--ink)}
+
+/* ---------- Filter ---------- */
+.panel{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; gap:18px;
+}
+.field{display:flex; flex-direction:column; gap:9px}
+.field > legend, .field > .lbl{
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--muted); padding:0;
+}
+fieldset.field{border:0; margin:0; padding:0}
+.chips{display:flex; flex-wrap:wrap; gap:7px}
+.chip{
+  font:inherit; font-size:14px; line-height:1; cursor:pointer;
+  border:1px solid var(--line-strong); background:transparent; color:var(--ink);
+  padding:9px 13px; border-radius:99px; transition:background .12s, border-color .12s, color .12s;
+}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--ground); font-weight:700}
+.chip.num{min-width:40px; text-align:center; font-variant-numeric:tabular-nums}
+.chip:focus-visible, .theme-toggle:focus-visible, .dice:focus-visible, .reset:focus-visible, summary:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px;
+}
+.panel-foot{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;
+  border-top:1px solid var(--line); padding-top:16px;
+}
+.summary-line{margin:0; color:var(--muted); font-size:14px}
+.summary-line strong{color:var(--ink); font-weight:700}
+.actions{display:flex; gap:8px}
+.dice{
+  font:inherit; font-weight:700; font-size:14px; cursor:pointer;
+  background:var(--accent); color:#FFF8EC; border:1px solid var(--accent);
+  padding:10px 16px; border-radius:99px;
+}
+:root[data-theme="dark"] .dice{color:#20180A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dice{color:#20180A}}
+.dice:hover{filter:brightness(1.06)}
+.reset{
+  font:inherit; font-size:14px; cursor:pointer; background:transparent;
+  color:var(--muted); border:1px solid var(--line-strong); padding:10px 14px; border-radius:99px;
+}
+.reset:hover{color:var(--ink); border-color:var(--ink)}
+
+/* ---------- Ergebnis ---------- */
+.result-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.result-head h2{
+  font-family:Fraunces, Georgia, serif; font-weight:600; font-size:22px; margin:0;
+}
+.count{color:var(--muted); font-size:14px; font-variant-numeric:tabular-nums}
+.verdict{
+  margin:0; padding:12px 16px; border-radius:var(--radius);
+  background:var(--accent-soft); color:var(--accent-ink); font-weight:700;
+  border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(272px,1fr)); gap:14px; align-items:start}
+
+.game{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:16px 16px 15px; display:flex; flex-direction:column; gap:10px; position:relative;
+}
+.game.top{
+  grid-column:1/-1; border-color:var(--line-strong); box-shadow:var(--shadow);
+  border-left:4px solid var(--accent); padding-left:20px;
+}
+.game.picked{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.game h3{
+  font-family:Fraunces, Georgia, serif; font-weight:600; margin:0;
+  font-size:19px; line-height:1.2; text-wrap:balance;
+}
+.game.top h3{font-size:26px}
+.game-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+.flag{
+  flex:none; font-size:11px; letter-spacing:.1em; text-transform:uppercase; font-weight:700;
+  color:var(--accent-ink); background:var(--accent-soft); border-radius:4px; padding:4px 8px;
+}
+.meter{height:4px; background:var(--sunk); border-radius:2px; overflow:hidden}
+.meter span{display:block; height:100%; background:var(--teal); border-radius:2px}
+.game.top .meter span{background:var(--accent)}
+.specs{
+  display:flex; flex-wrap:wrap; gap:4px 16px; margin:0;
+  font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums;
+}
+.specs div{display:flex; gap:6px; align-items:baseline}
+.specs dt{font-size:11px; letter-spacing:.08em; text-transform:uppercase}
+.specs dd{margin:0; color:var(--ink); font-weight:500}
+.pips{letter-spacing:.12em; color:var(--teal)}
+.pips i{color:var(--line-strong); font-style:normal}
+.why{margin:0; font-size:14px; color:var(--teal); font-weight:500}
+.note{margin:0; font-size:14px; color:var(--muted)}
+.tags{display:flex; flex-wrap:wrap; gap:6px; list-style:none; margin:2px 0 0; padding:0}
+.tags li{
+  font-size:12px; color:var(--muted); border:1px solid var(--line);
+  border-radius:99px; padding:3px 9px;
+}
+.empty{
+  border:1px dashed var(--line-strong); border-radius:var(--radius); padding:26px;
+  text-align:center; color:var(--muted);
+}
+
+/* ---------- Fällt raus ---------- */
+details.out{border-top:1px solid var(--line); padding-top:14px}
+details.out summary{
+  cursor:pointer; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--muted);
+}
+details.out summary::marker{color:var(--line-strong)}
+.out-list{list-style:none; margin:14px 0 0; padding:0; display:flex; flex-direction:column; gap:1px}
+.out-list li{
+  display:flex; justify-content:space-between; gap:14px; padding:8px 2px;
+  border-bottom:1px solid var(--line); font-size:14px;
+}
+.out-list li:last-child{border-bottom:0}
+.out-list b{font-weight:500}
+.out-list span{color:var(--warn); text-align:right; flex:none}
+
+footer{color:var(--muted); font-size:13px; border-top:1px solid var(--line); padding-top:16px}
+footer p{margin:0 0 4px}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+@media (max-width:520px){
+  .wrap{padding:20px 14px 48px}
+  .panel{padding:16px}
+  .game.top{padding-left:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Spieleabend · 21 Spiele im Regal</p>
+      <h1>Was spielen wir heute?</h1>
+      <p>Sag, wie viele ihr seid, wie viel Kopf ihr habt und worauf ihr Lust habt — der Rest ist Regalarbeit.</p>
+    </div>
+    <button class="theme-toggle" id="theme" type="button">Dunkel/Hell</button>
+  </header>
+
+  <section class="panel" aria-label="Runde beschreiben">
+    <fieldset class="field">
+      <legend>Wie viele seid ihr?</legend>
+      <div class="chips" id="players"></div>
+    </fieldset>
+    <fieldset class="field">
+      <legend>Worauf habt ihr Lust?</legend>
+      <div class="chips" id="moods"></div>
+    </fieldset>
+    <fieldset class="field">
+      <legend>Wie viel Kopf?</legend>
+      <div class="chips" id="weights"></div>
+    </fieldset>
+    <fieldset class="field">
+      <legend>Wie viel Zeit?</legend>
+      <div class="chips" id="times"></div>
+    </fieldset>
+    <div class="panel-foot">
+      <p class="summary-line" id="summary"></p>
+      <div class="actions">
+        <button class="reset" id="reset" type="button">Zurücksetzen</button>
+        <button class="dice" id="dice" type="button">Würfel entscheiden</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Vorschläge" style="display:flex; flex-direction:column; gap:14px">
+    <div class="result-head">
+      <h2>Passt heute</h2>
+      <span class="count" id="count"></span>
+    </div>
+    <p class="verdict" id="verdict" hidden></p>
+    <div class="grid" id="results"></div>
+  </section>
+
+  <details class="out" id="outbox">
+    <summary><span id="outcount"></span></summary>
+    <ul class="out-list" id="outlist"></ul>
+  </details>
+
+  <footer>
+    <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte für deine Sammlung — bei Bedarf in <code>index.html</code> unter <code>GAMES</code> anpassen.</p>
+    <p>Neues Spiel gekauft? Ein Eintrag mehr in der Liste, fertig.</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+const MOODS = {
+  party:     "Party & Krawall",
+  entspannt: "Entspannt & ruhig",
+  gruebeln:  "Grübeln & Strategie",
+  koop:      "Alle gegen das Spiel",
+  schnell:   "Schnell zwischendurch",
+  wissen:    "Raten & Wissen",
+  reden:     "Reden & Erklären",
+  thema:     "Thema & Geschichte"
+};
+
+// weight: 1 = Absacker, 5 = Kennerstück. best: [von, bis] Glanzform.
+const GAMES = [
+  { name:"5-Minute Dungeon", min:2, max:5, best:[4,5], dur:[15,30], weight:1.3,
+    moods:["party","koop","schnell"],
+    note:"Echtzeit-Koop: fünf Minuten lang brüllen alle gleichzeitig Karten auf den Tisch." },
+  { name:"Between Two Castles", min:2, max:7, best:[5,6], dur:[45,90], weight:2.5,
+    moods:["gruebeln","reden"],
+    note:"Karten draften und mit beiden Nachbarn je ein Schloss bauen — beide Hälften wollen dich." },
+  { name:"Captain Sonar", min:2, max:8, best:[8,8], dur:[45,75], weight:2.5,
+    moods:["party","thema","koop"],
+    note:"Zwei U-Boot-Crews in Echtzeit gegeneinander. Laut, hektisch, herrlich." },
+  { name:"Codenames", min:2, max:8, best:[4,8], dur:[15,25], weight:1.3,
+    moods:["party","reden","schnell","wissen"],
+    note:"Ein Wort als Hinweis, zwei Teams, ein Attentäter. Läuft immer." },
+  { name:"Dorfromantik: Sakura", min:1, max:6, best:[2,4], dur:[30,60], weight:1.8,
+    moods:["entspannt","koop","gruebeln"],
+    note:"Plättchen legen, Landschaft wachsen lassen, gemeinsam den Rekord jagen. Null Aggression." },
+  { name:"Dune: Imperium", min:1, max:4, best:[3,4], dur:[60,120], weight:3.5,
+    moods:["gruebeln","thema"],
+    note:"Deckbau trifft Arbeitereinsatz auf Arrakis. Der Abend gehört diesem Spiel." },
+  { name:"Finspan", min:1, max:5, best:[2,4], dur:[40,70], weight:2.6,
+    moods:["entspannt","gruebeln"],
+    note:"Die Flügelschlag-Maschine unter Wasser: ruhig Motor bauen, am Ende zählt das Aquarium." },
+  { name:"Flip 7", min:3, max:18, best:[4,8], dur:[15,25], weight:1.0,
+    moods:["party","schnell"],
+    note:"Karte umdrehen oder aufhören? Push your luck in Reinform, für beliebig viele Leute." },
+  { name:"Herdentier", min:3, max:8, best:[4,7], dur:[20,35], weight:1.0,
+    moods:["party","reden","wissen"],
+    note:"Bloß nicht originell sein: Punkte gibt es nur, wenn du dasselbe schreibst wie die Herde." },
+  { name:"Hitster: Movies & TV Soundtracks", min:2, max:10, best:[4,8], dur:[20,35], weight:1.0,
+    moods:["party","wissen","schnell"],
+    note:"Soundtracks erkennen und in die Zeitleiste einsortieren. Braucht ein Handy mit Musik-App." },
+  { name:"Hive Pocket", min:2, max:2, best:[2,2], dur:[15,25], weight:2.7,
+    moods:["gruebeln"],
+    note:"Abstraktes Duell mit Insektensteinen — Schach ohne Brett, passt in die Jackentasche." },
+  { name:"Marvel: Remix", min:2, max:6, best:[3,5], dur:[20,30], weight:1.8,
+    moods:["schnell","gruebeln","thema"],
+    note:"Handkarten kombinieren, bis das Team zusammenpasst. Kurz, knackig, überraschend taktisch." },
+  { name:"MicroMacro: Crime City", min:1, max:4, best:[2,4], dur:[15,45], weight:1.4,
+    moods:["koop","entspannt","wissen"],
+    note:"Wimmelbild-Krimi: Nasen an den Stadtplan, Fall für Fall lösen. Jederzeit unterbrechbar." },
+  { name:"MicroMacro: Crime City – Full House", min:1, max:4, best:[2,4], dur:[15,45], weight:1.4,
+    moods:["koop","entspannt","wissen"],
+    note:"Zweiter Stadtplan, neue Fälle — gleiche Suchtwirkung wie beim ersten." },
+  { name:"QuizWiz: Die kooperative Länder-Challenge", min:1, max:4, best:[2,4], dur:[25,45], weight:1.2,
+    moods:["wissen","koop","entspannt"],
+    note:"Länderwissen gemeinsam statt gegeneinander — mitraten dürfen am Tisch ruhig mehr." },
+  { name:"Scout", min:2, max:5, best:[3,5], dur:[15,25], weight:1.6,
+    moods:["schnell","gruebeln"],
+    note:"Kartenhand, die du nicht sortieren darfst. Kleine Regel, große Entscheidungen." },
+  { name:"Sky Team", min:2, max:2, best:[2,2], dur:[15,25], weight:2.2,
+    moods:["koop","gruebeln","thema"],
+    note:"Zu zweit ein Flugzeug landen, ohne über die entscheidenden Würfel zu reden. Konzentriert und dicht." },
+  { name:"Smart10", min:2, max:8, best:[3,6], dur:[30,45], weight:1.2,
+    moods:["wissen","party"],
+    note:"Zehn Antworten pro Frage, du sagst, wie weit du dich traust. Quiz ohne Nerd-Vorsprung." },
+  { name:"Star Wars: The Clone Wars", min:1, max:5, best:[3,4], dur:[45,75], weight:2.8,
+    moods:["koop","thema","gruebeln"],
+    note:"Pandemie-Motor im Star-Wars-Gewand: gemeinsam Krisen löschen, jeder Held kann etwas anderes." },
+  { name:"Time's Up! Party", min:4, max:12, best:[6,10], dur:[30,60], weight:1.0,
+    moods:["party","reden","schnell"],
+    note:"Dieselben Begriffe in drei Runden: erklären, ein Wort, pantomimisch. Garantiert laut." },
+  { name:"Top Ten", min:4, max:9, best:[5,7], dur:[25,40], weight:1.0,
+    moods:["party","reden","koop"],
+    note:"Von 1 bis 10 auf eine schräge Frage antworten und die Reihenfolge treffen. Kooperativer Blödsinn." }
+];
+
+const WEIGHT_BANDS = [
+  { id:"leicht",  label:"Leicht",        test:w => w <= 1.5, adj:"leichter" },
+  { id:"mittel",  label:"Mittel",        test:w => w > 1.5 && w <= 2.6, adj:"mittelschwerer" },
+  { id:"schwer",  label:"Anspruchsvoll", test:w => w > 2.6, adj:"anspruchsvoller" }
+];
+const TIMES = [
+  { id:0,  label:"Egal" },
+  { id:30, label:"Bis 30 Min" },
+  { id:60, label:"Bis 60 Min" },
+  { id:90, label:"Bis 90 Min" }
+];
+
+const state = { players:4, moods:new Set(), weights:new Set(), time:0, picked:null };
+
+/* ---------- Speicher ---------- */
+function save(){
+  try{
+    localStorage.setItem("spieleabend", JSON.stringify({
+      players:state.players, moods:[...state.moods], weights:[...state.weights], time:state.time
+    }));
+  }catch(e){/* Privatmodus: dann eben ohne Gedächtnis */}
+}
+function load(){
+  try{
+    const raw = localStorage.getItem("spieleabend");
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    if(typeof s.players === "number") state.players = s.players;
+    if(Array.isArray(s.moods)) state.moods = new Set(s.moods.filter(m => m in MOODS));
+    if(Array.isArray(s.weights)) state.weights = new Set(s.weights.filter(w => WEIGHT_BANDS.some(b => b.id === w)));
+    if(TIMES.some(t => t.id === s.time)) state.time = s.time;
+  }catch(e){/* egal */}
+}
+
+/* ---------- Bewertung ---------- */
+const bandOf = g => WEIGHT_BANDS.find(b => b.test(g.weight));
+const isBest = g => state.players >= g.best[0] && state.players <= g.best[1];
+const fmtDur = g => g.dur[0] === g.dur[1] ? g.dur[0] + " Min" : g.dur[0] + "–" + g.dur[1] + " Min";
+const fmtPlayers = g => g.min === g.max ? g.min + " Spieler" : g.min + "–" + g.max + " Spieler";
+
+function evaluate(g){
+  if(state.players < g.min) return { ok:false, why:"ab " + g.min + " Spielern" };
+  if(state.players > g.max) return { ok:false, why:"nur bis " + g.max };
+  if(state.time && g.dur[0] > state.time) return { ok:false, why:"dauert ab " + g.dur[0] + " Min" };
+
+  const band = bandOf(g);
+  if(state.weights.size && !state.weights.has(band.id)) return { ok:false, why:band.adj + " Brocken" };
+
+  const hits = g.moods.filter(m => state.moods.has(m));
+  if(state.moods.size && !hits.length) return { ok:false, why:"andere Stimmung" };
+
+  let score = 52;
+  const reasons = [];
+
+  if(hits.length){
+    score += Math.min(hits.length, 2) * 13;
+    reasons.push(hits.map(m => MOODS[m]).join(" und "));
+  }
+  if(isBest(g)){ score += 14; }
+  else if(state.players === g.min || state.players === g.max){ score += 2; }
+  else { score += 7; }
+
+  if(state.time){
+    if(g.dur[1] <= state.time){ score += 8; reasons.push("in " + fmtDur(g) + " durch"); }
+    else { score += 3; }
+  }else if(g.dur[1] <= 30){ score += 4; }
+
+  if(state.weights.size) score += 6;
+
+  const fallback = isBest(g) ? "beste Besetzung für " + state.players
+                             : "läuft zu " + state.players + " ohne Zicken";
+  return { ok:true, score:Math.min(99, Math.round(score)), why:reasons.join(" · ") || fallback };
+}
+
+/* ---------- Ausgabe ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+function pips(g){
+  const filled = g.weight <= 1.5 ? 1 : g.weight <= 2.6 ? 2 : 3;
+  return "●".repeat(filled) + "<i>" + "●".repeat(3 - filled) + "</i>";
+}
+
+function card(g, res, top){
+  return '<article class="game' + (top ? " top" : "") + (state.picked === g.name ? " picked" : "") + '">' +
+    '<div class="game-head"><h3>' + esc(g.name) + "</h3>" +
+      (top ? '<span class="flag">Top-Treffer</span>' : (isBest(g) ? '<span class="flag">Glanzform</span>' : "")) +
+    "</div>" +
+    '<div class="meter" role="img" aria-label="Passung ' + res.score + ' von 99"><span style="width:' + res.score + '%"></span></div>' +
+    '<dl class="specs">' +
+      "<div><dt>Spieler</dt><dd>" + fmtPlayers(g) + "</dd></div>" +
+      "<div><dt>Dauer</dt><dd>" + fmtDur(g) + "</dd></div>" +
+      '<div><dt>Kopf</dt><dd class="pips">' + pips(g) + "</dd></div>" +
+    "</dl>" +
+    '<p class="why">' + esc(res.why) + "</p>" +
+    '<p class="note">' + esc(g.note) + "</p>" +
+    '<ul class="tags">' + g.moods.map(m => "<li>" + esc(MOODS[m]) + "</li>").join("") + "</ul>" +
+  "</article>";
+}
+
+function summaryText(){
+  const parts = [state.players + " Spieler"];
+  parts.push(state.moods.size ? [...state.moods].map(m => MOODS[m]).join(", ") : "Stimmung egal");
+  parts.push(state.weights.size ? [...state.weights].map(w => WEIGHT_BANDS.find(b => b.id === w).label).join(", ") : "jeder Anspruch");
+  parts.push(state.time ? "bis " + state.time + " Min" : "Zeit egal");
+  return "<strong>Eure Runde:</strong> " + esc(parts.join(" · "));
+}
+
+function render(){
+  // Chips
+  $("players").innerHTML = Array.from({length:12}, (_,i) => i + 1).map(n =>
+    '<button type="button" class="chip num" data-players="' + n + '" aria-pressed="' + (state.players === n) + '">' + n + "</button>"
+  ).join("");
+  $("moods").innerHTML = Object.entries(MOODS).map(([id,label]) =>
+    '<button type="button" class="chip" data-mood="' + id + '" aria-pressed="' + state.moods.has(id) + '">' + label + "</button>"
+  ).join("");
+  $("weights").innerHTML = WEIGHT_BANDS.map(b =>
+    '<button type="button" class="chip" data-weight="' + b.id + '" aria-pressed="' + state.weights.has(b.id) + '">' + b.label + "</button>"
+  ).join("");
+  $("times").innerHTML = TIMES.map(t =>
+    '<button type="button" class="chip" data-time="' + t.id + '" aria-pressed="' + (state.time === t.id) + '">' + t.label + "</button>"
+  ).join("");
+  $("summary").innerHTML = summaryText();
+
+  // Treffer
+  const hits = [], outs = [];
+  GAMES.forEach(g => {
+    const res = evaluate(g);
+    (res.ok ? hits : outs).push({ g, res });
+  });
+  hits.sort((a,b) => b.res.score - a.res.score || a.g.name.localeCompare(b.g.name, "de"));
+
+  $("count").textContent = hits.length === 0 ? "nichts im Regal" :
+    hits.length === 1 ? "1 Spiel" : hits.length + " Spiele";
+
+  $("results").innerHTML = hits.length
+    ? hits.map((h,i) => card(h.g, h.res, i === 0)).join("")
+    : '<p class="empty">Für diese Kombination gibt es nichts. Nimm eine Stimmung raus oder gib der Runde mehr Zeit.</p>';
+
+  const verdict = $("verdict");
+  if(state.picked && hits.some(h => h.g.name === state.picked)){
+    verdict.hidden = false;
+    verdict.textContent = "Der Würfel sagt: " + state.picked;
+  }else{
+    verdict.hidden = true;
+    if(state.picked && !hits.some(h => h.g.name === state.picked)) state.picked = null;
+  }
+
+  outs.sort((a,b) => a.g.name.localeCompare(b.g.name, "de"));
+  $("outcount").textContent = outs.length + " Spiele fallen heute raus";
+  $("outlist").innerHTML = outs.map(o =>
+    "<li><b>" + esc(o.g.name) + "</b><span>" + esc(o.res.why) + "</span></li>"
+  ).join("");
+  $("outbox").hidden = outs.length === 0;
+
+  save();
+}
+
+/* ---------- Bedienung ---------- */
+document.addEventListener("click", ev => {
+  const chip = ev.target.closest(".chip");
+  if(!chip) return;
+  const d = chip.dataset;
+  if(d.players) state.players = Number(d.players);
+  else if(d.mood) state.moods.has(d.mood) ? state.moods.delete(d.mood) : state.moods.add(d.mood);
+  else if(d.weight) state.weights.has(d.weight) ? state.weights.delete(d.weight) : state.weights.add(d.weight);
+  else if(d.time !== undefined) state.time = Number(d.time);
+  state.picked = null;
+  render();
+});
+
+$("dice").addEventListener("click", () => {
+  const hits = GAMES.map(g => ({ g, res:evaluate(g) })).filter(h => h.res.ok);
+  if(!hits.length) return;
+  const pool = hits.sort((a,b) => b.res.score - a.res.score).slice(0, Math.max(3, Math.ceil(hits.length / 2)));
+  state.picked = pool[Math.floor(Math.random() * pool.length)].g.name;
+  render();
+  const el = [...document.querySelectorAll(".game")].find(n => n.classList.contains("picked"));
+  if(el) el.scrollIntoView({ behavior:"smooth", block:"center" });
+});
+
+$("reset").addEventListener("click", () => {
+  state.players = 4; state.moods.clear(); state.weights.clear(); state.time = 0; state.picked = null;
+  render();
+});
+
+$("theme").addEventListener("click", () => {
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const cur = document.documentElement.getAttribute("data-theme") || (dark ? "dark" : "light");
+  document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+});
+
+load();
+render();
+</script>
+</body>
+</html>
