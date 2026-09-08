@@ -85,6 +85,15 @@ antwortet, und zeigt dann Zustand und letzten Lauf der Aufgabe. Für den Blick
 auf die Aufgabe holt sich die Datei Administratorrechte: die Aufgabe läuft unter
 dem Systemkonto und ist ohne diese Rechte nicht sichtbar.
 
+**Wo steckt er im System?** Es ist eine *geplante Aufgabe*, kein Windows-Dienst
+— im Task-Manager also nicht unter „Dienste" zu finden, sondern unter
+**Details** als `node.exe` mit Benutzer `SYSTEM` (Spalte „Befehlszeile"
+einblenden, dann steht `spieleabend-server.mjs` dabei). Verwaltet wird sie in
+der Aufgabenplanung: Windows-Taste + R → `taskschd.msc` →
+Aufgabenplanungsbibliothek → **Spieleabend**. Dort lässt sie sich auch
+deaktivieren. Ein im Task-Manager beendeter Prozess gilt als Absturz und wird
+nach einer Minute neu gestartet.
+
 **Wieder loswerden:** `dienst-entfernen.cmd`. Entfernt Aufgabe und
 Firewall-Regel; `sammlung.json` bleibt liegen.
 
