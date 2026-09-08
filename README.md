@@ -34,8 +34,8 @@ Unten auf der Seite: **Sammlung bearbeiten**.
 - **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel.
 - **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
 - **Zurücksetzen** — holt die 21 Ausgangsspiele zurück (Sicherheitsklick).
-- **Sicherung & Umzug** — die ganze Sammlung als Text zum Aufheben oder
-  Einspielen.
+- **Sicherung & Umzug** — die ganze Sammlung als Text zum Aufheben, Ergänzen
+  („Dazu einspielen") oder Ersetzen; auch der Weg für BGG-Daten (siehe unten).
 
 ### Nur den Titel eintippen
 
@@ -54,10 +54,49 @@ Vorschlag steht also immer zur Korrektur, und genau so ist er gemeint:
   um Erlaubnis. Ein zweiter Klick auf den Knopf bricht eine laufende Abfrage ab.
 
 Der Knopf erscheint nur in der veröffentlichten Seite. Die lokal geöffnete
-`index.html` hat keinen Zugang zu Claude und blendet ihn aus. Externe
-Spieldatenbanken wie BoardGameGeek sind kein Weg dorthin: veröffentlichte
-Seiten dürfen keine fremden Server abfragen, und die BGG-API erlaubt
-Browser-Zugriffe von fremden Seiten ohnehin nicht.
+`index.html` hat keinen Zugang zu Claude und blendet ihn aus.
+
+### Daten von BoardGameGeek holen
+
+Die Seite selbst kann BGG nicht abfragen — veröffentlichte Artifact-Seiten
+dürfen aus Sicherheitsgründen keine fremden Server ansprechen. Außerhalb des
+Browsers geht es aber: `tools/bgg.mjs` holt die Daten und gibt sie in genau dem
+Format aus, das die Seite einliest. Node 18 oder neuer, keine Abhängigkeiten.
+
+```
+node tools/bgg.mjs "Sky Team" "Hive Pocket"        einzelne Titel
+node tools/bgg.mjs --user DeinBggName              ganze BGG-Sammlung (nur Besitz)
+node tools/bgg.mjs --id 224517                     direkt über die BGG-Nummer
+node tools/bgg.mjs --user X --out sammlung.json    in eine Datei schreiben
+```
+
+Die Ausgabe auf der Seite unter „Sammlung bearbeiten" → „Sicherung & Umzug"
+einfügen und **„Dazu einspielen"** (ergänzt, überspringt Namensdubletten) oder
+**„Sammlung ersetzen"** tippen.
+
+Was von BGG übernommen wird:
+
+| Feld der Seite | Quelle bei BGG |
+| --- | --- |
+| Spielerzahl | `minplayers` / `maxplayers` |
+| Am besten zu | Umfrage „suggested_numplayers" — alle Spielerzahlen mit mindestens 70 % der Bestmarke |
+| Dauer | `minplaytime` / `maxplaytime` |
+| Anspruch | `averageweight` (BGG-Skala 1–5, dieselbe wie hier) |
+| Stimmung | grob aus Kategorien und Mechaniken geraten |
+| Notiz | bleibt leer (BGG-Beschreibungen sind lang und englisch) |
+
+Die Stimmungen sind der schwache Teil — BGG kennt keine „Stimmung", die Regeln
+in `MOOD_RULES` sind eine Heuristik. Nach dem Einspielen also durchgehen und
+nachbessern; die Zahlen daneben stimmen dafür verlässlich.
+
+BGG bittet um gemächliche Abfragen: das Skript wartet 1,5 Sekunden zwischen den
+Aufrufen, holt Details in Zwanzigerpaketen und wiederholt geduldig, wenn BGG mit
+202 („steht in der Warteschlange", bei Sammlungen üblich) oder 429 antwortet.
+Eine große Sammlung braucht darum ein paar Minuten.
+
+Warum nicht direkt im Browser: Die BGG-XML-API schickt keine CORS-Freigabe, eine
+Webseite darf sie also gar nicht abfragen — deshalb der Umweg über ein Skript
+außerhalb des Browsers.
 
 ### Wo die Sammlung liegt
 

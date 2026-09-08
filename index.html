@@ -383,10 +383,12 @@ footer p{margin:0 0 4px}
         <button class="linkbtn danger" type="button" id="restore">Auf Ausgangssammlung zurücksetzen</button>
         <details class="backup">
           <summary>Sicherung &amp; Umzug</summary>
-          <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben oder Einspielen.</span>
+          <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben, Einspielen oder für die
+            Ausgabe von <code>tools/bgg.mjs</code> (holt Daten von BoardGameGeek).</span>
             <textarea id="backup" rows="5" spellcheck="false"></textarea></label>
           <div class="form-actions" style="margin-top:10px">
-            <button class="linkbtn" type="button" id="import">Aus Text einspielen</button>
+            <button class="linkbtn" type="button" id="importadd">Dazu einspielen</button>
+            <button class="linkbtn danger" type="button" id="import">Sammlung ersetzen</button>
             <span class="hint" id="importnote"></span>
           </div>
         </details>
@@ -1046,25 +1048,40 @@ $("restore").addEventListener("click", () => {
   render();
 });
 
-$("import").addEventListener("click", () => {
-  const note = $("importnote");
-  let list = [];
+function parseBackup(){
   try{
     const parsed = JSON.parse($("backup").value);
     const arr = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.games) ? parsed.games : []);
-    list = arr.map(normalize).filter(Boolean);
-  }catch(e){ list = []; }
+    return arr.map(normalize).filter(Boolean);
+  }catch(e){ return []; }
+}
+
+function importGames(mode){
+  const note = $("importnote");
+  const list = parseBackup();
   if(!list.length){
-    note.textContent = "Darin steckt keine lesbare Sammlung — der Text muss die Liste aus dem Feld darüber sein.";
+    note.textContent = "Darin steckt keine lesbare Sammlung — erwartet wird die Liste aus dem Feld darüber.";
     return;
   }
-  games = list;
-  note.textContent = list.length + " Spiele eingespielt.";
+  if(mode === "replace"){
+    games = list;
+    note.textContent = list.length + " Spiele eingespielt, alte Sammlung ersetzt.";
+  }else{
+    const have = new Set(games.map(g => g.name.toLowerCase()));
+    const neu = list.filter(g => !have.has(g.name.toLowerCase()));
+    games = games.concat(neu);
+    const doppelt = list.length - neu.length;
+    note.textContent = neu.length + " dazugekommen" +
+      (doppelt ? ", " + doppelt + " waren schon da" : "") + ".";
+  }
   hideUndo();
   resetForm();
   persist();
   render();
-});
+}
+
+$("import").addEventListener("click", () => importGames("replace"));
+$("importadd").addEventListener("click", () => importGames("add"));
 
 $("dice").addEventListener("click", () => {
   const hits = games.map(g => ({ g, res:evaluate(g) })).filter(h => h.res.ok);
