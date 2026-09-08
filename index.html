@@ -248,6 +248,7 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
   color:var(--muted); border-radius:99px; padding:6px 12px;
 }
 .linkbtn:hover{color:var(--ink); border-color:var(--ink)}
+a.linkbtn{text-decoration:none; display:inline-block; white-space:nowrap}
 .linkbtn.danger:hover{color:var(--warn); border-color:var(--warn)}
 .linkbtn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .col-list li.editing{background:var(--accent-soft); border-radius:6px; padding-left:8px; padding-right:8px}
@@ -341,6 +342,8 @@ footer p{margin:0 0 4px}
             <div class="lookup-row">
               <input type="text" id="f-name" autocomplete="off" placeholder="z. B. Die Crew">
               <button class="btn ghost" type="button" id="lookup" hidden>Daten vorschlagen</button>
+              <a class="linkbtn" id="bgglink" target="_blank" rel="noopener noreferrer"
+                 href="https://boardgamegeek.com/searchpage.php?q=">Auf BGG nachschlagen ↗</a>
             </div>
             <p class="hint" id="lookuphint" hidden>Fragt Claude nach Spielerzahl, Dauer, Anspruch und Stimmung. Beim ersten Mal fragt die Seite um Erlaubnis; es zählt auf deine Claude-Nutzung.</p>
             <p class="lookup-status" id="lookupstatus" hidden></p>
@@ -364,7 +367,9 @@ footer p{margin:0 0 4px}
               <input type="number" id="f-durmax" placeholder="60" min="1" max="600" inputmode="numeric" aria-label="Dauer bis">
             </div></div>
           <fieldset class="stack field wide"><legend class="lbl">Anspruch</legend>
-            <div class="chips" id="f-weight"></div></fieldset>
+            <div class="chips" id="f-weight"></div>
+            <p class="hint">Auf BGG steht das als <em>Weight</em> von 1 bis 5: bis 1,5 leicht ·
+              1,5 bis 2,6 mittel · ab 2,6 anspruchsvoll.</p></fieldset>
           <fieldset class="stack field wide"><legend class="lbl">Stimmung</legend>
             <div class="chips" id="f-moods"></div></fieldset>
           <label class="wide"><span>Notiz (erscheint auf der Karte)</span>
@@ -1028,6 +1033,10 @@ document.addEventListener("click", ev => {
 });
 
 $("lookup").addEventListener("click", lookupGame);
+$("f-name").addEventListener("input", () => {
+  const q = $("f-name").value.trim();
+  $("bgglink").href = "https://boardgamegeek.com/searchpage.php?q=" + encodeURIComponent(q);
+});
 $("gameform").addEventListener("submit", submitGame);
 $("f-cancel").addEventListener("click", () => { resetForm(); renderCollection(); });
 

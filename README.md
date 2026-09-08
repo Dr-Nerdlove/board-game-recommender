@@ -56,7 +56,24 @@ Vorschlag steht also immer zur Korrektur, und genau so ist er gemeint:
 Der Knopf erscheint nur in der veröffentlichten Seite. Die lokal geöffnete
 `index.html` hat keinen Zugang zu Claude und blendet ihn aus.
 
-### Daten von BoardGameGeek holen
+### Ein einzelnes Spiel von BGG übernehmen (ohne Terminal)
+
+Für ein einzelnes Spiel braucht es kein Skript:
+
+1. Unter „Sammlung bearbeiten" den Titel ins Namensfeld tippen.
+2. **„Auf BGG nachschlagen ↗"** öffnet die BGG-Suche zu diesem Titel in einem
+   neuen Tab. Dort das Spiel anklicken.
+3. Auf der BGG-Seite stehen oben rechts alle nötigen Zahlen: *Players*,
+   *Playing Time*, *Weight* — und im Kasten *Community* unter „Best" die
+   Spielerzahl, bei der es am besten läuft.
+4. Zahlen ins Formular übertragen. Das *Weight* (1–5) wird zum Anspruch:
+   bis 1,5 leicht, 1,5–2,6 mittel, ab 2,6 anspruchsvoll — die Umrechnung steht
+   auch unter den Anspruch-Knöpfen.
+5. Stimmung wählen, Notiz schreiben, „Ins Regal stellen".
+
+Das Skript unten lohnt sich erst für viele Spiele auf einmal.
+
+### Viele Spiele auf einmal: Daten von BoardGameGeek holen
 
 Die Seite selbst kann BGG nicht abfragen — veröffentlichte Artifact-Seiten
 dürfen aus Sicherheitsgründen keine fremden Server ansprechen. Außerhalb des
