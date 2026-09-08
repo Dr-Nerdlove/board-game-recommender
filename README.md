@@ -54,24 +54,44 @@ schreibt sie für alle.
 
 1. **Node installieren** — in PowerShell `winget install OpenJS.NodeJS.LTS`,
    oder den Installer von nodejs.org. Einmalig.
-2. `index.html`, `spieleabend-server.mjs` und `start-windows.cmd` in einen
-   Ordner legen, zum Beispiel `C:\Spieleabend`.
-3. **`start-windows.cmd` doppelklicken.** Beim ersten Start fragt die Windows-
-   Firewall — **privates Netzwerk zulassen**. Das Fenster zeigt die Adressen an
-   und muss offen bleiben, solange der Server läuft.
+2. Alle Dateien aus dem Projekt in einen Ordner legen, zum Beispiel
+   `C:\Spieleabend` — `index.html`, `spieleabend-server.mjs`,
+   `windows-dienst.ps1` und die drei `.cmd`-Dateien gehören zusammen.
+3. **`dienst-einrichten.cmd` doppelklicken** und die Nachfrage nach
+   Administratorrechten bestätigen. Das Fenster meldet, ob der Server läuft, und
+   nennt die Adressen — danach kann es zu.
 4. Im Browser `http://localhost:8099`, am Handy `http://<IP-des-PCs>:8099`.
+
+Das Einrichten legt eine Aufgabe an, die beim Hochfahren startet — **ohne
+Fenster, ohne Anmeldung, mit automatischem Neustart nach einem Absturz** — und
+gibt Port 8099 in der Firewall für das private Netz frei.
 
 Über dem Formular steht dann „Sammlung liegt auf deinem Server". Wechselst du
 auf einem Gerät zurück in den Tab, holt die Seite die aktuelle Liste nach.
 
-**Automatisch starten:** Windows-Taste + R → `shell:startup` → in den Ordner
-eine Verknüpfung zu `start-windows.cmd` legen. Dann läuft er nach jeder
-Anmeldung. Soll er schon vor der Anmeldung laufen, richte stattdessen in der
-Aufgabenplanung eine Aufgabe „Bei Systemstart" ein, die `node` mit dem Skript
-startet.
+**Läuft er?** `dienst-status.cmd` doppelklicken — sagt, ob die Aufgabe läuft und
+der Server antwortet.
 
-**Anderer Port:** `node spieleabend-server.mjs --port 8100`. 8099 ist frei
-gewählt und stört Jellyfin auf 8096 nicht.
+**Wieder loswerden:** `dienst-entfernen.cmd`. Entfernt Aufgabe und
+Firewall-Regel; `sammlung.json` bleibt liegen.
+
+**Anderer Port:** beim Einrichten mitgeben, zum Beispiel
+
+```
+powershell -ExecutionPolicy Bypass -File windows-dienst.ps1 -Port 8100
+```
+
+8099 ist frei gewählt und stört Jellyfin auf 8096 nicht.
+
+**`start-windows.cmd`** startet den Server stattdessen im Vordergrund, mit
+Fenster und sichtbaren Meldungen. Gut zum Ausprobieren oder zur Fehlersuche —
+für den Dauerbetrieb ist der Dienst gedacht.
+
+**Wenn es nicht klappt:** Fast immer liegt es an einem von zwei Dingen. Der Port
+ist belegt (anderen Port wählen, siehe oben), oder Node wurde nur für den
+eigenen Benutzer installiert — der Dienst läuft unter dem Systemkonto und findet
+es dann nicht; in dem Fall Node für alle Benutzer neu installieren. Das
+Einrichtungsfenster weist auf beides hin.
 
 **Sicherung:** die ganze Sammlung steht in `sammlung.json`. Datei kopieren
 genügt.
