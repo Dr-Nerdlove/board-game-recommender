@@ -22,6 +22,56 @@ Läuft auch auf dem Handy — die Filter sind Antippknöpfe, keine Dropdowns.
   zufällig aus der oberen Hälfte der Treffer.
 - Die letzte Einstellung wird im Browser gemerkt.
 
+## Auf einem eigenen Server hosten
+
+Die Seite ist eine einzige Datei ohne Datenbank und ohne Serverprogramm. Jeder
+Webserver kann sie ausliefern — es reicht, `index.html` in seinen Ordner zu
+legen.
+
+### Windows 11 mit dem eingebauten Webserver (IIS)
+
+1. **Webserver einschalten:** Start → „Windows-Features aktivieren oder
+   deaktivieren" → Haken bei **Internetinformationsdienste** → OK. Windows
+   installiert kurz und ist fertig. Test: `http://localhost` im Browser des
+   Servers zeigt die IIS-Startseite.
+2. **Seite ablegen:** `index.html` nach `C:\inetpub\wwwroot` kopieren (Windows
+   fragt nach Administratorrechten). Die dort liegende `iisstart.htm` umbenennen
+   oder löschen, dann kommt garantiert die eigene Seite.
+3. **Testen:** `http://localhost` neu laden — jetzt steht „Was spielen wir
+   heute?" da.
+4. **Vom Handy aus:** IP des Servers herausfinden (Eingabeaufforderung:
+   `ipconfig`, Zeile „IPv4-Adresse", meist `192.168.…`). Im Handy-Browser
+   `http://192.168.x.x` aufrufen, gleiches WLAN vorausgesetzt.
+
+Klappt Schritt 4 nicht, liegt es fast immer an einem von zwei Dingen: Das
+Netzwerk ist in Windows als **öffentlich** eingestuft (Einstellungen → Netzwerk →
+auf „Privates Netzwerk" umstellen), oder die Firewall lässt Port 80 nicht durch
+(Windows Defender Firewall → „App durch die Firewall kommunizieren lassen" →
+Internetinformationsdienste für private Netzwerke erlauben).
+
+**Nicht am Router nach außen freigeben.** Die Seite hat keine Anmeldung; wer die
+Adresse kennt, kann die Sammlung ändern. Im Heimnetz ist das egal, im Internet
+nicht.
+
+### Was auf dem eigenen Server anders ist
+
+| | veröffentlichte Seite | eigener Server |
+| --- | --- | --- |
+| „Daten vorschlagen" | ja | **nein** — der Knopf bleibt weg, es gibt keine Verbindung zu Claude |
+| Sammlung | im Konto, auf allen Geräten gleich | **pro Browser** gespeichert; Handy und Laptop führen getrennte Listen |
+| Erreichbar | überall | nur im Heimnetz |
+| Schriften | von Google Fonts | ebenso; ohne Internet nimmt die Seite Systemschriften |
+
+Die Sammlung mitnehmen: auf der veröffentlichten Seite unter „Sammlung
+bearbeiten" → „Sicherung & Umzug" den Text kopieren, auf der eigenen Seite
+dort einfügen und „Sammlung ersetzen" tippen. Das gilt auch in die andere
+Richtung und zwischen zwei Geräten.
+
+### Nur kurz ausprobieren
+
+Ohne irgendetwas einzurichten: `index.html` doppelklicken. Die Seite läuft
+vollständig aus der Datei heraus, nur eben auf diesem einen Rechner.
+
 ## Sammlung pflegen
 
 Unten auf der Seite: **Sammlung bearbeiten**.
