@@ -6,9 +6,13 @@ sortiert die eigene Sammlung danach durch und schlägt vor, was heute passt.
 
 ## Benutzen
 
-`index.html` im Browser öffnen. Keine Installation, kein Server, kein Internet
-nötig (nur die Schriften kommen aus dem Netz, sonst greifen Systemschriften).
-Läuft auch auf dem Handy — die Filter sind Antippknöpfe, keine Dropdowns.
+`index.html` im Browser öffnen — das genügt für den Anfang: keine Installation,
+kein Server, kein Internet nötig (nur die Schriften kommen aus dem Netz, sonst
+greifen Systemschriften). Läuft auch auf dem Handy, die Filter sind
+Antippknöpfe statt Dropdowns.
+
+Soll die Sammlung auf allen Geräten dieselbe sein, siehe „Auf dem eigenen
+Windows-PC hosten".
 
 ## Was die Seite macht
 
@@ -22,55 +26,73 @@ Läuft auch auf dem Handy — die Filter sind Antippknöpfe, keine Dropdowns.
   zufällig aus der oberen Hälfte der Treffer.
 - Die letzte Einstellung wird im Browser gemerkt.
 
-## Auf einem eigenen Server hosten
+## Auf dem eigenen Windows-PC hosten
 
-Die Seite ist eine einzige Datei ohne Datenbank und ohne Serverprogramm. Jeder
-Webserver kann sie ausliefern — es reicht, `index.html` in seinen Ordner zu
-legen.
+Zwei Wege, je nachdem, was du brauchst.
 
-### Windows 11 mit dem eingebauten Webserver (IIS)
+### A) Nur die Seite ausliefern (IIS, ohne Installation)
 
-1. **Webserver einschalten:** Start → „Windows-Features aktivieren oder
-   deaktivieren" → Haken bei **Internetinformationsdienste** → OK. Windows
-   installiert kurz und ist fertig. Test: `http://localhost` im Browser des
-   Servers zeigt die IIS-Startseite.
-2. **Seite ablegen:** `index.html` nach `C:\inetpub\wwwroot` kopieren (Windows
-   fragt nach Administratorrechten). Die dort liegende `iisstart.htm` umbenennen
-   oder löschen, dann kommt garantiert die eigene Seite.
-3. **Testen:** `http://localhost` neu laden — jetzt steht „Was spielen wir
-   heute?" da.
-4. **Vom Handy aus:** IP des Servers herausfinden (Eingabeaufforderung:
-   `ipconfig`, Zeile „IPv4-Adresse", meist `192.168.…`). Im Handy-Browser
-   `http://192.168.x.x` aufrufen, gleiches WLAN vorausgesetzt.
+Der Webserver steckt schon in Windows. Er liefert Dateien aus — mehr nicht,
+also **ohne** gemeinsame Sammlung über mehrere Geräte.
 
-Klappt Schritt 4 nicht, liegt es fast immer an einem von zwei Dingen: Das
-Netzwerk ist in Windows als **öffentlich** eingestuft (Einstellungen → Netzwerk →
-auf „Privates Netzwerk" umstellen), oder die Firewall lässt Port 80 nicht durch
-(Windows Defender Firewall → „App durch die Firewall kommunizieren lassen" →
-Internetinformationsdienste für private Netzwerke erlauben).
+1. Start → „Windows-Features aktivieren oder deaktivieren" → Haken bei
+   **Internetinformationsdienste** → OK.
+2. Ordner `C:\inetpub\wwwroot\spieleabend` anlegen, `index.html` hineinkopieren.
+3. Aufrufen unter `http://localhost/spieleabend`, im Heimnetz unter
+   `http://<IP-des-PCs>/spieleabend`.
 
-**Nicht am Router nach außen freigeben.** Die Seite hat keine Anmeldung; wer die
-Adresse kennt, kann die Sammlung ändern. Im Heimnetz ist das egal, im Internet
-nicht.
+Der Unterordner ist Absicht: `wwwroot` ist die Wurzel, jeder Unterordner darin
+ist eine eigene Adresse. `\notizen`, `\fotos` und so weiter liegen daneben,
+ohne sich zu stören. Andere Programme mit eigenem Port (Jellyfin auf 8096) sind
+davon ohnehin unberührt — IIS nutzt Port 80.
 
-### Was auf dem eigenen Server anders ist
+### B) Sammlung auf allen Geräten gleich (mitgelieferter Server)
 
-| | veröffentlichte Seite | eigener Server |
-| --- | --- | --- |
-| „Daten vorschlagen" | ja | **nein** — der Knopf bleibt weg, es gibt keine Verbindung zu Claude |
-| Sammlung | im Konto, auf allen Geräten gleich | **pro Browser** gespeichert; Handy und Laptop führen getrennte Listen |
-| Erreichbar | überall | nur im Heimnetz |
-| Schriften | von Google Fonts | ebenso; ohne Internet nimmt die Seite Systemschriften |
+`spieleabend-server.mjs` liefert die Seite aus **und** verwahrt die Sammlung in
+`sammlung.json`. Handy, Tablet und PC sehen dieselbe Liste; wer etwas ändert,
+schreibt sie für alle.
 
-Die Sammlung mitnehmen: auf der veröffentlichten Seite unter „Sammlung
-bearbeiten" → „Sicherung & Umzug" den Text kopieren, auf der eigenen Seite
-dort einfügen und „Sammlung ersetzen" tippen. Das gilt auch in die andere
-Richtung und zwischen zwei Geräten.
+1. **Node installieren** — in PowerShell `winget install OpenJS.NodeJS.LTS`,
+   oder den Installer von nodejs.org. Einmalig.
+2. `index.html`, `spieleabend-server.mjs` und `start-windows.cmd` in einen
+   Ordner legen, zum Beispiel `C:\Spieleabend`.
+3. **`start-windows.cmd` doppelklicken.** Beim ersten Start fragt die Windows-
+   Firewall — **privates Netzwerk zulassen**. Das Fenster zeigt die Adressen an
+   und muss offen bleiben, solange der Server läuft.
+4. Im Browser `http://localhost:8099`, am Handy `http://<IP-des-PCs>:8099`.
 
-### Nur kurz ausprobieren
+Über dem Formular steht dann „Sammlung liegt auf deinem Server". Wechselst du
+auf einem Gerät zurück in den Tab, holt die Seite die aktuelle Liste nach.
 
-Ohne irgendetwas einzurichten: `index.html` doppelklicken. Die Seite läuft
-vollständig aus der Datei heraus, nur eben auf diesem einen Rechner.
+**Automatisch starten:** Windows-Taste + R → `shell:startup` → in den Ordner
+eine Verknüpfung zu `start-windows.cmd` legen. Dann läuft er nach jeder
+Anmeldung. Soll er schon vor der Anmeldung laufen, richte stattdessen in der
+Aufgabenplanung eine Aufgabe „Bei Systemstart" ein, die `node` mit dem Skript
+startet.
+
+**Anderer Port:** `node spieleabend-server.mjs --port 8100`. 8099 ist frei
+gewählt und stört Jellyfin auf 8096 nicht.
+
+**Sicherung:** die ganze Sammlung steht in `sammlung.json`. Datei kopieren
+genügt.
+
+### Was wo gespeichert wird
+
+| | veröffentlichte Seite | eigener Server (B) | nur Dateien (A oder Doppelklick) |
+| --- | --- | --- | --- |
+| Sammlung | im Claude-Konto | in `sammlung.json` auf dem PC | im jeweiligen Browser |
+| Auf allen Geräten gleich | ja | ja, im Heimnetz | nein |
+| „Daten vorschlagen" | ja | nein | nein |
+| Erreichbar | überall | Heimnetz | nur dieser Rechner |
+
+Die Sammlung umziehen: unter „Sammlung bearbeiten" → „Sicherung & Umzug" den
+Text kopieren und auf der anderen Seite einfügen, dann „Sammlung ersetzen".
+
+**Nicht am Router nach außen freigeben.** Weder die Seite noch der Server haben
+eine Anmeldung: wer die Adresse erreicht, darf die Sammlung ändern. Im Heimnetz
+ist das in Ordnung, im offenen Internet nicht. Soll die Seite von unterwegs
+erreichbar sein, führt der sichere Weg über ein VPN ins Heimnetz (etwa
+WireGuard oder Tailscale), nicht über eine Portfreigabe.
 
 ## Sammlung pflegen
 
@@ -132,8 +154,15 @@ Die Zeile über dem Formular sagt es jeweils:
 - **Als veröffentlichte Seite** in der `db`-Ablage des Artifacts, also im Konto —
   Handy und Laptop sehen dieselbe Sammlung, Änderungen erscheinen auf offenen
   Seiten von selbst.
+- **Hinter dem mitgelieferten Server** in `sammlung.json` auf dem eigenen PC.
+  Die Seite erkennt ihn daran, dass `api/sammlung` antwortet, und benutzt dann
+  ihn; beim Zurückkehren auf den Tab holt sie den Stand der anderen Geräte nach.
 - **Als lokale Datei** (`index.html` im Browser geöffnet) im `localStorage`
   dieses Browsers. Umzug auf ein anderes Gerät: über „Sicherung & Umzug".
+
+Die Reihenfolge ist fest: eigener Server, sonst Konto, sonst Browser. Der
+Browser bekommt in allen Fällen eine Kopie, damit die Seite auch offline etwas
+anzeigen kann.
 
 Ist beim ersten Öffnen noch nichts gespeichert, gilt die Ausgangssammlung aus
 `DEFAULT_GAMES` in `index.html`. Diese Liste ist nur der Startpunkt — wer lieber

@@ -551,18 +551,30 @@ let localTouched = false;
 
 let storageMode = "local";
 let dbDoc = null;
+let apiUrl = null;           // gesetzt, sobald ein eigener Server antwortet
 
 function updateStorageNote(msg){
   const el = $("storagenote");
-  el.dataset.mode = storageMode === "db" ? "db" : "local";
-  el.textContent = msg || (storageMode === "db"
-    ? "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe."
-    : "Sammlung liegt nur in diesem Browser.");
+  el.dataset.mode = storageMode === "local" ? "local" : "geteilt";
+  el.textContent = msg || (
+    storageMode === "server" ? "Sammlung liegt auf deinem Server — auf jedem Gerät im Heimnetz dieselbe." :
+    storageMode === "db"     ? "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe." :
+                               "Sammlung liegt nur in diesem Browser.");
 }
 
 function persist(){
   localTouched = true;
   try{ localStorage.setItem(COLLECTION_KEY, JSON.stringify({ games })); }catch(e){/* Privatmodus */}
+  if(apiUrl){
+    fetch(apiUrl, {
+      method:"PUT",
+      headers:{ "content-type":"application/json" },
+      body: JSON.stringify({ games })
+    }).then(res => {
+      if(res.ok) updateStorageNote();
+      else updateStorageNote("Server hat die Änderung abgelehnt (" + res.status + ") — sie liegt vorerst nur in diesem Browser.");
+    }, () => updateStorageNote("Server nicht erreichbar — die Änderung liegt vorerst nur in diesem Browser."));
+  }
   if(dbDoc){
     dbDoc.set({ games, updatedAt:Date.now() }).then(
       () => updateStorageNote(),
@@ -579,6 +591,53 @@ function loadCollection(){
     const list = Array.isArray(parsed && parsed.games) ? parsed.games.map(normalize).filter(Boolean) : [];
     if(list.length){ games = list; localTouched = true; }
   }catch(e){/* dann eben die Ausgangssammlung */}
+}
+
+// Eigener Server: nur außerhalb des Claude-Viewers und nur über http(s) sinnvoll.
+async function connectServer(){
+  if(window.claude && typeof window.claude.use === "function") return false;
+  if(!/^https?:$/.test(location.protocol)) return false;
+  const url = new URL("api/sammlung", location.href).href;
+  let data;
+  try{
+    const res = await fetch(url, { headers:{ accept:"application/json" } });
+    if(!res.ok) return false;
+    data = await res.json();
+  }catch(e){ return false; }
+  if(!data || !Array.isArray(data.games)) return false;
+
+  apiUrl = url;
+  storageMode = "server";
+  const list = data.games.map(normalize).filter(Boolean);
+  if(list.length){
+    games = list;
+    if(state.editing && !games.some(g => g.id === state.editing)) resetForm();
+    render();
+  }else if(localTouched){
+    persist();                       // erste eigene Sammlung auf den Server heben
+  }
+  updateStorageNote();
+
+  // Beim Zurückkehren auf den Tab nachsehen, ob ein anderes Gerät etwas geändert hat
+  document.addEventListener("visibilitychange", () => { if(!document.hidden) refreshFromServer(); });
+  window.addEventListener("focus", refreshFromServer);
+  return true;
+}
+
+async function refreshFromServer(){
+  if(!apiUrl || state.editing) return;
+  try{
+    const res = await fetch(apiUrl, { headers:{ accept:"application/json" }, cache:"no-store" });
+    if(!res.ok) return;
+    const data = await res.json();
+    const list = Array.isArray(data.games) ? data.games.map(normalize).filter(Boolean) : [];
+    if(!list.length) return;
+    if(JSON.stringify(list) === JSON.stringify(games)) return;
+    games = list;
+    hideUndo();
+    render();
+    updateStorageNote();
+  }catch(e){ /* offline: die lokale Liste bleibt stehen */ }
 }
 
 async function connectDb(){
@@ -1122,7 +1181,7 @@ loadCollection();
 resetForm();
 render();
 updateStorageNote();
-connectDb();
+connectServer().then(gefunden => { if(!gefunden) connectDb(); });
 connectSample();
 </script>
 </body>
