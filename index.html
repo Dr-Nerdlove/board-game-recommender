@@ -343,7 +343,7 @@ footer p{margin:0 0 4px}
               <input type="text" id="f-name" autocomplete="off" placeholder="z. B. Die Crew">
               <button class="btn ghost" type="button" id="lookup" hidden>Daten vorschlagen</button>
               <a class="linkbtn" id="bgglink" target="_blank" rel="noopener noreferrer"
-                 href="https://boardgamegeek.com/searchpage.php?q=">Auf BGG nachschlagen ↗</a>
+                 href="https://boardgamegeek.com/geeksearch.php?action=search&amp;objecttype=boardgame&amp;q=">Auf BGG nachschlagen ↗</a>
             </div>
             <p class="hint" id="lookuphint" hidden>Fragt Claude nach Spielerzahl, Dauer, Anspruch und Stimmung. Beim ersten Mal fragt die Seite um Erlaubnis; es zählt auf deine Claude-Nutzung.</p>
             <p class="lookup-status" id="lookupstatus" hidden></p>
@@ -654,6 +654,8 @@ function lookupPrompt(name){
     '- "note": ein Satz darüber, was das Spiel am Tisch ausmacht. Keine Werbesprache.'
   ].join("\n");
 }
+
+const BGG_SEARCH = "https://boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=";
 
 const LOOKUP_BANDS = { leicht:"leicht", mittel:"mittel", anspruchsvoll:"schwer", schwer:"schwer" };
 
@@ -1035,7 +1037,7 @@ document.addEventListener("click", ev => {
 $("lookup").addEventListener("click", lookupGame);
 $("f-name").addEventListener("input", () => {
   const q = $("f-name").value.trim();
-  $("bgglink").href = "https://boardgamegeek.com/searchpage.php?q=" + encodeURIComponent(q);
+  $("bgglink").href = BGG_SEARCH + encodeURIComponent(q);
 });
 $("gameform").addEventListener("submit", submitGame);
 $("f-cancel").addEventListener("click", () => { resetForm(); renderCollection(); });
