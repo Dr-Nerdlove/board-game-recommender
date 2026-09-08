@@ -80,8 +80,10 @@ gibt Port 8099 in der Firewall für das private Netz frei.
 Über dem Formular steht dann „Sammlung liegt auf deinem Server". Wechselst du
 auf einem Gerät zurück in den Tab, holt die Seite die aktuelle Liste nach.
 
-**Läuft er?** `dienst-status.cmd` doppelklicken — sagt, ob die Aufgabe läuft und
-der Server antwortet.
+**Läuft er?** `dienst-status.cmd` doppelklicken — prüft zuerst, ob der Server
+antwortet, und zeigt dann Zustand und letzten Lauf der Aufgabe. Für den Blick
+auf die Aufgabe holt sich die Datei Administratorrechte: die Aufgabe läuft unter
+dem Systemkonto und ist ohne diese Rechte nicht sichtbar.
 
 **Wieder loswerden:** `dienst-entfernen.cmd`. Entfernt Aufgabe und
 Firewall-Regel; `sammlung.json` bleibt liegen.

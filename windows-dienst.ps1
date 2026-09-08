@@ -64,13 +64,29 @@ function Laeuft-Server($port){
 
 # ---------------------------------------------------------------- Status
 if($Aktion -eq "status"){
+  Schreib "Spieleabend-Status"
+  Schreib ""
+
+  # Das Wichtigste zuerst, und ohne Sonderrechte pruefbar: antwortet der Server?
+  $laeuft = Laeuft-Server $Port
+  if($laeuft){ Schreib "  Server:   antwortet auf Port $Port" "Green" }
+  else       { Schreib "  Server:   antwortet auf Port $Port nicht" "Yellow" }
+
   $task = Get-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue
-  if(-not $task){ Schreib "Der Dienst ist nicht eingerichtet." "Yellow"; exit 0 }
-  $info = Get-ScheduledTaskInfo -TaskName $Name
-  Schreib "Aufgabe:      $($task.State)"
-  Schreib "Zuletzt:      $($info.LastRunTime)  (Ergebnis $($info.LastTaskResult))"
-  if(Laeuft-Server $Port){ Schreib "Server:       antwortet" "Green"; Adressen $Port }
-  else { Schreib "Server:       antwortet auf Port $Port nicht" "Yellow" }
+  if($task){
+    $info = Get-ScheduledTaskInfo -TaskName $Name -ErrorAction SilentlyContinue
+    Schreib "  Aufgabe:  $($task.State)"
+    if($info){ Schreib "  Zuletzt:  $($info.LastRunTime)  (Ergebnis $($info.LastTaskResult))" }
+  }elseif($laeuft){
+    Schreib "  Aufgabe:  nicht lesbar - dafuer fehlen Administratorrechte." "Gray"
+    Schreib "            Der Server laeuft, das ist die Hauptsache." "Gray"
+  }else{
+    Schreib "  Aufgabe:  nicht gefunden." "Yellow"
+    Schreib "            Entweder ist sie nicht eingerichtet, oder es fehlen" "Gray"
+    Schreib "            Administratorrechte, um sie zu sehen." "Gray"
+  }
+
+  if($laeuft){ Adressen $Port }
   exit 0
 }
 
