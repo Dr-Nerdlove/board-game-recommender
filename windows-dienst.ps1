@@ -27,11 +27,32 @@ function Finde-Node {
 }
 
 function Adressen($port){
-  $ips = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
-         Where-Object { $_.IPAddress -ne "127.0.0.1" -and $_.InterfaceAlias -notmatch "Loopback" }
   Schreib ""
-  Schreib "  Auf diesem PC:  http://localhost:$port" "White"
-  foreach($ip in $ips){ Schreib "  Im Heimnetz:    http://$($ip.IPAddress):$port" "White" }
+  Schreib "  Auf diesem PC:   http://localhost:$port" "White"
+  Schreib "  Ueber den Namen: http://$($env:COMPUTERNAME):$port" "White"
+
+  # Karte, ueber die der Rechner ins Netz geht - deren Adresse ist meist die richtige
+  $hauptIndex = (Get-NetRoute -DestinationPrefix "0.0.0.0/0" -ErrorAction SilentlyContinue |
+                 Sort-Object RouteMetric | Select-Object -First 1).InterfaceIndex
+
+  # 169.254.* sind Karten ohne Verbindung und nuetzen niemandem
+  $ips = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
+         Where-Object { $_.IPAddress -ne "127.0.0.1" -and
+                        -not $_.IPAddress.StartsWith("169.254.") -and
+                        $_.InterfaceAlias -notmatch "Loopback" }
+
+  if($ips){
+    Schreib ""
+    Schreib "  Im Netzwerk erreichbar unter:" "White"
+    foreach($ip in ($ips | Sort-Object { $_.InterfaceIndex -ne $hauptIndex })){
+      $marke = ""
+      if($ip.InterfaceIndex -eq $hauptIndex){ $marke = "   <-- vermutlich diese" }
+      Schreib "    http://$($ip.IPAddress):$port   [$($ip.InterfaceAlias)]$marke" "White"
+    }
+    Schreib ""
+    Schreib "  Mehrere Adressen sind normal: der Server lauscht auf allen Netzwerkkarten." "Gray"
+    Schreib "  Adressen aus VPN-, WSL- oder Hyper-V-Karten gehoeren nicht ins Heimnetz." "Gray"
+  }
 }
 
 function Laeuft-Server($port){

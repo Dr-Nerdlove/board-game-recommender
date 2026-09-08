@@ -60,7 +60,18 @@ schreibt sie für alle.
 3. **`dienst-einrichten.cmd` doppelklicken** und die Nachfrage nach
    Administratorrechten bestätigen. Das Fenster meldet, ob der Server läuft, und
    nennt die Adressen — danach kann es zu.
-4. Im Browser `http://localhost:8099`, am Handy `http://<IP-des-PCs>:8099`.
+4. Im Browser `http://localhost:8099`, am Handy `http://<IP-des-PCs>:8099` oder
+   `http://<PC-Name>:8099`.
+
+Das Einrichtungsfenster listet mehrere Adressen — das ist normal: der Server
+lauscht auf allen Netzwerkkarten des PCs, und Windows zählt VPN-, WSL- und
+Hyper-V-Karten mit. Gemeint ist die Adresse der Karte, über die der PC ins
+Netz geht (im Fenster markiert, meist `192.168.…`). Adressen mit `169.254.…`
+gehören zu Karten ohne Verbindung und werden gar nicht erst angezeigt.
+
+Praktischer als die IP ist der Rechnername: `http://<PC-Name>:8099` bleibt
+gleich, auch wenn der Router dem PC irgendwann eine andere IP gibt. Wer lieber
+bei der IP bleibt, vergibt sie im Router fest (DHCP-Reservierung).
 
 Das Einrichten legt eine Aufgabe an, die beim Hochfahren startet — **ohne
 Fenster, ohne Anmeldung, mit automatischem Neustart nach einem Absturz** — und
