@@ -209,6 +209,12 @@ input[type="text"], input[type="number"], textarea, .pair input{
 }
 textarea{resize:vertical; min-height:64px; line-height:1.45}
 input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+.lookup-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.lookup-row input{flex:1 1 220px; width:auto}
+.lookup-row .btn{flex:none}
+.lookup-status{margin:0; font-size:13px; color:var(--muted)}
+.lookup-status[data-tone="ok"]{color:var(--teal); font-weight:500}
+.lookup-status[data-tone="warn"]{color:var(--warn)}
 .pair{display:flex; align-items:center; gap:8px}
 .pair span.sep{color:var(--muted); font-size:14px; flex:none}
 .hint{font-size:12px; color:var(--muted); margin:0}
@@ -330,8 +336,15 @@ footer p{margin:0 0 4px}
       <form class="gameform" id="gameform" novalidate>
         <p class="form-title" id="formtitle">Spiel hinzufügen</p>
         <div class="form-rows">
-          <label class="wide"><span>Name</span>
-            <input type="text" id="f-name" autocomplete="off" placeholder="z. B. Die Crew"></label>
+          <div class="stack wide">
+            <label for="f-name"><span>Name</span></label>
+            <div class="lookup-row">
+              <input type="text" id="f-name" autocomplete="off" placeholder="z. B. Die Crew">
+              <button class="btn ghost" type="button" id="lookup" hidden>Daten vorschlagen</button>
+            </div>
+            <p class="hint" id="lookuphint" hidden>Fragt Claude nach Spielerzahl, Dauer, Anspruch und Stimmung. Beim ersten Mal fragt die Seite um Erlaubnis; es zählt auf deine Claude-Nutzung.</p>
+            <p class="lookup-status" id="lookupstatus" hidden></p>
+          </div>
           <div class="stack"><span>Spielerzahl</span>
             <div class="pair">
               <input type="number" id="f-min" placeholder="2" min="1" max="30" inputmode="numeric" aria-label="Spieler mindestens">
@@ -590,6 +603,116 @@ async function connectDb(){
   updateStorageNote();
 }
 
+/* ================= Titel eingeben, Rest von Claude ================= */
+
+// Nur in der veröffentlichten Seite verfügbar; als lokale Datei bleibt der Knopf weg.
+let sampler = null;
+let lookupAbort = null;
+
+async function connectSample(){
+  if(!(window.claude && typeof window.claude.use === "function")) return;
+  let s = null;
+  try{ s = await window.claude.use("sample"); }catch(e){ return; }
+  if(typeof s !== "function") return;
+  sampler = s;
+  $("lookup").hidden = false;
+  $("lookuphint").hidden = false;
+}
+
+function lookupStatus(msg, tone){
+  const el = $("lookupstatus");
+  el.hidden = !msg;
+  el.textContent = msg || "";
+  el.dataset.tone = tone || "busy";
+}
+
+function lookupPrompt(name){
+  return [
+    'Du bist ein Nachschlagewerk für Brett- und Kartenspiele. Gib die Eckdaten zum Spiel "' + name + '" zurück.',
+    "",
+    "Antworte nur mit einem JSON-Objekt in genau dieser Form:",
+    '{"found":true,"title":"offizieller Titel","min":2,"max":5,"bestMin":3,"bestMax":4,' +
+      '"durMin":30,"durMax":60,"weight":"mittel","moods":["party","schnell"],' +
+      '"note":"ein deutscher Satz, höchstens 140 Zeichen"}',
+    "",
+    "Regeln:",
+    '- "found": false, wenn du das Spiel nicht sicher kennst. Dann alle anderen Felder weglassen. Rate keine Zahlen.',
+    "- min/max: Spielerzahl laut Schachtel. bestMin/bestMax: die Spielerzahl, bei der es am besten läuft.",
+    "- durMin/durMax: übliche Dauer einer Partie in Minuten.",
+    '- "weight": "leicht" (Absacker, in zwei Minuten erklärt), "mittel" (Familien- oder leichtes Kennerspiel) ' +
+      'oder "anspruchsvoll" (Kennerspiel mit langer Erklärung).',
+    '- "moods": ein bis drei Schlüssel aus genau dieser Liste: party (laut, gesellig), entspannt (ruhig, ohne Hektik), ' +
+      "gruebeln (Strategie, Denkarbeit), koop (alle gegen das Spiel), schnell (kurzer Absacker), wissen (Quiz, Raten), " +
+      "reden (erklären, Wortwitz), thema (starkes Thema oder Geschichte).",
+    '- "note": ein Satz darüber, was das Spiel am Tisch ausmacht. Keine Werbesprache.'
+  ].join("\n");
+}
+
+const LOOKUP_BANDS = { leicht:"leicht", mittel:"mittel", anspruchsvoll:"schwer", schwer:"schwer" };
+
+function applyLookup(typed, data){
+  if(!data || typeof data !== "object" || Array.isArray(data) || data.found === false)
+    return lookupStatus("Zu „" + typed + "“ gibt es keine verlässlichen Angaben — bitte selbst eintragen.", "warn");
+
+  const min = clampInt(data.min, 1, 30, 0);
+  const max = clampInt(data.max, Math.max(min, 1), 30, 0);
+  const d0  = clampInt(data.durMin, 1, 600, 0);
+  const d1  = clampInt(data.durMax, Math.max(d0, 1), 600, d0);
+  if(!min || !max || !d0)
+    return lookupStatus("Die Antwort war unvollständig — bitte selbst eintragen.", "warn");
+
+  const title = typeof data.title === "string" && data.title.trim() ? data.title.trim().slice(0,80) : typed;
+  const moods = Array.isArray(data.moods)
+    ? data.moods.filter(m => typeof m === "string" && m in MOODS).slice(0,3) : [];
+
+  $("f-name").value = title;
+  $("f-min").value = min;
+  $("f-max").value = max;
+  $("f-bestmin").value = clampInt(data.bestMin, min, max, min);
+  $("f-bestmax").value = clampInt(data.bestMax, clampInt(data.bestMin, min, max, min), max, max);
+  $("f-durmin").value = d0;
+  $("f-durmax").value = d1;
+  $("f-note").value = typeof data.note === "string" ? data.note.trim().slice(0,300) : "";
+  form.weight = LOOKUP_BANDS[String(data.weight).toLowerCase()] || "mittel";
+  if(moods.length) form.moods = new Set(moods);
+  renderFormChips();
+
+  const renamed = title.toLowerCase() !== typed.toLowerCase();
+  lookupStatus(
+    (renamed ? "Erkannt als „" + title + "“. " : "") +
+    "Vorschlag eingetragen — bitte prüfen" + (moods.length ? "" : " und eine Stimmung wählen") + ", dann speichern.",
+    "ok"
+  );
+}
+
+async function lookupGame(){
+  if(lookupAbort){ lookupAbort.abort(); return; }        // zweiter Klick bricht ab
+  const name = $("f-name").value.trim();
+  if(!name){ lookupStatus("Erst den Namen eintippen.", "warn"); $("f-name").focus(); return; }
+
+  const btn = $("lookup");
+  lookupAbort = new AbortController();
+  btn.textContent = "Abbrechen";
+  lookupStatus("Claude sucht die Eckdaten — das dauert ein paar Sekunden", "busy");
+
+  try{
+    const data = await sampler.json(lookupPrompt(name), { modelTier:"quick", signal:lookupAbort.signal });
+    applyLookup(name, data);
+  }catch(e){
+    const code = e && e.code;
+    if(code === "cancelled") lookupStatus("", "");
+    else if(code === "not_granted" || code === "sampling_disabled" || code === "capability_removed"){
+      btn.hidden = true; $("lookuphint").hidden = true;
+      lookupStatus("Ohne Freigabe kann die Seite Claude nicht fragen — die Angaben also bitte selbst eintragen.", "warn");
+    }
+    else if(code === "rate_limited") lookupStatus("Gerade zu viele Anfragen. Gleich noch einmal probieren.", "warn");
+    else lookupStatus("Hat nicht geklappt (" + (code || "Fehler") + ") — bitte selbst eintragen oder noch einmal versuchen.", "warn");
+  }finally{
+    lookupAbort = null;
+    btn.textContent = "Daten vorschlagen";
+  }
+}
+
 /* ================= Runde: Einstellungen ================= */
 
 function saveSettings(){
@@ -783,6 +906,7 @@ function hideUndo(){ $("undo").hidden = true; lastRemoved = null; }
 
 function resetForm(){
   state.editing = null;
+  lookupStatus("");
   form.weight = "mittel"; form.moods.clear();
   ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note"].forEach(id => { $(id).value = ""; });
   $("formtitle").textContent = "Spiel hinzufügen";
@@ -901,6 +1025,7 @@ document.addEventListener("click", ev => {
   }
 });
 
+$("lookup").addEventListener("click", lookupGame);
 $("gameform").addEventListener("submit", submitGame);
 $("f-cancel").addEventListener("click", () => { resetForm(); renderCollection(); });
 
@@ -971,6 +1096,7 @@ resetForm();
 render();
 updateStorageNote();
 connectDb();
+connectSample();
 </script>
 </body>
 </html>

@@ -29,11 +29,35 @@ Unten auf der Seite: **Sammlung bearbeiten**.
 - **Hinzufügen** — Name, Spielerzahl, Dauer, Anspruch und mindestens eine
   Stimmung; „Am besten zu" ist optional und meint die Spielerzahl, bei der das
   Spiel wirklich glänzt (davon hängt das Glanzform-Kennzeichen ab).
+- **Daten vorschlagen** — nur den Titel eintippen, den Rest füllt Claude aus
+  (siehe unten).
 - **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel.
 - **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
 - **Zurücksetzen** — holt die 21 Ausgangsspiele zurück (Sicherheitsklick).
 - **Sicherung & Umzug** — die ganze Sammlung als Text zum Aufheben oder
   Einspielen.
+
+### Nur den Titel eintippen
+
+Neben dem Namensfeld steht in der veröffentlichten Seite ein Knopf
+**„Daten vorschlagen"**. Er fragt Claude nach Spielerzahl, bester Besetzung,
+Dauer, Anspruch, Stimmung und einem Notizsatz und trägt alles ins Formular
+ein — gespeichert wird nichts, bis du auf „Ins Regal stellen" tippst. Der
+Vorschlag steht also immer zur Korrektur, und genau so ist er gemeint:
+
+- Claude kennt viele Spiele, aber nicht alle, und Auflagen unterscheiden sich.
+  Kennt es das Spiel nicht sicher, sagt es das, statt Zahlen zu erfinden.
+  Trotzdem: **die Werte vor dem Speichern kurz ansehen.**
+- Der Titel wird auf die offizielle Schreibweise gesetzt, wenn sie abweicht —
+  die Zeile unter dem Feld sagt es dann.
+- Die Abfrage läuft über deine Claude-Nutzung; beim ersten Mal fragt die Seite
+  um Erlaubnis. Ein zweiter Klick auf den Knopf bricht eine laufende Abfrage ab.
+
+Der Knopf erscheint nur in der veröffentlichten Seite. Die lokal geöffnete
+`index.html` hat keinen Zugang zu Claude und blendet ihn aus. Externe
+Spieldatenbanken wie BoardGameGeek sind kein Weg dorthin: veröffentlichte
+Seiten dürfen keine fremden Server abfragen, und die BGG-API erlaubt
+Browser-Zugriffe von fremden Seiten ohnehin nicht.
 
 ### Wo die Sammlung liegt
 
