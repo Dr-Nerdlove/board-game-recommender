@@ -33,6 +33,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -20px #000;
 }
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--ground); color:var(--ink);
@@ -174,6 +175,89 @@ details.out summary::marker{color:var(--line-strong)}
 .out-list b{font-weight:500}
 .out-list span{color:var(--warn); text-align:right; flex:none}
 
+/* ---------- Sammlung bearbeiten ---------- */
+details.panel{display:block; padding:0}
+details.panel > summary{
+  cursor:pointer; padding:16px 20px; display:flex; align-items:baseline; gap:12px;
+  font-family:Fraunces, Georgia, serif; font-size:19px; font-weight:600;
+}
+details.panel > summary::marker{color:var(--line-strong)}
+details.panel[open] > summary{border-bottom:1px solid var(--line)}
+summary .count{margin-left:auto; font-family:Karla, sans-serif}
+.col-body{padding:18px 20px 20px; display:flex; flex-direction:column; gap:18px}
+.storage-note{
+  margin:0; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px;
+}
+.storage-note::before{
+  content:""; width:7px; height:7px; border-radius:50%; background:var(--teal); flex:none;
+}
+.storage-note[data-mode="local"]::before{background:var(--line-strong)}
+
+.gameform{display:flex; flex-direction:column; gap:14px; background:var(--sunk);
+  border:1px solid var(--line); border-radius:var(--radius); padding:16px}
+.form-title{
+  margin:0; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--muted);
+}
+.form-rows{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:12px 16px}
+.form-rows label, .stack{display:flex; flex-direction:column; gap:5px}
+.form-rows label > span, .stack > span{font-size:13px; color:var(--muted)}
+.wide{grid-column:1/-1}
+input[type="text"], input[type="number"], textarea, .pair input{
+  font:inherit; font-size:15px; color:var(--ink); background:var(--surface);
+  border:1px solid var(--line-strong); border-radius:6px; padding:9px 10px; width:100%;
+}
+textarea{resize:vertical; min-height:64px; line-height:1.45}
+input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+.pair{display:flex; align-items:center; gap:8px}
+.pair span.sep{color:var(--muted); font-size:14px; flex:none}
+.hint{font-size:12px; color:var(--muted); margin:0}
+.formerror{
+  margin:0; font-size:14px; color:var(--warn); font-weight:500;
+}
+.form-actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.btn{
+  font:inherit; font-size:14px; font-weight:700; cursor:pointer; border-radius:99px;
+  padding:10px 16px; border:1px solid var(--accent); background:var(--accent); color:#FFF8EC;
+}
+:root[data-theme="dark"] .btn{color:#20180A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{color:#20180A}}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent; color:var(--muted); border-color:var(--line-strong); font-weight:400}
+.btn.ghost:hover{color:var(--ink); border-color:var(--ink); filter:none}
+
+.col-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+.col-list li{
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px;
+  padding:11px 2px; border-bottom:1px solid var(--line);
+}
+.col-list li:last-child{border-bottom:0}
+.col-list .cname{font-weight:700; flex:1 1 190px}
+.col-list .cmeta{
+  color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; flex:1 1 200px;
+}
+.col-list .rowbtns{display:flex; gap:6px; flex:none}
+.linkbtn{
+  font:inherit; font-size:13px; cursor:pointer; background:transparent; border:1px solid var(--line-strong);
+  color:var(--muted); border-radius:99px; padding:6px 12px;
+}
+.linkbtn:hover{color:var(--ink); border-color:var(--ink)}
+.linkbtn.danger:hover{color:var(--warn); border-color:var(--warn)}
+.linkbtn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.col-list li.editing{background:var(--accent-soft); border-radius:6px; padding-left:8px; padding-right:8px}
+
+.undo{
+  display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:0;
+  background:var(--accent-soft); color:var(--accent-ink); border-radius:6px; padding:10px 14px; font-size:14px;
+}
+.undo button{margin-left:auto}
+.col-foot{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+  border-top:1px solid var(--line); padding-top:14px}
+details.backup summary{
+  cursor:pointer; font-size:13px; color:var(--muted);
+}
+details.backup{flex:1 1 100%}
+details.backup .stack{margin-top:10px}
 footer{color:var(--muted); font-size:13px; border-top:1px solid var(--line); padding-top:16px}
 footer p{margin:0 0 4px}
 @media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
@@ -236,9 +320,70 @@ footer p{margin:0 0 4px}
     <ul class="out-list" id="outlist"></ul>
   </details>
 
+  <details class="panel" id="collection">
+    <summary>Sammlung bearbeiten <span class="count" id="colcount"></span></summary>
+    <div class="col-body">
+      <p class="storage-note" id="storagenote" data-mode="local">Sammlung wird gespeichert …</p>
+
+      <p class="undo" id="undo" hidden></p>
+
+      <form class="gameform" id="gameform" novalidate>
+        <p class="form-title" id="formtitle">Spiel hinzufügen</p>
+        <div class="form-rows">
+          <label class="wide"><span>Name</span>
+            <input type="text" id="f-name" autocomplete="off" placeholder="z. B. Die Crew"></label>
+          <div class="stack"><span>Spielerzahl</span>
+            <div class="pair">
+              <input type="number" id="f-min" placeholder="2" min="1" max="30" inputmode="numeric" aria-label="Spieler mindestens">
+              <span class="sep">bis</span>
+              <input type="number" id="f-max" placeholder="5" min="1" max="30" inputmode="numeric" aria-label="Spieler höchstens">
+            </div></div>
+          <div class="stack"><span>Am besten zu <span class="hint">(optional)</span></span>
+            <div class="pair">
+              <input type="number" id="f-bestmin" placeholder="3" min="1" max="30" inputmode="numeric" aria-label="Glanzform von">
+              <span class="sep">bis</span>
+              <input type="number" id="f-bestmax" placeholder="5" min="1" max="30" inputmode="numeric" aria-label="Glanzform bis">
+            </div></div>
+          <div class="stack"><span>Dauer in Minuten</span>
+            <div class="pair">
+              <input type="number" id="f-durmin" placeholder="30" min="1" max="600" inputmode="numeric" aria-label="Dauer von">
+              <span class="sep">bis</span>
+              <input type="number" id="f-durmax" placeholder="60" min="1" max="600" inputmode="numeric" aria-label="Dauer bis">
+            </div></div>
+          <fieldset class="stack field wide"><legend class="lbl">Anspruch</legend>
+            <div class="chips" id="f-weight"></div></fieldset>
+          <fieldset class="stack field wide"><legend class="lbl">Stimmung</legend>
+            <div class="chips" id="f-moods"></div></fieldset>
+          <label class="wide"><span>Notiz (erscheint auf der Karte)</span>
+            <textarea id="f-note" placeholder="Ein Satz, der beim Erinnern hilft."></textarea></label>
+        </div>
+        <p class="formerror" id="formerror" hidden></p>
+        <div class="form-actions">
+          <button class="btn" type="submit" id="f-submit">Ins Regal stellen</button>
+          <button class="btn ghost" type="button" id="f-cancel" hidden>Abbrechen</button>
+        </div>
+      </form>
+
+      <ul class="col-list" id="collist"></ul>
+
+      <div class="col-foot">
+        <button class="linkbtn danger" type="button" id="restore">Auf Ausgangssammlung zurücksetzen</button>
+        <details class="backup">
+          <summary>Sicherung &amp; Umzug</summary>
+          <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben oder Einspielen.</span>
+            <textarea id="backup" rows="5" spellcheck="false"></textarea></label>
+          <div class="form-actions" style="margin-top:10px">
+            <button class="linkbtn" type="button" id="import">Aus Text einspielen</button>
+            <span class="hint" id="importnote"></span>
+          </div>
+        </details>
+      </div>
+    </div>
+  </details>
+
   <footer>
-    <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte für deine Sammlung — bei Bedarf in <code>index.html</code> unter <code>GAMES</code> anpassen.</p>
-    <p>Neues Spiel gekauft? Ein Eintrag mehr in der Liste, fertig.</p>
+    <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
+    <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
   </footer>
 </div>
 
@@ -257,7 +402,7 @@ const MOODS = {
 };
 
 // weight: 1 = Absacker, 5 = Kennerstück. best: [von, bis] Glanzform.
-const GAMES = [
+const DEFAULT_GAMES = [
   { name:"5-Minute Dungeon", min:2, max:5, best:[4,5], dur:[15,30], weight:1.3,
     moods:["party","koop","schnell"],
     note:"Echtzeit-Koop: fünf Minuten lang brüllen alle gleichzeitig Karten auf den Tisch." },
@@ -335,30 +480,140 @@ const TIMES = [
   { id:90, label:"Bis 90 Min" }
 ];
 
-const state = { players:4, moods:new Set(), weights:new Set(), time:0, picked:null };
+const state = { players:4, moods:new Set(), weights:new Set(), time:0, picked:null, editing:null };
 
-/* ---------- Speicher ---------- */
-function save(){
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+const byName = (a,b) => a.name.localeCompare(b.name, "de");
+
+/* ================= Sammlung: Daten und Speicher ================= */
+
+const SETTINGS_KEY = "spieleabend.runde";
+const COLLECTION_KEY = "spieleabend.sammlung";
+const REP_WEIGHT = { leicht:1.2, mittel:2.1, schwer:3.2 };
+
+const slugify = n => n.toLowerCase()
+  .replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss")
+  .replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40) || "spiel";
+
+const clampInt = (v, lo, hi, fallback) => {
+  const n = Math.round(Number(v));
+  return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : fallback;
+};
+
+// Fremde Daten (Server, Zwischenablage) landen hier, bevor sie irgendwo angezeigt werden.
+function normalize(raw, i){
+  if(!raw || typeof raw !== "object") return null;
+  const name = String(raw.name == null ? "" : raw.name).trim().slice(0,80);
+  if(!name) return null;
+  const min = clampInt(raw.min, 1, 30, 2);
+  const max = clampInt(raw.max, min, 30, Math.max(min, 4));
+  const best = Array.isArray(raw.best) ? raw.best : [];
+  const b0 = clampInt(best[0], min, max, min);
+  const b1 = clampInt(best[1], b0, max, max);
+  const dur = Array.isArray(raw.dur) ? raw.dur : [];
+  const d0 = clampInt(dur[0], 1, 600, 30);
+  const d1 = clampInt(dur[1], d0, 600, Math.max(d0, 45));
+  const w = Number(raw.weight);
+  const moods = Array.isArray(raw.moods) ? raw.moods.filter(m => typeof m === "string" && m in MOODS) : [];
+  return {
+    id: String(raw.id == null ? slugify(name) + "-" + i : raw.id).slice(0,60),
+    name, min, max, best:[b0,b1], dur:[d0,d1],
+    weight: Number.isFinite(w) ? Math.min(5, Math.max(1, w)) : 2,
+    moods: moods.length ? moods : ["gruebeln"],
+    note: String(raw.note == null ? "" : raw.note).trim().slice(0,300)
+  };
+}
+
+const freshCollection = () => DEFAULT_GAMES.map(normalize).filter(Boolean);
+let games = freshCollection();
+let lastRemoved = null;
+let localTouched = false;
+
+let storageMode = "local";
+let dbDoc = null;
+
+function updateStorageNote(msg){
+  const el = $("storagenote");
+  el.dataset.mode = storageMode === "db" ? "db" : "local";
+  el.textContent = msg || (storageMode === "db"
+    ? "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe."
+    : "Sammlung liegt nur in diesem Browser.");
+}
+
+function persist(){
+  localTouched = true;
+  try{ localStorage.setItem(COLLECTION_KEY, JSON.stringify({ games })); }catch(e){/* Privatmodus */}
+  if(dbDoc){
+    dbDoc.set({ games, updatedAt:Date.now() }).then(
+      () => updateStorageNote(),
+      e => updateStorageNote("Konnte nicht ins Konto speichern (" + (e && e.code ? e.code : "Fehler") + ") — die Änderung liegt vorerst nur in diesem Browser.")
+    );
+  }
+}
+
+function loadCollection(){
   try{
-    localStorage.setItem("spieleabend", JSON.stringify({
+    const raw = localStorage.getItem(COLLECTION_KEY);
+    if(!raw) return;
+    const parsed = JSON.parse(raw);
+    const list = Array.isArray(parsed && parsed.games) ? parsed.games.map(normalize).filter(Boolean) : [];
+    if(list.length){ games = list; localTouched = true; }
+  }catch(e){/* dann eben die Ausgangssammlung */}
+}
+
+async function connectDb(){
+  if(!(window.claude && typeof window.claude.use === "function")) return;
+  let db = null;
+  try{ db = await window.claude.use("db"); }catch(e){ return; }
+  if(!db) return;
+
+  dbDoc = db.doc("sammlung/regal");
+  storageMode = "db";
+  let first = true;
+  dbDoc.onSnapshot(snap => {
+    const data = snap.exists ? snap.data() : null;
+    const list = data && Array.isArray(data.games) ? data.games.map(normalize).filter(Boolean) : [];
+    if(list.length){
+      games = list;
+      if(state.editing && !games.some(g => g.id === state.editing)) resetForm();
+      render();
+    }else if(first && localTouched){
+      persist();               // vorhandene Sammlung einmalig ins Konto heben
+    }
+    first = false;
+    updateStorageNote();
+  }, () => {
+    storageMode = "local";
+    updateStorageNote("Server gerade nicht erreichbar — Änderungen bleiben in diesem Browser.");
+  });
+  updateStorageNote();
+}
+
+/* ================= Runde: Einstellungen ================= */
+
+function saveSettings(){
+  try{
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
       players:state.players, moods:[...state.moods], weights:[...state.weights], time:state.time
     }));
-  }catch(e){/* Privatmodus: dann eben ohne Gedächtnis */}
+  }catch(e){/* egal */}
 }
-function load(){
+function loadSettings(){
   try{
-    const raw = localStorage.getItem("spieleabend");
+    const raw = localStorage.getItem(SETTINGS_KEY);
     if(!raw) return;
     const s = JSON.parse(raw);
-    if(typeof s.players === "number") state.players = s.players;
+    if(typeof s.players === "number") state.players = clampInt(s.players, 1, 12, 4);
     if(Array.isArray(s.moods)) state.moods = new Set(s.moods.filter(m => m in MOODS));
     if(Array.isArray(s.weights)) state.weights = new Set(s.weights.filter(w => WEIGHT_BANDS.some(b => b.id === w)));
     if(TIMES.some(t => t.id === s.time)) state.time = s.time;
   }catch(e){/* egal */}
 }
 
-/* ---------- Bewertung ---------- */
-const bandOf = g => WEIGHT_BANDS.find(b => b.test(g.weight));
+/* ================= Bewertung ================= */
+
+const bandOf = g => WEIGHT_BANDS.find(b => b.test(g.weight)) || WEIGHT_BANDS[1];
 const isBest = g => state.players >= g.best[0] && state.players <= g.best[1];
 const fmtDur = g => g.dur[0] === g.dur[1] ? g.dur[0] + " Min" : g.dur[0] + "–" + g.dur[1] + " Min";
 const fmtPlayers = g => g.min === g.max ? g.min + " Spieler" : g.min + "–" + g.max + " Spieler";
@@ -381,25 +636,22 @@ function evaluate(g){
     score += Math.min(hits.length, 2) * 13;
     reasons.push(hits.map(m => MOODS[m]).join(" und "));
   }
-  if(isBest(g)){ score += 14; }
-  else if(state.players === g.min || state.players === g.max){ score += 2; }
-  else { score += 7; }
+  if(isBest(g)) score += 14;
+  else if(state.players === g.min || state.players === g.max) score += 2;
+  else score += 7;
 
   if(state.time){
     if(g.dur[1] <= state.time){ score += 8; reasons.push("in " + fmtDur(g) + " durch"); }
-    else { score += 3; }
-  }else if(g.dur[1] <= 30){ score += 4; }
+    else score += 3;
+  }else if(g.dur[1] <= 30) score += 4;
 
   if(state.weights.size) score += 6;
 
-  const fallback = isBest(g) ? "beste Besetzung für " + state.players
-                             : "läuft zu " + state.players + " ohne Zicken";
-  return { ok:true, score:Math.min(99, Math.round(score)), why:reasons.join(" · ") || fallback };
+  // Ohne Filter sagen Kennzeichen und Balken schon alles — dann bleibt die Zeile leer.
+  return { ok:true, score:Math.min(99, Math.round(score)), why:reasons.join(" · ") };
 }
 
-/* ---------- Ausgabe ---------- */
-const $ = id => document.getElementById(id);
-const esc = s => s.replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+/* ================= Ausgabe: Vorschläge ================= */
 
 function pips(g){
   const filled = g.weight <= 1.5 ? 1 : g.weight <= 2.6 ? 2 : 3;
@@ -407,7 +659,7 @@ function pips(g){
 }
 
 function card(g, res, top){
-  return '<article class="game' + (top ? " top" : "") + (state.picked === g.name ? " picked" : "") + '">' +
+  return '<article class="game' + (top ? " top" : "") + (state.picked === g.id ? " picked" : "") + '">' +
     '<div class="game-head"><h3>' + esc(g.name) + "</h3>" +
       (top ? '<span class="flag">Top-Treffer</span>' : (isBest(g) ? '<span class="flag">Glanzform</span>' : "")) +
     "</div>" +
@@ -417,8 +669,8 @@ function card(g, res, top){
       "<div><dt>Dauer</dt><dd>" + fmtDur(g) + "</dd></div>" +
       '<div><dt>Kopf</dt><dd class="pips">' + pips(g) + "</dd></div>" +
     "</dl>" +
-    '<p class="why">' + esc(res.why) + "</p>" +
-    '<p class="note">' + esc(g.note) + "</p>" +
+    (res.why ? '<p class="why">' + esc(res.why) + "</p>" : "") +
+    (g.note ? '<p class="note">' + esc(g.note) + "</p>" : "") +
     '<ul class="tags">' + g.moods.map(m => "<li>" + esc(MOODS[m]) + "</li>").join("") + "</ul>" +
   "</article>";
 }
@@ -431,8 +683,7 @@ function summaryText(){
   return "<strong>Eure Runde:</strong> " + esc(parts.join(" · "));
 }
 
-function render(){
-  // Chips
+function renderFilters(){
   $("players").innerHTML = Array.from({length:12}, (_,i) => i + 1).map(n =>
     '<button type="button" class="chip num" data-players="' + n + '" aria-pressed="' + (state.players === n) + '">' + n + "</button>"
   ).join("");
@@ -446,61 +697,258 @@ function render(){
     '<button type="button" class="chip" data-time="' + t.id + '" aria-pressed="' + (state.time === t.id) + '">' + t.label + "</button>"
   ).join("");
   $("summary").innerHTML = summaryText();
+}
 
-  // Treffer
+function renderResults(){
   const hits = [], outs = [];
-  GAMES.forEach(g => {
+  games.forEach(g => {
     const res = evaluate(g);
     (res.ok ? hits : outs).push({ g, res });
   });
-  hits.sort((a,b) => b.res.score - a.res.score || a.g.name.localeCompare(b.g.name, "de"));
+  hits.sort((a,b) => b.res.score - a.res.score || byName(a.g, b.g));
 
-  $("count").textContent = hits.length === 0 ? "nichts im Regal" :
+  $("count").textContent = games.length === 0 ? "Regal ist leer" :
+    hits.length === 0 ? "nichts passt" :
     hits.length === 1 ? "1 Spiel" : hits.length + " Spiele";
 
   $("results").innerHTML = hits.length
     ? hits.map((h,i) => card(h.g, h.res, i === 0)).join("")
-    : '<p class="empty">Für diese Kombination gibt es nichts. Nimm eine Stimmung raus oder gib der Runde mehr Zeit.</p>';
+    : '<p class="empty">' + (games.length
+        ? "Für diese Kombination gibt es nichts. Nimm eine Stimmung raus oder gib der Runde mehr Zeit."
+        : "Im Regal steht noch nichts — unten Spiele hinzufügen.") + "</p>";
 
   const verdict = $("verdict");
-  if(state.picked && hits.some(h => h.g.name === state.picked)){
-    verdict.hidden = false;
-    verdict.textContent = "Der Würfel sagt: " + state.picked;
-  }else{
-    verdict.hidden = true;
-    if(state.picked && !hits.some(h => h.g.name === state.picked)) state.picked = null;
-  }
+  const pick = state.picked && hits.find(h => h.g.id === state.picked);
+  verdict.hidden = !pick;
+  if(pick) verdict.textContent = "Der Würfel sagt: " + pick.g.name;
+  else state.picked = null;
 
-  outs.sort((a,b) => a.g.name.localeCompare(b.g.name, "de"));
-  $("outcount").textContent = outs.length + " Spiele fallen heute raus";
+  outs.sort((a,b) => byName(a.g, b.g));
+  $("outcount").textContent = outs.length === 1 ? "1 Spiel fällt heute raus" : outs.length + " Spiele fallen heute raus";
   $("outlist").innerHTML = outs.map(o =>
     "<li><b>" + esc(o.g.name) + "</b><span>" + esc(o.res.why) + "</span></li>"
   ).join("");
   $("outbox").hidden = outs.length === 0;
-
-  save();
 }
 
-/* ---------- Bedienung ---------- */
+/* ================= Ausgabe: Sammlung ================= */
+
+const form = { weight:"mittel", moods:new Set() };
+
+function renderFormChips(){
+  $("f-weight").innerHTML = WEIGHT_BANDS.map(b =>
+    '<button type="button" class="chip" data-fweight="' + b.id + '" aria-pressed="' + (form.weight === b.id) + '">' + b.label + "</button>"
+  ).join("");
+  $("f-moods").innerHTML = Object.entries(MOODS).map(([id,label]) =>
+    '<button type="button" class="chip" data-fmood="' + id + '" aria-pressed="' + form.moods.has(id) + '">' + label + "</button>"
+  ).join("");
+}
+
+function renderCollection(){
+  $("colcount").textContent = games.length === 1 ? "1 Spiel" : games.length + " Spiele";
+  $("collist").innerHTML = [...games].sort(byName).map(g =>
+    '<li' + (state.editing === g.id ? ' class="editing"' : "") + ">" +
+      '<span class="cname">' + esc(g.name) + "</span>" +
+      '<span class="cmeta">' + fmtPlayers(g) + " · " + fmtDur(g) + " · " + bandOf(g).label + "</span>" +
+      '<span class="rowbtns">' +
+        '<button class="linkbtn" type="button" data-edit="' + esc(g.id) + '">Ändern</button>' +
+        '<button class="linkbtn danger" type="button" data-remove="' + esc(g.id) + '">Entfernen</button>' +
+      "</span></li>"
+  ).join("");
+
+  const ta = $("backup");
+  if(document.activeElement !== ta){
+    ta.value = JSON.stringify(games.map(g => ({
+      name:g.name, min:g.min, max:g.max, best:g.best, dur:g.dur, weight:g.weight, moods:g.moods, note:g.note
+    })), null, 1);
+  }
+}
+
+function render(){
+  renderFilters();
+  renderResults();
+  renderCollection();
+  saveSettings();
+}
+
+/* ================= Formular ================= */
+
+function showUndo(name){
+  const el = $("undo");
+  el.hidden = false;
+  el.innerHTML = "„" + esc(name) + "“ ist raus. " +
+    '<button class="linkbtn" type="button" id="undobtn">Rückgängig</button>';
+}
+function hideUndo(){ $("undo").hidden = true; lastRemoved = null; }
+
+function resetForm(){
+  state.editing = null;
+  form.weight = "mittel"; form.moods.clear();
+  ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note"].forEach(id => { $(id).value = ""; });
+  $("formtitle").textContent = "Spiel hinzufügen";
+  $("f-submit").textContent = "Ins Regal stellen";
+  $("f-cancel").hidden = true;
+  $("formerror").hidden = true;
+  renderFormChips();
+}
+
+function startEdit(id){
+  const g = games.find(x => x.id === id);
+  if(!g) return;
+  state.editing = id;
+  $("f-name").value = g.name;
+  $("f-min").value = g.min; $("f-max").value = g.max;
+  $("f-bestmin").value = g.best[0]; $("f-bestmax").value = g.best[1];
+  $("f-durmin").value = g.dur[0]; $("f-durmax").value = g.dur[1];
+  $("f-note").value = g.note;
+  form.weight = bandOf(g).id;
+  form.moods = new Set(g.moods);
+  $("formtitle").textContent = "Spiel ändern";
+  $("f-submit").textContent = "Änderung speichern";
+  $("f-cancel").hidden = false;
+  $("formerror").hidden = true;
+  renderFormChips();
+  renderCollection();
+  $("f-name").focus({ preventScroll:true });
+  $("gameform").scrollIntoView({ behavior:"smooth", block:"center" });
+}
+
+function fail(msg){
+  const el = $("formerror");
+  el.textContent = msg;
+  el.hidden = false;
+  return false;
+}
+
+function submitGame(ev){
+  ev.preventDefault();
+  const val = id => $(id).value.trim();
+  const name = val("f-name");
+  if(!name) return fail("Wie heißt das Spiel?");
+  if(games.some(g => g.name.toLowerCase() === name.toLowerCase() && g.id !== state.editing))
+    return fail("„" + name + "“ steht schon im Regal — dort auf „Ändern“ tippen.");
+
+  const min = Number(val("f-min")), max = Number(val("f-max"));
+  if(!(min >= 1 && max >= min && max <= 30))
+    return fail("Spielerzahl: von klein nach groß, höchstens 30 — zum Beispiel 2 bis 5.");
+
+  const d0 = Number(val("f-durmin")), d1 = Number(val("f-durmax"));
+  if(!(d0 >= 1 && d1 >= d0 && d1 <= 600))
+    return fail("Dauer: von klein nach groß in Minuten — zum Beispiel 30 bis 60.");
+
+  const b0 = val("f-bestmin") === "" ? min : Number(val("f-bestmin"));
+  const b1 = val("f-bestmax") === "" ? max : Number(val("f-bestmax"));
+  if(!(b0 >= min && b1 <= max && b1 >= b0))
+    return fail("„Am besten zu“ muss innerhalb der Spielerzahl liegen (" + min + " bis " + max + ").");
+
+  if(!form.moods.size)
+    return fail("Wähl mindestens eine Stimmung — sonst taucht das Spiel bei keiner Stimmungsauswahl auf.");
+
+  const existing = state.editing ? games.find(g => g.id === state.editing) : null;
+  const keepsBand = existing && bandOf(existing).id === form.weight;
+  const built = normalize({
+    id: existing ? existing.id : slugify(name) + "-" + Date.now().toString(36),
+    name, min, max, best:[b0,b1], dur:[d0,d1],
+    weight: keepsBand ? existing.weight : REP_WEIGHT[form.weight],
+    moods:[...form.moods], note:val("f-note")
+  }, games.length);
+
+  if(existing) games[games.indexOf(existing)] = built;
+  else games.push(built);
+
+  hideUndo();
+  resetForm();
+  persist();
+  render();
+  return true;
+}
+
+/* ================= Bedienung ================= */
+
 document.addEventListener("click", ev => {
-  const chip = ev.target.closest(".chip");
-  if(!chip) return;
-  const d = chip.dataset;
-  if(d.players) state.players = Number(d.players);
-  else if(d.mood) state.moods.has(d.mood) ? state.moods.delete(d.mood) : state.moods.add(d.mood);
-  else if(d.weight) state.weights.has(d.weight) ? state.weights.delete(d.weight) : state.weights.add(d.weight);
-  else if(d.time !== undefined) state.time = Number(d.time);
-  state.picked = null;
+  const t = ev.target.closest("button");
+  if(!t) return;
+  const d = t.dataset;
+
+  if(d.players){ state.players = Number(d.players); state.picked = null; render(); return; }
+  if(d.mood){ state.moods.has(d.mood) ? state.moods.delete(d.mood) : state.moods.add(d.mood); state.picked = null; render(); return; }
+  if(d.weight){ state.weights.has(d.weight) ? state.weights.delete(d.weight) : state.weights.add(d.weight); state.picked = null; render(); return; }
+  if(d.time !== undefined && t.classList.contains("chip")){ state.time = Number(d.time); state.picked = null; render(); return; }
+
+  if(d.fweight){ form.weight = d.fweight; renderFormChips(); return; }
+  if(d.fmood){ form.moods.has(d.fmood) ? form.moods.delete(d.fmood) : form.moods.add(d.fmood); renderFormChips(); return; }
+
+  if(d.edit){ startEdit(d.edit); return; }
+  if(d.remove){
+    const i = games.findIndex(g => g.id === d.remove);
+    if(i < 0) return;
+    if(state.editing === games[i].id) resetForm();
+    lastRemoved = { game:games[i], index:i };
+    games.splice(i, 1);
+    showUndo(lastRemoved.game.name);
+    persist();
+    render();
+    return;
+  }
+  if(t.id === "undobtn"){
+    if(lastRemoved){
+      games.splice(Math.min(lastRemoved.index, games.length), 0, lastRemoved.game);
+      persist();
+    }
+    hideUndo();
+    render();
+    return;
+  }
+});
+
+$("gameform").addEventListener("submit", submitGame);
+$("f-cancel").addEventListener("click", () => { resetForm(); renderCollection(); });
+
+let restoreArmed = null;
+$("restore").addEventListener("click", () => {
+  const btn = $("restore");
+  if(!restoreArmed){
+    btn.textContent = "Wirklich? Eigene Änderungen gehen verloren";
+    restoreArmed = setTimeout(() => { restoreArmed = null; btn.textContent = "Auf Ausgangssammlung zurücksetzen"; }, 5000);
+    return;
+  }
+  clearTimeout(restoreArmed); restoreArmed = null;
+  btn.textContent = "Auf Ausgangssammlung zurücksetzen";
+  games = freshCollection();
+  hideUndo();
+  resetForm();
+  persist();
+  render();
+});
+
+$("import").addEventListener("click", () => {
+  const note = $("importnote");
+  let list = [];
+  try{
+    const parsed = JSON.parse($("backup").value);
+    const arr = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.games) ? parsed.games : []);
+    list = arr.map(normalize).filter(Boolean);
+  }catch(e){ list = []; }
+  if(!list.length){
+    note.textContent = "Darin steckt keine lesbare Sammlung — der Text muss die Liste aus dem Feld darüber sein.";
+    return;
+  }
+  games = list;
+  note.textContent = list.length + " Spiele eingespielt.";
+  hideUndo();
+  resetForm();
+  persist();
   render();
 });
 
 $("dice").addEventListener("click", () => {
-  const hits = GAMES.map(g => ({ g, res:evaluate(g) })).filter(h => h.res.ok);
+  const hits = games.map(g => ({ g, res:evaluate(g) })).filter(h => h.res.ok);
   if(!hits.length) return;
-  const pool = hits.sort((a,b) => b.res.score - a.res.score).slice(0, Math.max(3, Math.ceil(hits.length / 2)));
-  state.picked = pool[Math.floor(Math.random() * pool.length)].g.name;
+  hits.sort((a,b) => b.res.score - a.res.score);
+  const pool = hits.slice(0, Math.max(3, Math.ceil(hits.length / 2)));
+  state.picked = pool[Math.floor(Math.random() * pool.length)].g.id;
   render();
-  const el = [...document.querySelectorAll(".game")].find(n => n.classList.contains("picked"));
+  const el = document.querySelector(".game.picked");
   if(el) el.scrollIntoView({ behavior:"smooth", block:"center" });
 });
 
@@ -515,8 +963,14 @@ $("theme").addEventListener("click", () => {
   document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
 });
 
-load();
+/* ================= Start ================= */
+
+loadSettings();
+loadCollection();
+resetForm();
 render();
+updateStorageNote();
+connectDb();
 </script>
 </body>
 </html>
