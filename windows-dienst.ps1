@@ -94,23 +94,38 @@ if($node -like "*\Users\*"){
 }
 
 # Aufgabe: beim Hochfahren, Systemkonto, ohne Fenster, mit Neustart nach Absturz
-$aktion    = New-ScheduledTaskAction -Execute $node -Argument "`"$Skript`" --port $Port" -WorkingDirectory $PSScriptRoot
-$ausloeser = New-ScheduledTaskTrigger -AtStartup
-$konto     = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
-$optionen  = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
-                                          -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) `
-                                          -ExecutionTimeLimit ([TimeSpan]::Zero)
-Register-ScheduledTask -TaskName $Name -Action $aktion -Trigger $ausloeser `
-                       -Principal $konto -Settings $optionen -Force `
-                       -Description "Spieleabend-Server: liefert die Seite aus und verwahrt die Sammlung." | Out-Null
+try{
+  $dienstAktion    = New-ScheduledTaskAction -Execute $node -Argument "`"$Skript`" --port $Port" -WorkingDirectory $PSScriptRoot
+  $dienstAusloeser = New-ScheduledTaskTrigger -AtStartup
+  $dienstKonto     = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+  $dienstOptionen  = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
+                                                  -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) `
+                                                  -ExecutionTimeLimit ([TimeSpan]::Zero)
+  Register-ScheduledTask -TaskName $Name -Action $dienstAktion -Trigger $dienstAusloeser `
+                         -Principal $dienstKonto -Settings $dienstOptionen -Force `
+                         -Description "Spieleabend-Server: liefert die Seite aus und verwahrt die Sammlung." | Out-Null
+}catch{
+  Schreib "Die Aufgabe konnte nicht angelegt werden:" "Red"
+  Schreib "  $($_.Exception.Message)" "Red"
+  exit 1
+}
 Schreib "Aufgabe eingerichtet (startet beim Hochfahren, ohne Fenster)." "Green"
 
-Get-NetFirewallRule -DisplayName $Name -ErrorAction SilentlyContinue | Remove-NetFirewallRule
-New-NetFirewallRule -DisplayName $Name -Direction Inbound -Action Allow `
-                    -Protocol TCP -LocalPort $Port -Profile Private | Out-Null
-Schreib "Firewall: Port $Port im privaten Netz freigegeben." "Green"
+try{
+  Get-NetFirewallRule -DisplayName $Name -ErrorAction SilentlyContinue | Remove-NetFirewallRule
+  New-NetFirewallRule -DisplayName $Name -Direction Inbound -Action Allow `
+                      -Protocol TCP -LocalPort $Port -Profile Private | Out-Null
+  Schreib "Firewall: Port $Port im privaten Netz freigegeben." "Green"
+}catch{
+  Schreib "Firewall-Regel fehlgeschlagen: $($_.Exception.Message)" "Yellow"
+  Schreib "Der Server laeuft trotzdem, ist aber eventuell nur auf diesem PC erreichbar." "Yellow"
+}
 
-Start-ScheduledTask -TaskName $Name
+try{
+  Start-ScheduledTask -TaskName $Name
+}catch{
+  Schreib "Die Aufgabe liess sich nicht starten: $($_.Exception.Message)" "Yellow"
+}
 Schreib "Gestartet, warte auf Antwort ..."
 $ok = $false
 foreach($i in 1..10){ Start-Sleep -Seconds 1; if(Laeuft-Server $Port){ $ok = $true; break } }
