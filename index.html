@@ -203,7 +203,7 @@ summary .count{margin-left:auto; font-family:Karla, sans-serif}
 .form-rows label, .stack{display:flex; flex-direction:column; gap:5px}
 .form-rows label > span, .stack > span{font-size:13px; color:var(--muted)}
 .wide{grid-column:1/-1}
-input[type="text"], input[type="number"], textarea, .pair input{
+input[type="text"], input[type="number"], input[type="search"], textarea, .pair input{
   font:inherit; font-size:15px; color:var(--ink); background:var(--surface);
   border:1px solid var(--line-strong); border-radius:6px; padding:9px 10px; width:100%;
 }
@@ -231,6 +231,18 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
 .btn:hover{filter:brightness(1.06)}
 .btn.ghost{background:transparent; color:var(--muted); border-color:var(--line-strong); font-weight:400}
 .btn.ghost:hover{color:var(--ink); border-color:var(--ink); filter:none}
+
+.col-tools{display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center}
+.col-tools input[type="search"]{flex:1 1 200px; width:auto}
+.chip.mini{font-size:13px; padding:6px 11px}
+#colhits{margin:-4px 0 0}
+
+/* "Heute gespielt" sitzt unten in der Karte und bleibt zurückhaltend */
+.linkbtn.played{align-self:flex-start; margin-top:2px}
+.linkbtn.played.on{
+  color:var(--accent-ink); border-color:var(--accent); background:var(--accent-soft); font-weight:700;
+}
+.linkbtn.played.on:hover{color:var(--accent-ink); border-color:var(--accent)}
 
 .col-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
 .col-list li{
@@ -303,6 +315,10 @@ footer p{margin:0 0 4px}
     <fieldset class="field">
       <legend>Wie viel Zeit?</legend>
       <div class="chips" id="times"></div>
+    </fieldset>
+    <fieldset class="field">
+      <legend>Regal</legend>
+      <div class="chips" id="shelf"></div>
     </fieldset>
     <div class="panel-foot">
       <p class="summary-line" id="summary"></p>
@@ -382,6 +398,12 @@ footer p{margin:0 0 4px}
         </div>
       </form>
 
+      <div class="col-tools">
+        <input type="search" id="colsearch" placeholder="Spiel suchen" autocomplete="off"
+               aria-label="Sammlung durchsuchen">
+        <div class="chips" id="colsort" role="group" aria-label="Sortierung"></div>
+      </div>
+      <p class="hint" id="colhits" hidden></p>
       <ul class="col-list" id="collist"></ul>
 
       <div class="col-foot">
@@ -492,6 +514,14 @@ const WEIGHT_BANDS = [
   { id:"mittel",  label:"Mittel",        test:w => w > 1.5 && w <= 2.6, adj:"mittelschwerer" },
   { id:"schwer",  label:"Anspruchsvoll", test:w => w > 2.6, adj:"anspruchsvoller" }
 ];
+const SORTS = [
+  { id:"name",     label:"Name",                cmp:(a,b) => 0 },
+  { id:"spieler",  label:"Spielerzahl",         cmp:(a,b) => a.min - b.min || a.max - b.max },
+  { id:"dauer",    label:"Dauer",               cmp:(a,b) => a.dur[0] - b.dur[0] || a.dur[1] - b.dur[1] },
+  { id:"kopf",     label:"Anspruch",            cmp:(a,b) => a.weight - b.weight },
+  { id:"gespielt", label:"Lange nicht gespielt", cmp:(a,b) => (a.lastPlayed || 0) - (b.lastPlayed || 0) }
+];
+
 const TIMES = [
   { id:0,  label:"Egal" },
   { id:30, label:"Bis 30 Min" },
@@ -499,7 +529,16 @@ const TIMES = [
   { id:90, label:"Bis 90 Min" }
 ];
 
-const state = { players:4, moods:new Set(), weights:new Set(), time:0, picked:null, editing:null };
+const state = {
+  players:4, moods:new Set(), weights:new Set(), time:0,
+  neglected:false,                 // nur Spiele, die lange nicht dran waren
+  picked:null, editing:null,
+  colQuery:"", colSort:"name"      // Ansicht der Sammlungsliste
+};
+
+// Merkt sich den vorherigen Stand, damit ein Fehltipper auf "Heute gespielt"
+// nicht das echte Datum überschreibt.
+const playedUndo = new Map();
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
@@ -540,7 +579,8 @@ function normalize(raw, i){
     name, min, max, best:[b0,b1], dur:[d0,d1],
     weight: Number.isFinite(w) ? Math.min(5, Math.max(1, w)) : 2,
     moods: moods.length ? moods : ["gruebeln"],
-    note: String(raw.note == null ? "" : raw.note).trim().slice(0,300)
+    note: String(raw.note == null ? "" : raw.note).trim().slice(0,300),
+    lastPlayed: clampInt(raw.lastPlayed, 0, Date.now(), 0)
   };
 }
 
@@ -785,7 +825,8 @@ async function lookupGame(){
 function saveSettings(){
   try{
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({
-      players:state.players, moods:[...state.moods], weights:[...state.weights], time:state.time
+      players:state.players, moods:[...state.moods], weights:[...state.weights],
+      time:state.time, neglected:state.neglected, colSort:state.colSort
     }));
   }catch(e){/* egal */}
 }
@@ -798,6 +839,8 @@ function loadSettings(){
     if(Array.isArray(s.moods)) state.moods = new Set(s.moods.filter(m => m in MOODS));
     if(Array.isArray(s.weights)) state.weights = new Set(s.weights.filter(w => WEIGHT_BANDS.some(b => b.id === w)));
     if(TIMES.some(t => t.id === s.time)) state.time = s.time;
+    if(typeof s.neglected === "boolean") state.neglected = s.neglected;
+    if(SORTS.some(o => o.id === s.colSort)) state.colSort = s.colSort;
   }catch(e){/* egal */}
 }
 
@@ -807,6 +850,25 @@ const bandOf = g => WEIGHT_BANDS.find(b => b.test(g.weight)) || WEIGHT_BANDS[1];
 const isBest = g => state.players >= g.best[0] && state.players <= g.best[1];
 const fmtDur = g => g.dur[0] === g.dur[1] ? g.dur[0] + " Min" : g.dur[0] + "–" + g.dur[1] + " Min";
 const fmtPlayers = g => g.min === g.max ? g.min + " Spieler" : g.min + "–" + g.max + " Spieler";
+
+const TAG = 86400000;
+// Solange nichts abgehakt ist, teilen alle Spiele dasselbe Los — dann ist
+// "noch nie gespielt" auf jeder Karte nur Rauschen.
+const historieVorhanden = () => games.some(g => g.lastPlayed);
+const tageSeither = g => g.lastPlayed ? (Date.now() - g.lastPlayed) / TAG : Infinity;
+const istHeute = ts => !!ts && new Date(ts).toDateString() === new Date().toDateString();
+
+function fmtGespielt(g){
+  if(!g.lastPlayed) return "noch nie";
+  const t = Math.floor(tageSeither(g));
+  if(t <= 0) return "heute";
+  if(t === 1) return "gestern";
+  if(t < 14) return "vor " + t + " Tagen";
+  if(t < 60) return "vor " + Math.round(t / 7) + " Wochen";
+  if(t < 365) return "vor " + Math.round(t / 30) + " Monaten";
+  const jahre = Math.floor(t / 365);
+  return jahre === 1 ? "vor über einem Jahr" : "vor über " + jahre + " Jahren";
+}
 
 function evaluate(g){
   if(state.players < g.min) return { ok:false, why:"ab " + g.min + " Spielern" };
@@ -818,6 +880,9 @@ function evaluate(g){
 
   const hits = g.moods.filter(m => state.moods.has(m));
   if(state.moods.size && !hits.length) return { ok:false, why:"andere Stimmung" };
+
+  const tage = tageSeither(g);
+  if(state.neglected && tage < 90) return { ok:false, why:"vor kurzem gespielt" };
 
   let score = 52;
   const reasons = [];
@@ -837,8 +902,17 @@ function evaluate(g){
 
   if(state.weights.size) score += 6;
 
+  // Regalhüter nach oben, gerade Gespieltes nach unten — aber nie ausschließen:
+  // wer eine Revanche will, soll das Spiel trotzdem finden.
+  if(!g.lastPlayed){ score += 8; if(historieVorhanden()) reasons.push("noch nie gespielt"); }
+  else if(tage > 180){ score += 10; reasons.push("seit Monaten nicht dran"); }
+  else if(tage > 30){ score += 5; }
+  else if(tage > 14){ /* neutral */ }
+  else if(tage > 2){ score -= 12; }
+  else { score -= 25; }
+
   // Ohne Filter sagen Kennzeichen und Balken schon alles — dann bleibt die Zeile leer.
-  return { ok:true, score:Math.min(99, Math.round(score)), why:reasons.join(" · ") };
+  return { ok:true, score:Math.max(5, Math.min(99, Math.round(score))), why:reasons.join(" · ") };
 }
 
 /* ================= Ausgabe: Vorschläge ================= */
@@ -858,10 +932,13 @@ function card(g, res, top){
       "<div><dt>Spieler</dt><dd>" + fmtPlayers(g) + "</dd></div>" +
       "<div><dt>Dauer</dt><dd>" + fmtDur(g) + "</dd></div>" +
       '<div><dt>Kopf</dt><dd class="pips">' + pips(g) + "</dd></div>" +
+      (g.lastPlayed ? "<div><dt>Zuletzt</dt><dd>" + fmtGespielt(g) + "</dd></div>" : "") +
     "</dl>" +
     (res.why ? '<p class="why">' + esc(res.why) + "</p>" : "") +
     (g.note ? '<p class="note">' + esc(g.note) + "</p>" : "") +
     '<ul class="tags">' + g.moods.map(m => "<li>" + esc(MOODS[m]) + "</li>").join("") + "</ul>" +
+    '<button class="linkbtn played' + (istHeute(g.lastPlayed) ? " on" : "") + '" type="button" data-played="' +
+      esc(g.id) + '">' + (istHeute(g.lastPlayed) ? "Heute gespielt ✓" : "Heute gespielt") + "</button>" +
   "</article>";
 }
 
@@ -870,6 +947,7 @@ function summaryText(){
   parts.push(state.moods.size ? [...state.moods].map(m => MOODS[m]).join(", ") : "Stimmung egal");
   parts.push(state.weights.size ? [...state.weights].map(w => WEIGHT_BANDS.find(b => b.id === w).label).join(", ") : "jeder Anspruch");
   parts.push(state.time ? "bis " + state.time + " Min" : "Zeit egal");
+  if(state.neglected) parts.push("nur lange nicht Gespieltes");
   return "<strong>Eure Runde:</strong> " + esc(parts.join(" · "));
 }
 
@@ -886,6 +964,9 @@ function renderFilters(){
   $("times").innerHTML = TIMES.map(t =>
     '<button type="button" class="chip" data-time="' + t.id + '" aria-pressed="' + (state.time === t.id) + '">' + t.label + "</button>"
   ).join("");
+  $("shelf").innerHTML =
+    '<button type="button" class="chip" data-shelf="1" aria-pressed="' + state.neglected + '">' +
+    "Lange nicht gespielt</button>";
   $("summary").innerHTML = summaryText();
 }
 
@@ -934,12 +1015,38 @@ function renderFormChips(){
   ).join("");
 }
 
+// Die Sortierknöpfe werden nur einmal gebaut: ein Neuaufbau bei jedem Tastendruck
+// würde den Fokus aus dem angeklickten Knopf reißen.
+function renderSortChips(){
+  const box = $("colsort");
+  if(!box.children.length){
+    box.innerHTML = SORTS.map(o =>
+      '<button type="button" class="chip mini" data-colsort="' + o.id + '">' + o.label + "</button>"
+    ).join("");
+  }
+  for(const b of box.children) b.setAttribute("aria-pressed", String(b.dataset.colsort === state.colSort));
+}
+
 function renderCollection(){
   $("colcount").textContent = games.length === 1 ? "1 Spiel" : games.length + " Spiele";
-  $("collist").innerHTML = [...games].sort(byName).map(g =>
+  renderSortChips();
+
+  const suche = state.colQuery.trim().toLowerCase();
+  const treffer = suche ? games.filter(g => g.name.toLowerCase().includes(suche)) : games;
+  const sortierung = SORTS.find(o => o.id === state.colSort) || SORTS[0];
+  const liste = [...treffer].sort((a,b) => sortierung.cmp(a,b) || byName(a,b));
+
+  const hits = $("colhits");
+  hits.hidden = !suche;
+  if(suche) hits.textContent = treffer.length
+    ? treffer.length + " von " + games.length + " Spielen"
+    : "Kein Spiel mit „" + suche + "“ im Namen.";
+
+  $("collist").innerHTML = liste.map(g =>
     '<li' + (state.editing === g.id ? ' class="editing"' : "") + ">" +
       '<span class="cname">' + esc(g.name) + "</span>" +
-      '<span class="cmeta">' + fmtPlayers(g) + " · " + fmtDur(g) + " · " + bandOf(g).label + "</span>" +
+      '<span class="cmeta">' + fmtPlayers(g) + " · " + fmtDur(g) + " · " + bandOf(g).label +
+        (g.lastPlayed ? " · gespielt " + fmtGespielt(g) : "") + "</span>" +
       '<span class="rowbtns">' +
         '<button class="linkbtn" type="button" data-edit="' + esc(g.id) + '">Ändern</button>' +
         '<button class="linkbtn danger" type="button" data-remove="' + esc(g.id) + '">Entfernen</button>' +
@@ -949,7 +1056,8 @@ function renderCollection(){
   const ta = $("backup");
   if(document.activeElement !== ta){
     ta.value = JSON.stringify(games.map(g => ({
-      name:g.name, min:g.min, max:g.max, best:g.best, dur:g.dur, weight:g.weight, moods:g.moods, note:g.note
+      name:g.name, min:g.min, max:g.max, best:g.best, dur:g.dur, weight:g.weight,
+      moods:g.moods, note:g.note, lastPlayed:g.lastPlayed
     })), null, 1);
   }
 }
@@ -1041,7 +1149,8 @@ function submitGame(ev){
     id: existing ? existing.id : slugify(name) + "-" + Date.now().toString(36),
     name, min, max, best:[b0,b1], dur:[d0,d1],
     weight: keepsBand ? existing.weight : REP_WEIGHT[form.weight],
-    moods:[...form.moods], note:val("f-note")
+    moods:[...form.moods], note:val("f-note"),
+    lastPlayed: existing ? existing.lastPlayed : 0
   }, games.length);
 
   if(existing) games[games.indexOf(existing)] = built;
@@ -1065,6 +1174,24 @@ document.addEventListener("click", ev => {
   if(d.mood){ state.moods.has(d.mood) ? state.moods.delete(d.mood) : state.moods.add(d.mood); state.picked = null; render(); return; }
   if(d.weight){ state.weights.has(d.weight) ? state.weights.delete(d.weight) : state.weights.add(d.weight); state.picked = null; render(); return; }
   if(d.time !== undefined && t.classList.contains("chip")){ state.time = Number(d.time); state.picked = null; render(); return; }
+  if(d.shelf){ state.neglected = !state.neglected; state.picked = null; render(); return; }
+
+  if(d.played){
+    const g = games.find(x => x.id === d.played);
+    if(!g) return;
+    if(istHeute(g.lastPlayed)){                       // Fehltipper: auf den alten Stand zurück
+      g.lastPlayed = playedUndo.has(g.id) ? playedUndo.get(g.id) : 0;
+      playedUndo.delete(g.id);
+    }else{
+      playedUndo.set(g.id, g.lastPlayed);
+      g.lastPlayed = Date.now();
+    }
+    persist();
+    render();
+    return;
+  }
+
+  if(d.colsort){ state.colSort = d.colsort; saveSettings(); renderCollection(); return; }
 
   if(d.fweight){ form.weight = d.fweight; renderFormChips(); return; }
   if(d.fmood){ form.moods.has(d.fmood) ? form.moods.delete(d.fmood) : form.moods.add(d.fmood); renderFormChips(); return; }
@@ -1090,6 +1217,11 @@ document.addEventListener("click", ev => {
     render();
     return;
   }
+});
+
+$("colsearch").addEventListener("input", () => {
+  state.colQuery = $("colsearch").value;
+  renderCollection();                      // nur die Liste, nicht die ganze Seite
 });
 
 $("lookup").addEventListener("click", lookupGame);

@@ -10,7 +10,7 @@
 // es gibt keine Anmeldung, wer die Adresse kennt, darf die Sammlung ändern.
 
 import { createServer } from "node:http";
-import { readFile, writeFile, rename, mkdir } from "node:fs/promises";
+import { readFile, writeFile, rename, mkdir, readdir, unlink } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, extname, join, normalize, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,6 +23,8 @@ const argOf = name => { const i = args.indexOf(name); return i >= 0 ? args[i + 1
 const PORT = Number(argOf("--port") || process.env.PORT || 8099);
 const ROOT = argOf("--root") || HERE;
 const DATA = argOf("--data") || join(ROOT, "sammlung.json");
+const SICHERUNGEN = join(dirname(DATA), "sicherungen");
+const MAX_SICHERUNGEN = 10;
 const MAX_BODY = 2 * 1024 * 1024;          // 2 MB reichen für ein paar tausend Spiele
 
 const TYPES = {
@@ -50,12 +52,46 @@ async function readCollection(){
   return { games:[], updatedAt:0 };
 }
 
+// Nur der Inhalt zählt: wiederholte, gleiche PUTs sollen keine Kopienflut auslösen.
+const inhaltVon = text => {
+  try{
+    const o = JSON.parse(text);
+    return JSON.stringify(o && o.games !== undefined ? o.games : o);
+  }catch(e){ return text; }
+};
+
+// Sichert den bisherigen Stand, bevor er überschrieben wird. Darf niemals
+// verhindern, dass geschrieben wird - im Zweifel nur eine Zeile auf stderr.
+async function sichere(neuerText){
+  let alt;
+  try{ alt = await readFile(DATA, "utf8"); }
+  catch(e){ return; }                     // noch keine Datei: nichts zu sichern
+  if(inhaltVon(alt) === inhaltVon(neuerText)) return;
+
+  await mkdir(SICHERUNGEN, { recursive:true });
+  const stempel = new Date().toISOString().replace(/[:.]/g, "-");
+  await writeFile(join(SICHERUNGEN, "sammlung-" + stempel + ".json"), alt, "utf8");
+
+  const alte = (await readdir(SICHERUNGEN))
+    .filter(n => n.startsWith("sammlung-") && n.endsWith(".json"))
+    .sort();                              // ISO-Zeitstempel: alphabetisch = chronologisch
+  for(const name of alte.slice(0, Math.max(0, alte.length - MAX_SICHERUNGEN))){
+    await unlink(join(SICHERUNGEN, name));
+  }
+}
+
 let writing = Promise.resolve();          // Schreibvorgänge nacheinander, nie überlappend
 function writeCollection(payload){
   writing = writing.then(async () => {
+    const text = JSON.stringify(payload, null, 1);
+    try{
+      await sichere(text);
+    }catch(e){
+      process.stderr.write("Sicherung fehlgeschlagen (wird trotzdem gespeichert): " + e.message + "\n");
+    }
     await mkdir(dirname(DATA), { recursive:true });
     const tmp = DATA + ".tmp";
-    await writeFile(tmp, JSON.stringify(payload, null, 1), "utf8");
+    await writeFile(tmp, text, "utf8");
     await rename(tmp, DATA);              // erst umbenennen: nie eine halb geschriebene Datei
   });
   return writing;

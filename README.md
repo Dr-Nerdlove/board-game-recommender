@@ -24,6 +24,12 @@ Windows-PC hosten".
   bekommt ein eigenes Kennzeichen.
 - **Würfel entscheiden**: Wenn die Diskussion zu lange dauert, zieht der Knopf
   zufällig aus der oberen Hälfte der Treffer.
+- **Zuletzt gespielt**: Auf jeder Karte sitzt unten „Heute gespielt". Einmal
+  antippen, und die Seite merkt sich das Datum — nochmal antippen nimmt es
+  zurück. Lange Ungespieltes steigt danach in der Rangfolge, gerade Gespieltes
+  fällt (unter zwei Tagen deutlich), verschwindet aber nie ganz: eine Revanche
+  soll auffindbar bleiben. Der Chip **„Lange nicht gespielt"** in der Filterreihe
+  „Regal" zeigt nur, was seit über 90 Tagen nicht dran war.
 - Die letzte Einstellung wird im Browser gemerkt.
 
 ## Auf dem eigenen Windows-PC hosten
@@ -118,6 +124,14 @@ Einrichtungsfenster weist auf beides hin.
 **Sicherung:** die ganze Sammlung steht in `sammlung.json`. Datei kopieren
 genügt.
 
+Der Server sichert außerdem selbst: Vor jedem Überschreiben legt er den bisherigen
+Stand in `sicherungen/` ab und hält dort die letzten zehn vor. Identische
+Speichervorgänge erzeugen keine neue Kopie. Ging etwas schief — etwa ein
+versehentliches „Sammlung ersetzen" —, kopierst du die passende Datei aus
+`sicherungen/` über `sammlung.json` und lädst die Seite neu. Ein Neustart des
+Dienstes ist nicht nötig, der Server liest bei jeder Abfrage frisch von der
+Platte.
+
 ### Was wo gespeichert wird
 
 | | veröffentlichte Seite | eigener Server (B) | nur Dateien (A oder Doppelklick) |
@@ -148,6 +162,8 @@ Unten auf der Seite: **Sammlung bearbeiten**.
 - **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel.
 - **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
 - **Zurücksetzen** — holt die 21 Ausgangsspiele zurück (Sicherheitsklick).
+- **Suchen und Sortieren** — Suchfeld über der Liste, dazu Sortierung nach Name,
+  Spielerzahl, Dauer, Anspruch oder „Lange nicht gespielt".
 - **Sicherung & Umzug** — die ganze Sammlung als Text zum Aufheben, Ergänzen
   („Dazu einspielen") oder Ersetzen; auch der Weg für BGG-Daten (siehe unten).
 
