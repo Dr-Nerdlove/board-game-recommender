@@ -62,6 +62,24 @@ function Laeuft-Server($port){
   }catch{ return $false }
 }
 
+# Beendet einen laufenden Dienst und wartet, bis der Port wirklich frei ist.
+# Ohne dieses Warten startet der neue Prozess in ein "Port schon belegt" und
+# der alte bedient weiter - ein Fehlschlag, der wie ein Erfolg aussieht.
+function Stoppe-Dienst($port){
+  $task = Get-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue
+  if($task){
+    try{ Stop-ScheduledTask -TaskName $Name -ErrorAction Stop }
+    catch{ Schreib "Beenden meldete: $($_.Exception.Message)" "Yellow" }
+  }
+  if(-not (Laeuft-Server $port)){ return $true }
+  Schreib "Warte, bis Port $port frei ist ..."
+  foreach($i in 1..15){
+    Start-Sleep -Milliseconds 400
+    if(-not (Laeuft-Server $port)){ return $true }
+  }
+  return $false
+}
+
 # ---------------------------------------------------------------- Status
 if($Aktion -eq "status"){
   Schreib "Spieleabend-Status"
@@ -101,17 +119,7 @@ if($Aktion -eq "neustart"){
   }
 
   Schreib "Beende den Dienst ..."
-  try{ Stop-ScheduledTask -TaskName $Name -ErrorAction Stop }
-  catch{ Schreib "Beenden meldete: $($_.Exception.Message)" "Yellow" }
-
-  # Warten, bis der Port wirklich frei ist - sonst scheitert der neue Start
-  # mit "Port schon belegt", weil der alte Prozess noch haengt.
-  $frei = $false
-  foreach($i in 1..15){
-    Start-Sleep -Milliseconds 400
-    if(-not (Laeuft-Server $Port)){ $frei = $true; break }
-  }
-  if(-not $frei){
+  if(-not (Stoppe-Dienst $Port)){
     Schreib "Der alte Server antwortet immer noch auf Port $Port." "Yellow"
     Schreib "Laeuft dort vielleicht ein zweiter, von Hand gestarteter Server?" "Yellow"
     Schreib "Nachsehen im Task-Manager unter Details bei node.exe." "Gray"
@@ -142,7 +150,9 @@ if($Aktion -eq "neustart"){
 # ------------------------------------------------------------- Entfernen
 if($Aktion -eq "entfernen"){
   if(Get-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue){
-    try{ Stop-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue }catch{}
+    if(-not (Stoppe-Dienst $Port)){
+      Schreib "Der Server antwortet noch auf Port $Port - er wird trotzdem entfernt." "Yellow"
+    }
     Unregister-ScheduledTask -TaskName $Name -Confirm:$false
     Schreib "Aufgabe entfernt." "Green"
   }else{
@@ -171,6 +181,20 @@ if(-not $node){
   exit 1
 }
 Schreib "Node gefunden: $node"
+
+# Bei einer erneuten Einrichtung laeuft oft noch der alte Server. Ohne Anhalten
+# wuerde der neue Start am belegten Port scheitern - und die Pruefung weiter
+# unten wuerde die Antwort des ALTEN Prozesses als Erfolg deuten.
+if((Get-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue) -or (Laeuft-Server $Port)){
+  Schreib "Ein Server laeuft bereits - halte ihn zuerst an."
+  if(-not (Stoppe-Dienst $Port)){
+    Schreib ""
+    Schreib "Port $Port ist weiterhin belegt. Laeuft dort ein von Hand" "Yellow"
+    Schreib "gestarteter Server (start-windows.cmd)? Dessen Fenster schliessen" "Yellow"
+    Schreib "und diese Datei erneut ausfuehren." "Yellow"
+    exit 1
+  }
+}
 
 if($node -like "*\Users\*"){
   Schreib ""
