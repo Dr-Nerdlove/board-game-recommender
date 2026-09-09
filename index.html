@@ -203,7 +203,7 @@ summary .count{margin-left:auto; font-family:Karla, sans-serif}
 .form-rows label, .stack{display:flex; flex-direction:column; gap:5px}
 .form-rows label > span, .stack > span{font-size:13px; color:var(--muted)}
 .wide{grid-column:1/-1}
-input[type="text"], input[type="number"], input[type="search"], textarea, .pair input{
+input[type="text"], input[type="number"], input[type="search"], input[type="date"], textarea, .pair input{
   font:inherit; font-size:15px; color:var(--ink); background:var(--surface);
   border:1px solid var(--line-strong); border-radius:6px; padding:9px 10px; width:100%;
 }
@@ -382,6 +382,8 @@ footer p{margin:0 0 4px}
               <span class="sep">bis</span>
               <input type="number" id="f-durmax" placeholder="60" min="1" max="600" inputmode="numeric" aria-label="Dauer bis">
             </div></div>
+          <label><span>Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span>
+            <input type="date" id="f-played"></label>
           <fieldset class="stack field wide"><legend class="lbl">Anspruch</legend>
             <div class="chips" id="f-weight"></div>
             <p class="hint">Auf BGG steht das als <em>Weight</em> von 1 bis 5: bis 1,5 leicht ·
@@ -858,6 +860,21 @@ const historieVorhanden = () => games.some(g => g.lastPlayed);
 const tageSeither = g => g.lastPlayed ? (Date.now() - g.lastPlayed) / TAG : Infinity;
 const istHeute = ts => !!ts && new Date(ts).toDateString() === new Date().toDateString();
 
+// Datumsfeld und Zeitstempel ineinander umrechnen - immer über die lokale
+// Zeitzone, damit aus einem eingetippten Tag nicht der Vortag wird.
+function toDateInput(ts){
+  if(!ts) return "";
+  const d = new Date(ts);
+  const zwei = n => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + zwei(d.getMonth() + 1) + "-" + zwei(d.getDate());
+}
+function fromDateInput(text){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(text).trim());
+  if(!m) return null;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return Number.isFinite(d.getTime()) ? d.getTime() : null;
+}
+
 function fmtGespielt(g){
   if(!g.lastPlayed) return "noch nie";
   const t = Math.floor(tageSeither(g));
@@ -1083,7 +1100,8 @@ function resetForm(){
   state.editing = null;
   lookupStatus("");
   form.weight = "mittel"; form.moods.clear();
-  ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note"].forEach(id => { $(id).value = ""; });
+  ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note","f-played"]
+    .forEach(id => { $(id).value = ""; });
   $("formtitle").textContent = "Spiel hinzufügen";
   $("f-submit").textContent = "Ins Regal stellen";
   $("f-cancel").hidden = true;
@@ -1100,6 +1118,7 @@ function startEdit(id){
   $("f-bestmin").value = g.best[0]; $("f-bestmax").value = g.best[1];
   $("f-durmin").value = g.dur[0]; $("f-durmax").value = g.dur[1];
   $("f-note").value = g.note;
+  $("f-played").value = toDateInput(g.lastPlayed);
   form.weight = bandOf(g).id;
   form.moods = new Set(g.moods);
   $("formtitle").textContent = "Spiel ändern";
@@ -1143,6 +1162,12 @@ function submitGame(ev){
   if(!form.moods.size)
     return fail("Wähl mindestens eine Stimmung — sonst taucht das Spiel bei keiner Stimmungsauswahl auf.");
 
+  const gespielt = val("f-played") === "" ? 0 : fromDateInput(val("f-played"));
+  if(gespielt === null)
+    return fail("Das Datum unter „Zuletzt gespielt“ ist unvollständig.");
+  if(gespielt > Date.now())
+    return fail("„Zuletzt gespielt“ liegt in der Zukunft — bitte ein Datum von heute oder früher.");
+
   const existing = state.editing ? games.find(g => g.id === state.editing) : null;
   const keepsBand = existing && bandOf(existing).id === form.weight;
   const built = normalize({
@@ -1150,7 +1175,7 @@ function submitGame(ev){
     name, min, max, best:[b0,b1], dur:[d0,d1],
     weight: keepsBand ? existing.weight : REP_WEIGHT[form.weight],
     moods:[...form.moods], note:val("f-note"),
-    lastPlayed: existing ? existing.lastPlayed : 0
+    lastPlayed: gespielt
   }, games.length);
 
   if(existing) games[games.indexOf(existing)] = built;

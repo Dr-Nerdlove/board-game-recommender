@@ -26,7 +26,8 @@ Windows-PC hosten".
   zufällig aus der oberen Hälfte der Treffer.
 - **Zuletzt gespielt**: Auf jeder Karte sitzt unten „Heute gespielt". Einmal
   antippen, und die Seite merkt sich das Datum — nochmal antippen nimmt es
-  zurück. Lange Ungespieltes steigt danach in der Rangfolge, gerade Gespieltes
+  zurück. Ältere Termine trägst du unter „Sammlung bearbeiten" → „Ändern" von
+  Hand nach. Lange Ungespieltes steigt danach in der Rangfolge, gerade Gespieltes
   fällt (unter zwei Tagen deutlich), verschwindet aber nie ganz: eine Revanche
   soll auffindbar bleiben. Der Chip **„Lange nicht gespielt"** in der Filterreihe
   „Regal" zeigt nur, was seit über 90 Tagen nicht dran war.
@@ -159,7 +160,9 @@ Unten auf der Seite: **Sammlung bearbeiten**.
   Spiel wirklich glänzt (davon hängt das Glanzform-Kennzeichen ab).
 - **Daten vorschlagen** — nur den Titel eintippen, den Rest füllt Claude aus
   (siehe unten).
-- **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel.
+- **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel. Dort steht auch
+  **„Zuletzt gespielt"** als Datumsfeld: nachtragen, korrigieren oder leeren
+  (leer heißt „noch nie"). Datumsangaben in der Zukunft weist das Formular ab.
 - **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
 - **Zurücksetzen** — holt die 21 Ausgangsspiele zurück (Sicherheitsklick).
 - **Suchen und Sortieren** — Suchfeld über der Liste, dazu Sortierung nach Name,
