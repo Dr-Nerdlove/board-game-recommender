@@ -133,6 +133,23 @@ versehentliches „Sammlung ersetzen" —, kopierst du die passende Datei aus
 Dienstes ist nicht nötig, der Server liest bei jeder Abfrage frisch von der
 Platte.
 
+### Aufs Handy legen
+
+Die Seite bringt ein eigenes Symbol mit (ein Würfel, passend zum Knopf
+„Würfel entscheiden"). So landet sie auf dem Startbildschirm:
+
+- **iPhone:** Seite in Safari öffnen → Teilen-Symbol → „Zum Home-Bildschirm".
+- **Android:** Seite in Chrome öffnen → Menü (drei Punkte) → „Zum Startbildschirm
+  hinzufügen".
+
+Darunter steht dann „Spieleabend". Getippt öffnet sie sich ohne Adressleiste,
+also wie eine App.
+
+Sie **ist** aber keine App: Es ist eine Verknüpfung, die weiterhin den Server im
+Heimnetz braucht. Offline funktioniert sie nicht — das setzte HTTPS voraus, und
+über `http://192.168.…` sperren Browser die dafür nötige Technik. Für den
+Spieleabend am eigenen Tisch spielt das keine Rolle.
+
 ### Was wo gespeichert wird
 
 | | veröffentlichte Seite | eigener Server (B) | nur Dateien (A oder Doppelklick) |
