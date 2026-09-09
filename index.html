@@ -221,6 +221,10 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
 .lookup-status{margin:0; font-size:13px; color:var(--muted)}
 .lookup-status[data-tone="ok"]{color:var(--teal); font-weight:500}
 .lookup-status[data-tone="warn"]{color:var(--warn)}
+.check{flex-direction:row !important; align-items:center; gap:9px; align-self:end; padding-bottom:9px}
+.check input{width:18px; height:18px; accent-color:var(--accent); flex:none; margin:0}
+.check span{font-size:15px; color:var(--ink)}
+
 .pair{display:flex; align-items:center; gap:8px}
 .pair span.sep{color:var(--muted); font-size:14px; flex:none}
 .hint{font-size:12px; color:var(--muted); margin:0}
@@ -390,6 +394,8 @@ footer p{margin:0 0 4px}
             </div></div>
           <label><span>Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span>
             <input type="date" id="f-played"></label>
+          <label class="check"><input type="checkbox" id="f-teach">
+            <span>Muss noch erklärt werden</span></label>
           <fieldset class="stack field wide"><legend class="lbl">Anspruch</legend>
             <div class="chips" id="f-weight"></div>
             <p class="hint">Auf BGG steht das als <em>Weight</em> von 1 bis 5: bis 1,5 leicht ·
@@ -588,7 +594,8 @@ function normalize(raw, i){
     weight: Number.isFinite(w) ? Math.min(5, Math.max(1, w)) : 2,
     moods: moods.length ? moods : ["gruebeln"],
     note: String(raw.note == null ? "" : raw.note).trim().slice(0,300),
-    lastPlayed: clampInt(raw.lastPlayed, 0, Date.now(), 0)
+    lastPlayed: clampInt(raw.lastPlayed, 0, Date.now(), 0),
+    teach: raw.teach === true
   };
 }
 
@@ -859,6 +866,15 @@ const isBest = g => state.players >= g.best[0] && state.players <= g.best[1];
 const fmtDur = g => g.dur[0] === g.dur[1] ? g.dur[0] + " Min" : g.dur[0] + "–" + g.dur[1] + " Min";
 const fmtPlayers = g => g.min === g.max ? g.min + " Spieler" : g.min + "–" + g.max + " Spieler";
 
+// Wie lange das Erklären dauert, hängt am Anspruch: ein Absacker ist schnell
+// gesagt, ein Kennerspiel kostet eine Viertelstunde vor der ersten Runde.
+const ERKLAERZEIT = { leicht:5, mittel:10, schwer:20 };
+const erklaerZeit = g => g.teach ? (ERKLAERZEIT[bandOf(g).id] || 10) : 0;
+const dauerMitErklaeren = g => {
+  const e = erklaerZeit(g);
+  return [g.dur[0] + e, g.dur[1] + e];
+};
+
 const TAG = 86400000;
 // Solange nichts abgehakt ist, teilen alle Spiele dasselbe Los — dann ist
 // "noch nie gespielt" auf jeder Karte nur Rauschen.
@@ -896,7 +912,9 @@ function fmtGespielt(g){
 function evaluate(g){
   if(state.players < g.min) return { ok:false, why:"ab " + g.min + " Spielern" };
   if(state.players > g.max) return { ok:false, why:"nur bis " + g.max };
-  if(state.time && g.dur[0] > state.time) return { ok:false, why:"dauert ab " + g.dur[0] + " Min" };
+  const gesamt = dauerMitErklaeren(g);
+  if(state.time && gesamt[0] > state.time)
+    return { ok:false, why:(erklaerZeit(g) ? "mit Erklärung ab " : "dauert ab ") + gesamt[0] + " Min" };
 
   const band = bandOf(g);
   if(state.weights.size && !state.weights.has(band.id)) return { ok:false, why:band.adj + " Brocken" };
@@ -919,9 +937,14 @@ function evaluate(g){
   else score += 7;
 
   if(state.time){
-    if(g.dur[1] <= state.time){ score += 8; reasons.push("in " + fmtDur(g) + " durch"); }
+    if(gesamt[1] <= state.time){
+      score += 8;
+      reasons.push(erklaerZeit(g)
+        ? "mit Erklärung in " + gesamt[1] + " Min durch"
+        : "in " + fmtDur(g) + " durch");
+    }
     else score += 3;
-  }else if(g.dur[1] <= 30) score += 4;
+  }else if(gesamt[1] <= 30) score += 4;
 
   if(state.weights.size) score += 6;
 
@@ -955,6 +978,7 @@ function card(g, res, top){
       "<div><dt>Spieler</dt><dd>" + fmtPlayers(g) + "</dd></div>" +
       "<div><dt>Dauer</dt><dd>" + fmtDur(g) + "</dd></div>" +
       '<div><dt>Kopf</dt><dd class="pips">' + pips(g) + "</dd></div>" +
+      (g.teach ? "<div><dt>Erklären</dt><dd>+" + erklaerZeit(g) + " Min</dd></div>" : "") +
       (g.lastPlayed ? "<div><dt>Zuletzt</dt><dd>" + fmtGespielt(g) + "</dd></div>" : "") +
     "</dl>" +
     (res.why ? '<p class="why">' + esc(res.why) + "</p>" : "") +
@@ -1069,6 +1093,7 @@ function renderCollection(){
     '<li' + (state.editing === g.id ? ' class="editing"' : "") + ">" +
       '<span class="cname">' + esc(g.name) + "</span>" +
       '<span class="cmeta">' + fmtPlayers(g) + " · " + fmtDur(g) + " · " + bandOf(g).label +
+        (g.teach ? " · erklären" : "") +
         (g.lastPlayed ? " · gespielt " + fmtGespielt(g) : "") + "</span>" +
       '<span class="rowbtns">' +
         '<button class="linkbtn" type="button" data-edit="' + esc(g.id) + '">Ändern</button>' +
@@ -1080,7 +1105,7 @@ function renderCollection(){
   if(document.activeElement !== ta){
     ta.value = JSON.stringify(games.map(g => ({
       name:g.name, min:g.min, max:g.max, best:g.best, dur:g.dur, weight:g.weight,
-      moods:g.moods, note:g.note, lastPlayed:g.lastPlayed
+      moods:g.moods, note:g.note, lastPlayed:g.lastPlayed, teach:g.teach
     })), null, 1);
   }
 }
@@ -1108,6 +1133,7 @@ function resetForm(){
   form.weight = "mittel"; form.moods.clear();
   ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note","f-played"]
     .forEach(id => { $(id).value = ""; });
+  $("f-teach").checked = false;
   $("formtitle").textContent = "Spiel hinzufügen";
   $("f-submit").textContent = "Ins Regal stellen";
   $("f-cancel").hidden = true;
@@ -1125,6 +1151,7 @@ function startEdit(id){
   $("f-durmin").value = g.dur[0]; $("f-durmax").value = g.dur[1];
   $("f-note").value = g.note;
   $("f-played").value = toDateInput(g.lastPlayed);
+  $("f-teach").checked = !!g.teach;
   form.weight = bandOf(g).id;
   form.moods = new Set(g.moods);
   $("formtitle").textContent = "Spiel ändern";
@@ -1181,7 +1208,7 @@ function submitGame(ev){
     name, min, max, best:[b0,b1], dur:[d0,d1],
     weight: keepsBand ? existing.weight : REP_WEIGHT[form.weight],
     moods:[...form.moods], note:val("f-note"),
-    lastPlayed: gespielt
+    lastPlayed: gespielt, teach: $("f-teach").checked
   }, games.length);
 
   if(existing) games[games.indexOf(existing)] = built;

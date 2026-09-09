@@ -18,6 +18,12 @@ Windows-PC hosten".
 
 - **Harte Filter**: Spielerzahl, Zeitbudget, Anspruch, Stimmung. Was rausfällt,
   steht unten mit Begründung („nur bis 4", „dauert ab 60 Min").
+- **Erklärzeit**: Spiele, die noch niemand kann, lassen sich im Formular als
+  „Muss noch erklärt werden" markieren. Das Zeitbudget rechnet den Aufschlag
+  dann mit — abgeleitet aus dem Anspruch: leicht +5, mittel +10,
+  anspruchsvoll +20 Minuten. Ein 45-Minuten-Kennerspiel braucht damit
+  65 Minuten und fällt aus einer Stunde heraus, mit Begründung
+  („mit Erklärung ab 65 Min"). Ist das Spiel eingeführt, Haken raus.
 - **Rangfolge**: Treffer werden nach Passung sortiert. Der beste Vorschlag steht
   oben groß, die Balken zeigen, wie gut ein Spiel zur Runde passt.
 - **Glanzform**: Ein Spiel, das bei genau dieser Spielerzahl am besten läuft,
@@ -180,6 +186,8 @@ Unten auf der Seite: **Sammlung bearbeiten**.
 - **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel. Dort steht auch
   **„Zuletzt gespielt"** als Datumsfeld: nachtragen, korrigieren oder leeren
   (leer heißt „noch nie"). Datumsangaben in der Zukunft weist das Formular ab.
+  Daneben der Haken **„Muss noch erklärt werden"**; markierte Spiele tragen in
+  der Liste den Vermerk „erklären".
 - **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
 - **Zurücksetzen** — holt die 21 Ausgangsspiele zurück (Sicherheitsklick).
 - **Suchen und Sortieren** — Suchfeld über der Liste, dazu Sortierung nach Name,
