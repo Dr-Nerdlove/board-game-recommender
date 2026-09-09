@@ -1,8 +1,27 @@
 # Was spielen wir heute?
 
-Kleine Entscheidungshilfe für den Spieleabend: Du sagst, wie viele ihr seid,
+**Welches Brettspiel passt zur heutigen Runde?** Du sagst, wie viele ihr seid,
 worauf ihr Lust habt, wie viel Kopf ihr habt und wie viel Zeit — die Seite
-sortiert die eigene Sammlung danach durch und schlägt vor, was heute passt.
+sortiert deine Sammlung danach durch und schlägt vor, was heute auf den Tisch
+kommt. Was nicht passt, verschwindet nicht kommentarlos, sondern steht unten mit
+Begründung.
+
+![Die Seite mit fünf Spielern und Party-Stimmung](screenshot.png)
+
+Eine einzelne HTML-Datei, rund 60 KB, ohne Baukasten, ohne Abhängigkeiten,
+ohne Konto. Doppelklick genügt. Wer die Sammlung auf allen Geräten gleich haben
+will, startet den mitgelieferten kleinen Server (Node, eine Datei) im Heimnetz —
+für Windows liegen fertige Skripte dabei, die ihn als Hintergrunddienst
+einrichten.
+
+Die Ausgangssammlung sind 21 Spiele aus meinem Regal. Sie ist nur der
+Startpunkt: Spiele lassen sich auf der Seite selbst hinzufügen, ändern und
+entfernen.
+
+**Kurz ausprobieren:** [`index.html`](index.html) herunterladen und im Browser
+öffnen.
+
+---
 
 ## Benutzen
 
@@ -280,3 +299,9 @@ im Code arbeitet, kann sie dort weiterhin bearbeiten:
 Achtung: Sobald über die Seite etwas geändert wurde, gilt die gespeicherte
 Sammlung. Änderungen an `DEFAULT_GAMES` schlagen dann erst nach
 „Auf Ausgangssammlung zurücksetzen" durch.
+
+## Nutzungsrechte
+
+Für dieses Projekt ist bewusst noch keine Lizenz vergeben. Damit gilt das
+normale Urheberrecht: Der Quelltext ist einsehbar, eine Weiterverwendung ist
+ohne Absprache aber nicht gestattet. Wenn du es verwenden möchtest, frag einfach.
