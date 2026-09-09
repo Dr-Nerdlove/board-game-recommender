@@ -7,7 +7,7 @@
      powershell -ExecutionPolicy Bypass -File windows-dienst.ps1 -Aktion status
 #>
 param(
-  [ValidateSet("einrichten","entfernen","status")] [string] $Aktion = "einrichten",
+  [ValidateSet("einrichten","entfernen","status","neustart")] [string] $Aktion = "einrichten",
   [int] $Port = 8099
 )
 
@@ -87,6 +87,55 @@ if($Aktion -eq "status"){
   }
 
   if($laeuft){ Adressen $Port }
+  exit 0
+}
+
+# -------------------------------------------------------------- Neustart
+if($Aktion -eq "neustart"){
+  $task = Get-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue
+  if(-not $task){
+    Schreib "Der Dienst ist nicht eingerichtet." "Yellow"
+    Schreib "Mit dienst-einrichten.cmd anlegen. Laeuft der Server im Vordergrund" "Gray"
+    Schreib "(start-windows.cmd), reicht dort Strg+C und ein neuer Start." "Gray"
+    exit 1
+  }
+
+  Schreib "Beende den Dienst ..."
+  try{ Stop-ScheduledTask -TaskName $Name -ErrorAction Stop }
+  catch{ Schreib "Beenden meldete: $($_.Exception.Message)" "Yellow" }
+
+  # Warten, bis der Port wirklich frei ist - sonst scheitert der neue Start
+  # mit "Port schon belegt", weil der alte Prozess noch haengt.
+  $frei = $false
+  foreach($i in 1..15){
+    Start-Sleep -Milliseconds 400
+    if(-not (Laeuft-Server $Port)){ $frei = $true; break }
+  }
+  if(-not $frei){
+    Schreib "Der alte Server antwortet immer noch auf Port $Port." "Yellow"
+    Schreib "Laeuft dort vielleicht ein zweiter, von Hand gestarteter Server?" "Yellow"
+    Schreib "Nachsehen im Task-Manager unter Details bei node.exe." "Gray"
+    exit 1
+  }
+
+  Schreib "Starte neu ..."
+  try{ Start-ScheduledTask -TaskName $Name -ErrorAction Stop }
+  catch{
+    Schreib "Start fehlgeschlagen: $($_.Exception.Message)" "Red"
+    exit 1
+  }
+
+  $ok = $false
+  foreach($i in 1..10){ Start-Sleep -Seconds 1; if(Laeuft-Server $Port){ $ok = $true; break } }
+  Schreib ""
+  if($ok){
+    Schreib "Neu gestartet, der Server antwortet wieder." "Green"
+    Adressen $Port
+  }else{
+    Schreib "Der Server antwortet nach dem Neustart nicht." "Yellow"
+    Schreib "Was schiefging, steht im Protokoll neben der Sammlung:" "White"
+    Schreib "   $(Join-Path $PSScriptRoot 'spieleabend.log')" "White"
+  }
   exit 0
 }
 

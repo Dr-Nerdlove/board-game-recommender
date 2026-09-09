@@ -93,6 +93,11 @@ gibt Port 8099 in der Firewall für das private Netz frei.
 Über dem Formular steht dann „Sammlung liegt auf deinem Server". Wechselst du
 auf einem Gerät zurück in den Tab, holt die Seite die aktuelle Liste nach.
 
+**Neu starten:** `dienst-neustart.cmd` doppelklicken. Nötig, wenn du
+`spieleabend-server.mjs` ausgetauscht hast — für eine neue `index.html` reicht
+das Neuladen der Seite. Das Skript beendet den Dienst, wartet, bis der Port
+wirklich frei ist, startet neu und meldet, ob der Server wieder antwortet.
+
 **Protokoll:** Der Server schreibt neben der Sammlung eine Datei
 `spieleabend.log` — Start, Portkonflikte, fehlgeschlagene Sicherungen, Abstürze.
 Als Hintergrunddienst sieht man ja keine Konsole; wenn etwas nicht läuft, steht
