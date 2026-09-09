@@ -141,8 +141,9 @@ Platte.
 
 ### Aufs Handy legen
 
-Die Seite bringt ein eigenes Symbol mit (ein Würfel, passend zum Knopf
-„Würfel entscheiden"). So landet sie auf dem Startbildschirm:
+Die Seite bringt ein eigenes Symbol mit. Es entsteht aus
+`Board-Game-Recommender_Logo.png`; die vier `icon-*.png` sind daraus verkleinert,
+der Rand ist durchsichtig. So landet sie auf dem Startbildschirm:
 
 - **iPhone:** Seite in Safari öffnen → Teilen-Symbol → „Zum Home-Bildschirm".
 - **Android:** Seite in Chrome öffnen → Menü (drei Punkte) → „Zum Startbildschirm
