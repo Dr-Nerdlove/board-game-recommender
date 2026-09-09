@@ -93,6 +93,11 @@ gibt Port 8099 in der Firewall für das private Netz frei.
 Über dem Formular steht dann „Sammlung liegt auf deinem Server". Wechselst du
 auf einem Gerät zurück in den Tab, holt die Seite die aktuelle Liste nach.
 
+**Protokoll:** Der Server schreibt neben der Sammlung eine Datei
+`spieleabend.log` — Start, Portkonflikte, fehlgeschlagene Sicherungen, Abstürze.
+Als Hintergrunddienst sieht man ja keine Konsole; wenn etwas nicht läuft, steht
+hier warum. Die Datei wird bei 200 KB automatisch gekürzt.
+
 **Läuft er?** `dienst-status.cmd` doppelklicken — prüft zuerst, ob der Server
 antwortet, und zeigt dann Zustand und letzten Lauf der Aufgabe. Für den Blick
 auf die Aufgabe holt sich die Datei Administratorrechte: die Aufgabe läuft unter

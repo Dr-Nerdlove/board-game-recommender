@@ -60,6 +60,9 @@ h1{
   text-wrap:balance; letter-spacing:-.01em;
 }
 .masthead p{margin:6px 0 0; color:var(--muted); max-width:46ch}
+.brand{display:flex; align-items:flex-start; gap:16px}
+.logo{flex:none; width:56px; height:56px; border-radius:12px}
+@media (max-width:520px){ .brand{gap:12px} .logo{width:44px; height:44px} }
 .theme-toggle{
   border:1px solid var(--line-strong); background:var(--surface); color:var(--muted);
   border-radius:99px; padding:7px 14px; font:inherit; font-size:13px; cursor:pointer;
@@ -301,10 +304,13 @@ footer p{margin:0 0 4px}
 <div class="wrap">
 
   <header class="masthead">
-    <div>
-      <p class="eyebrow">Spieleabend · 21 Spiele im Regal</p>
-      <h1>Was spielen wir heute?</h1>
-      <p>Sag, wie viele ihr seid, wie viel Kopf ihr habt und worauf ihr Lust habt — der Rest ist Regalarbeit.</p>
+    <div class="brand">
+      <img class="logo" src="icon-192.png" alt="" width="56" height="56" onerror="this.remove()">
+      <div>
+        <p class="eyebrow">Spieleabend · <span id="regalzahl">…</span></p>
+        <h1>Was spielen wir heute?</h1>
+        <p>Sag, wie viele ihr seid, wie viel Kopf ihr habt und worauf ihr Lust habt — der Rest ist Regalarbeit.</p>
+      </div>
     </div>
     <button class="theme-toggle" id="theme" type="button">Dunkel/Hell</button>
   </header>
@@ -1075,7 +1081,9 @@ function renderSortChips(){
 }
 
 function renderCollection(){
-  $("colcount").textContent = games.length === 1 ? "1 Spiel" : games.length + " Spiele";
+  const anzahl = games.length === 1 ? "1 Spiel" : games.length + " Spiele";
+  $("colcount").textContent = anzahl;
+  $("regalzahl").textContent = anzahl + " im Regal";
   renderSortChips();
 
   const suche = state.colQuery.trim().toLowerCase();

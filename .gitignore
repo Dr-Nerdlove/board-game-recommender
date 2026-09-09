@@ -1,0 +1,10 @@
+# Vom Server angelegt - gehört nicht ins Repository, sondern auf den eigenen Rechner
+sammlung.json
+sammlung.json.tmp
+sicherungen/
+spieleabend.log
+
+# Betriebssystem-Beiwerk
+Thumbs.db
+desktop.ini
+.DS_Store

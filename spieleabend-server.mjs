@@ -11,7 +11,7 @@
 
 import { createServer } from "node:http";
 import { readFile, writeFile, rename, mkdir, readdir, unlink } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, appendFileSync, statSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, extname, join, normalize, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { networkInterfaces } from "node:os";
@@ -26,6 +26,26 @@ const DATA = argOf("--data") || join(ROOT, "sammlung.json");
 const SICHERUNGEN = join(dirname(DATA), "sicherungen");
 const MAX_SICHERUNGEN = 10;
 const MAX_BODY = 2 * 1024 * 1024;          // 2 MB reichen für ein paar tausend Spiele
+const PROTOKOLL = argOf("--log") || join(dirname(DATA), "spieleabend.log");
+const MAX_PROTOKOLL = 200 * 1024;         // darüber wird auf die letzten 500 Zeilen gekürzt
+
+// Als Hintergrunddienst sieht niemand die Konsole. Ohne diese Datei bliebe ein
+// Absturz spurlos - deshalb kommt alles Berichtenswerte zusätzlich hier hinein.
+function notiere(text){
+  const zeile = new Date().toISOString().replace("T", " ").slice(0, 19) + "  " + text;
+  process.stdout.write(zeile + "\n");
+  try{
+    appendFileSync(PROTOKOLL, zeile + "\n", "utf8");
+    if(statSync(PROTOKOLL).size > MAX_PROTOKOLL){
+      // nach Bytes kürzen, nicht nach Zeilen: eine einzelne Riesenzeile würde
+      // sonst jede zeilenweise Kürzung überleben
+      let rest = readFileSync(PROTOKOLL, "utf8").slice(-Math.floor(MAX_PROTOKOLL / 2));
+      const umbruch = rest.indexOf("\n");
+      if(umbruch >= 0) rest = rest.slice(umbruch + 1);     // angeschnittene Zeile verwerfen
+      writeFileSync(PROTOKOLL, "[älteres gekürzt]\n" + rest, "utf8");
+    }
+  }catch(e){ /* ein fehlendes Protokoll darf den Betrieb nie stören */ }
+}
 
 const TYPES = {
   ".html":"text/html; charset=utf-8", ".css":"text/css; charset=utf-8",
@@ -87,7 +107,7 @@ function writeCollection(payload){
     try{
       await sichere(text);
     }catch(e){
-      process.stderr.write("Sicherung fehlgeschlagen (wird trotzdem gespeichert): " + e.message + "\n");
+      notiere("Sicherung fehlgeschlagen (wird trotzdem gespeichert): " + e.message);
     }
     await mkdir(dirname(DATA), { recursive:true });
     const tmp = DATA + ".tmp";
@@ -151,7 +171,7 @@ const server = createServer(async (req, res) => {
       try{
         await writeCollection(payload);
       }catch(e){
-        process.stderr.write("Schreiben fehlgeschlagen: " + e.message + "\n");
+        notiere("Schreiben fehlgeschlagen: " + e.message);
         return sendJson(res, 500, { error:"Konnte die Sammlung nicht speichern." });
       }
       return sendJson(res, 200, { ok:true, updatedAt:payload.updatedAt, count:payload.games.length });
@@ -170,13 +190,27 @@ server.listen(PORT, () => {
   process.stdout.write("  Auf diesem Rechner:  http://localhost:" + PORT + "\n");
   for(const ip of nets) process.stdout.write("  Im Heimnetz:         http://" + ip + ":" + PORT + "\n");
   process.stdout.write("\n  Sammlung liegt in:   " + DATA + "\n");
+  process.stdout.write("  Protokoll:           " + PROTOKOLL + "\n");
   process.stdout.write("  Beenden mit Strg+C\n\n");
+  notiere("gestartet auf Port " + PORT + ", Sammlung: " + DATA);
 });
 
 server.on("error", err => {
-  if(err.code === "EADDRINUSE")
-    process.stderr.write("\nPort " + PORT + " ist schon belegt. Anderen Port wählen:\n" +
-                         "  node spieleabend-server.mjs --port 8100\n\n");
-  else process.stderr.write("\nServer konnte nicht starten: " + err.message + "\n\n");
+  if(err.code === "EADDRINUSE"){
+    notiere("Start abgebrochen: Port " + PORT + " ist schon belegt.");
+    process.stderr.write("\nAnderen Port wählen:  node spieleabend-server.mjs --port 8100\n\n");
+  }else{
+    notiere("Start abgebrochen: " + err.message);
+  }
   process.exit(1);
+});
+
+// Ohne diese beiden endet ein Absturz als leeres Fenster beziehungsweise als
+// stillschweigend beendete Aufgabe.
+process.on("uncaughtException", err => {
+  notiere("Abgestürzt: " + (err && err.stack ? err.stack.split("\n")[0] : err));
+  process.exit(1);
+});
+process.on("unhandledRejection", grund => {
+  notiere("Unbehandelte Zurückweisung: " + (grund && grund.message ? grund.message : grund));
 });
