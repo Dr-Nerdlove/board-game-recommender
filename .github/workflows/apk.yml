@@ -89,11 +89,28 @@ jobs:
           name: spieleabend-apk
           path: spieleabend.apk
 
+      - name: Stand festhalten
+        # Die Veroeffentlichung behaelt immer dieselbe Marke "apk", damit der
+        # Link dauerhaft gleich bleibt. Dadurch bliebe aber auch das Datum auf
+        # dem ersten Bau stehen - von aussen waere nicht zu erkennen, ob die
+        # Datei frisch ist. Deshalb Datum und Commit in Titel und Text.
+        id: stand
+        run: |
+          echo "datum=$(date -u '+%d.%m.%Y, %H:%M Uhr UTC')" >> "$GITHUB_OUTPUT"
+          echo "kurz=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Marke apk auf diesen Stand schieben
+        # Sonst zeigt die Veroeffentlichung weiter auf den Commit des
+        # allerersten Baus.
+        run: |
+          git tag -f apk
+          git push -f origin refs/tags/apk
+
       - name: APK veroeffentlichen
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk
-          name: Spieleabend als Android-App
+          name: Spieleabend als Android-App - Stand ${{ steps.stand.outputs.datum }}
           body: |
             Die aktuelle App zum Herunterladen und Installieren.
 
@@ -101,6 +118,11 @@ jobs:
             Android fragt beim ersten Mal, ob Apps aus dieser Quelle erlaubt
             sind - das muss einmalig bestaetigt werden.
 
-            Gebaut aus `index.html`, Stand dieses Commits.
+            Gebaut am ${{ steps.stand.outputs.datum }}
+            aus Commit `${{ steps.stand.outputs.kurz }}`.
+
+            Die Adresse dieser Seite bleibt immer dieselbe - die Datei
+            darunter wird bei jedem Bau ersetzt. Stimmt das Datum oben mit
+            dem letzten Commit ueberein, ist die Datei aktuell.
           files: spieleabend.apk
           fail_on_unmatched_files: true

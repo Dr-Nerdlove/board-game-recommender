@@ -34,6 +34,11 @@ entfernen.
    aus dieser Quelle installiert werden dürfen — einmalig bestätigen.
 3. Fertig. Die App liegt im App-Menü, mit eigenem Symbol.
 
+Es gibt **immer nur diese eine Veröffentlichung** — die Adresse bleibt dauerhaft
+gleich, die Datei darunter wird bei jedem Bau ersetzt. Im Titel steht, von wann
+die aktuelle Fassung ist. Eine neue App bekommst du also nicht durch eine neue
+Veröffentlichung, sondern indem du dieselbe Datei erneut herunterlädst.
+
 Die App enthält die Seite vollständig und braucht **kein Netz und keinen
 Server**. Deine Sammlung liegt im Speicher der App, auf diesem Handy.
 

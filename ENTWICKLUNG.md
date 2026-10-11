@@ -94,6 +94,13 @@ Fallen, die dort schon zugeschlagen haben:
 Android-SDK vorinstalliert ist. Capacitor verpackt `index.html` zu einer
 App; das Ergebnis hängt dauerhaft an der Veröffentlichung `apk`.
 
+Es entsteht **absichtlich keine neue Veröffentlichung je Bau** — der
+Download-Link soll sich nie ändern. Der Preis: Titel, Datum und Commit blieben
+sonst für immer auf dem allerersten Bau stehen, und niemand könnte erkennen, ob
+die Datei frisch ist. Deshalb schiebt der Bauplan die Marke `apk` auf den
+gebauten Commit und schreibt Datum und Kurz-Commit in Titel und Text. Wer hier
+etwas ändert: diese drei Dinge gehören zusammen.
+
 Zu wissen: Capacitor liefert die Seite im App-Container unter `https://localhost`
 aus. Dadurch ist `location.protocol` `https:`, und `connectServer()` versucht
 einmal vergeblich `api/sammlung` — harmlos, fällt auf `localStorage` zurück.
