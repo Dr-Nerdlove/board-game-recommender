@@ -8,3 +8,11 @@ spieleabend.log
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Beim APK-Bau erzeugt (passiert auf GitHubs Maschinen, nicht hier)
+node_modules/
+www/
+android/
+assets/
+package-lock.json
+*.apk

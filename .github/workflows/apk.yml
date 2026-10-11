@@ -1,0 +1,102 @@
+name: APK bauen
+
+# Baut die Android-App aus index.html. Laeuft auf GitHubs Maschinen, weil dort
+# das Android-SDK schon installiert ist. Von Hand startbar (Reiter "Actions" ->
+# "APK bauen" -> "Run workflow"); das Ergebnis haengt als Datei an der
+# Veroeffentlichung "apk" und bleibt dort dauerhaft herunterladbar.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - 'icon-*.png'
+      - 'capacitor.config.json'
+      - 'package.json'
+      - '.github/workflows/apk.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  bauen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Java einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Webdateien einsammeln
+        # Capacitor erwartet die Seite in einem eigenen Ordner. Der Server und
+        # die Windows-Skripte gehoeren nicht in die App.
+        run: |
+          mkdir -p www
+          cp index.html manifest.webmanifest www/
+          cp icon-32.png icon-180.png icon-192.png icon-512.png www/
+          ls -la www
+
+      - name: Symbol fuer die App vorbereiten
+        # @capacitor/assets erwartet ein Quadrat von mindestens 1024 Punkten.
+        run: |
+          mkdir -p assets
+          cp icon-512.png assets/icon-only.png
+          cp icon-512.png assets/icon-foreground.png
+          cp icon-512.png assets/icon-background.png
+
+      - name: Abhaengigkeiten installieren
+        run: npm install
+
+      - name: Android-Projekt erzeugen
+        run: npx cap add android
+
+      - name: Symbole erzeugen
+        # Schlaegt das fehl, baut die App trotzdem - nur mit Standardsymbol.
+        continue-on-error: true
+        run: npx capacitor-assets generate --android
+
+      - name: Webdateien ins Projekt kopieren
+        run: npx cap sync android
+
+      - name: APK bauen
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: APK umbenennen
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk spieleabend.apk
+          ls -la spieleabend.apk
+
+      - name: APK als Arbeitsergebnis anhaengen
+        uses: actions/upload-artifact@v4
+        with:
+          name: spieleabend-apk
+          path: spieleabend.apk
+
+      - name: APK veroeffentlichen
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk
+          name: Spieleabend als Android-App
+          body: |
+            Die aktuelle App zum Herunterladen und Installieren.
+
+            **Installieren:** Datei `spieleabend.apk` auf dem Handy oeffnen.
+            Android fragt beim ersten Mal, ob Apps aus dieser Quelle erlaubt
+            sind - das muss einmalig bestaetigt werden.
+
+            Gebaut aus `index.html`, Stand dieses Commits.
+          files: spieleabend.apk
+          fail_on_unmatched_files: true
