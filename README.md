@@ -21,23 +21,24 @@ entfernen.
 **Kurz ausprobieren:** [`index.html`](index.html) herunterladen und im Browser
 öffnen.
 
-**Aufs Handy:** [Android-App herunterladen](../../releases/tag/apk) — fertige
-`spieleabend.apk`, kein Server nötig.
+**Aufs Handy:** [neueste Android-App herunterladen](../../releases/latest) —
+fertige APK, kein Server nötig.
 
 ---
 
 ## Als App auf dem Handy (Android)
 
-1. Am Handy die [Veröffentlichung „apk"](../../releases/tag/apk) öffnen und
-   `spieleabend.apk` herunterladen.
+1. Am Handy die [neueste Veröffentlichung](../../releases/latest) öffnen und
+   die Datei `spieleabend-1.2.3.apk` herunterladen (die Nummer ist die Fassung).
 2. Die heruntergeladene Datei antippen. Android fragt beim ersten Mal, ob Apps
    aus dieser Quelle installiert werden dürfen — einmalig bestätigen.
 3. Fertig. Die App liegt im App-Menü, mit eigenem Symbol.
 
-Es gibt **immer nur diese eine Veröffentlichung** — die Adresse bleibt dauerhaft
-gleich, die Datei darunter wird bei jedem Bau ersetzt. Im Titel steht, von wann
-die aktuelle Fassung ist. Eine neue App bekommst du also nicht durch eine neue
-Veröffentlichung, sondern indem du dieselbe Datei erneut herunterlädst.
+Jede Fassung bekommt eine eigene Veröffentlichung, die danach unverändert
+bleibt. Was sich geändert hat, steht dort und in der
+[Änderungshistorie](CHANGELOG.md). Welche Fassung bei dir läuft, steht ganz
+unten auf der Seite. Eine neuere installiert sich über die alte, deine Sammlung
+bleibt dabei erhalten.
 
 Die App enthält die Seite vollständig und braucht **kein Netz und keinen
 Server**. Deine Sammlung liegt im Speicher der App, auf diesem Handy.
@@ -340,6 +341,14 @@ im Code arbeitet, kann sie dort weiterhin bearbeiten:
 Achtung: Sobald über die Seite etwas geändert wurde, gilt die gespeicherte
 Sammlung. Änderungen an `DEFAULT_GAMES` schlagen dann erst nach
 „Auf Ausgangssammlung zurücksetzen" durch.
+
+## Fassungen
+
+Die Nummerierung folgt [Semantic Versioning](https://semver.org/lang/de/): bei
+**X**.y.z ändert sich etwas Grundlegendes, bei x.**Y**.z kommt etwas dazu, bei
+x.y.**Z** wird etwas repariert. Was in welcher Fassung passiert ist, steht in
+der [Änderungshistorie](CHANGELOG.md); jede Fassung hat außerdem eine eigene
+[Veröffentlichung](../../releases) mit der passenden APK.
 
 ## Nutzungsrechte
 

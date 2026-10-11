@@ -1,21 +1,23 @@
-name: APK bauen
+name: Android-App bauen
 
-# Baut die Android-App aus index.html. Laeuft auf GitHubs Maschinen, weil dort
-# das Android-SDK schon installiert ist. Von Hand startbar (Reiter "Actions" ->
-# "APK bauen" -> "Run workflow"); das Ergebnis haengt als Datei an der
-# Veroeffentlichung "apk" und bleibt dort dauerhaft herunterladbar.
+# Eine Veroeffentlichung entsteht nur aus einer Versionsmarke. Ablauf:
+#
+#   1. Fassung in package.json, index.html und CHANGELOG.md eintragen
+#   2. git tag v1.2.3 && git push origin v1.2.3
+#
+# Den Rest macht dieser Bauplan: er prueft, dass die drei Stellen dieselbe
+# Nummer nennen, baut die APK mit genau dieser Nummer und legt eine eigene
+# Veroeffentlichung v1.2.3 an. Die bleibt danach unveraendert - jede neue
+# Fassung bekommt eine eigene.
+#
+# "Run workflow" im Reiter Actions baut zum Ausprobieren, ohne zu
+# veroeffentlichen.
 
 on:
-  workflow_dispatch:
   push:
-    paths:
-      - 'index.html'
-      - 'manifest.webmanifest'
-      - 'icon-*.png'
-      - 'app-icon-*.png'
-      - 'capacitor.config.json'
-      - 'package.json'
-      - '.github/workflows/apk.yml'
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -26,6 +28,41 @@ jobs:
     steps:
       - name: Quelltext holen
         uses: actions/checkout@v4
+
+      - name: Fassung bestimmen und Stellen vergleichen
+        # Drei Stellen nennen die Fassung. Weichen sie voneinander ab,
+        # bricht der Bau ab - lieber hier als in der Hand des Benutzers.
+        id: fassung
+        run: |
+          set -eu
+          PAKET="$(node -p "require('./package.json').version")"
+
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            MARKE="${GITHUB_REF_NAME#v}"
+            FEHLER=0
+            if [ "$MARKE" != "$PAKET" ]; then
+              echo "::error::Marke $GITHUB_REF_NAME passt nicht zu package.json ($PAKET)."
+              FEHLER=1
+            fi
+            if ! grep -q "Fassung $PAKET" index.html; then
+              echo "::error::index.html nennt im Fuss nicht die Fassung $PAKET."
+              FEHLER=1
+            fi
+            if ! grep -q "^## \[$PAKET\]" CHANGELOG.md; then
+              echo "::error::CHANGELOG.md hat keinen Abschnitt [$PAKET]."
+              FEHLER=1
+            fi
+            [ "$FEHLER" -eq 0 ] || exit 1
+          fi
+
+          # Android zaehlt Fassungen als ganze Zahl, die nie kleiner werden
+          # darf. 1.2.3 wird zu 10203.
+          MA="$(echo "$PAKET" | cut -d. -f1)"
+          MI="$(echo "$PAKET" | cut -d. -f2)"
+          PA="$(echo "$PAKET" | cut -d. -f3)"
+          echo "nummer=$PAKET"                        >> "$GITHUB_OUTPUT"
+          echo "code=$((MA * 10000 + MI * 100 + PA))" >> "$GITHUB_OUTPUT"
+          echo "Fassung $PAKET, Android-Zaehler $((MA * 10000 + MI * 100 + PA))"
 
       - name: Node einrichten
         uses: actions/setup-node@v4
@@ -64,6 +101,13 @@ jobs:
       - name: Android-Projekt erzeugen
         run: npx cap add android
 
+      - name: Fassung ins Android-Projekt schreiben
+        run: |
+          set -eu
+          sed -i 's/versionCode .*/versionCode ${{ steps.fassung.outputs.code }}/' android/app/build.gradle
+          sed -i 's/versionName .*/versionName "${{ steps.fassung.outputs.nummer }}"/' android/app/build.gradle
+          grep -n 'version\(Code\|Name\)' android/app/build.gradle
+
       - name: Symbole erzeugen
         # Schlaegt das fehl, baut die App trotzdem - nur mit Standardsymbol.
         continue-on-error: true
@@ -78,51 +122,48 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - name: APK umbenennen
+      - name: APK benennen
+        id: apk
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk spieleabend.apk
-          ls -la spieleabend.apk
+          set -eu
+          NAME="spieleabend-${{ steps.fassung.outputs.nummer }}.apk"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "$NAME"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          ls -la "$NAME"
 
       - name: APK als Arbeitsergebnis anhaengen
         uses: actions/upload-artifact@v4
         with:
           name: spieleabend-apk
-          path: spieleabend.apk
+          path: ${{ steps.apk.outputs.name }}
 
-      - name: Stand festhalten
-        # Die Veroeffentlichung behaelt immer dieselbe Marke "apk", damit der
-        # Link dauerhaft gleich bleibt. Dadurch bliebe aber auch das Datum auf
-        # dem ersten Bau stehen - von aussen waere nicht zu erkennen, ob die
-        # Datei frisch ist. Deshalb Datum und Commit in Titel und Text.
-        id: stand
+      - name: Begleittext aus der Aenderungshistorie holen
+        if: github.ref_type == 'tag'
         run: |
-          echo "datum=$(date -u '+%d.%m.%Y, %H:%M Uhr UTC')" >> "$GITHUB_OUTPUT"
-          echo "kurz=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          set -eu
+          {
+            echo "**Installieren:** Datei \`${{ steps.apk.outputs.name }}\` auf dem"
+            echo "Handy oeffnen. Android fragt beim ersten Mal, ob Apps aus dieser"
+            echo "Quelle erlaubt sind - das muss einmalig bestaetigt werden. Eine"
+            echo "bereits vorhandene Fassung wird ersetzt, die Sammlung bleibt."
+            echo
+            echo "---"
+            echo
+            awk -v v="${{ steps.fassung.outputs.nummer }}" '
+              $0 ~ "^## \\[" v "\\]" { an = 1; next }
+              an && /^## \[/          { exit }
+              an && /^\[[^]]+\]: /    { exit }
+              an                      { print }
+            ' CHANGELOG.md
+          } > begleittext.md
+          cat begleittext.md
 
-      - name: Marke apk auf diesen Stand schieben
-        # Sonst zeigt die Veroeffentlichung weiter auf den Commit des
-        # allerersten Baus.
-        run: |
-          git tag -f apk
-          git push -f origin refs/tags/apk
-
-      - name: APK veroeffentlichen
+      - name: Veroeffentlichen
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: apk
-          name: Spieleabend als Android-App - Stand ${{ steps.stand.outputs.datum }}
-          body: |
-            Die aktuelle App zum Herunterladen und Installieren.
-
-            **Installieren:** Datei `spieleabend.apk` auf dem Handy oeffnen.
-            Android fragt beim ersten Mal, ob Apps aus dieser Quelle erlaubt
-            sind - das muss einmalig bestaetigt werden.
-
-            Gebaut am ${{ steps.stand.outputs.datum }}
-            aus Commit `${{ steps.stand.outputs.kurz }}`.
-
-            Die Adresse dieser Seite bleibt immer dieselbe - die Datei
-            darunter wird bei jedem Bau ersetzt. Stimmt das Datum oben mit
-            dem letzten Commit ueberein, ist die Datei aktuell.
-          files: spieleabend.apk
+          name: Spieleabend ${{ github.ref_name }}
+          body_path: begleittext.md
+          files: ${{ steps.apk.outputs.name }}
           fail_on_unmatched_files: true
+          make_latest: true

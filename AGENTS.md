@@ -29,6 +29,7 @@ unleserlich.
 | `windows-dienst.ps1` + `dienst-*.cmd` | Dienst einrichten, Status, Neustart, entfernen |
 | `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen |
 | `icon-*.png`, `manifest.webmanifest` | Symbole fürs Handy |
+| `CHANGELOG.md` | Änderungshistorie, gepflegt bei jeder Fassung |
 
 ## Vor dem Ändern von `index.html` lesen
 
@@ -41,6 +42,14 @@ Der Innenabstand von `.wrap` steht an **zwei** Stellen (normale Regel und
 `@media (max-width:520px)`) und enthält in beiden die Variablen `--sicher-*`.
 Die halten in der Android-App die Statusleiste von der Überschrift fern;
 Näheres in `ENTWICKLUNG.md` unter „Systemleisten".
+
+## Eine neue Fassung herausgeben
+
+Die Nummer steht an drei Stellen und muss überall gleich sein, sonst bricht der
+Bau ab: `package.json`, der Fuß in `index.html` (`Fassung 1.2.3`) und ein
+Abschnitt `## [1.2.3]` in `CHANGELOG.md`. Dann `git tag v1.2.3` und
+`git push origin main v1.2.3` — GitHub baut die APK und legt die
+Veröffentlichung an. Näheres in `ENTWICKLUNG.md`.
 
 ## Prüfen statt hoffen
 

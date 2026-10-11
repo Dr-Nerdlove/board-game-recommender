@@ -94,12 +94,41 @@ Fallen, die dort schon zugeschlagen haben:
 Android-SDK vorinstalliert ist. Capacitor verpackt `index.html` zu einer
 App; das Ergebnis hängt dauerhaft an der Veröffentlichung `apk`.
 
-Es entsteht **absichtlich keine neue Veröffentlichung je Bau** — der
-Download-Link soll sich nie ändern. Der Preis: Titel, Datum und Commit blieben
-sonst für immer auf dem allerersten Bau stehen, und niemand könnte erkennen, ob
-die Datei frisch ist. Deshalb schiebt der Bauplan die Marke `apk` auf den
-gebauten Commit und schreibt Datum und Kurz-Commit in Titel und Text. Wer hier
-etwas ändert: diese drei Dinge gehören zusammen.
+Der Bauplan springt **nur auf Versionsmarken** an (`v*`) und legt dafür je eine
+eigene Veröffentlichung an, die danach unverändert bleibt. „Run workflow" baut
+zum Ausprobieren, ohne zu veröffentlichen.
+
+### Eine neue Fassung herausgeben
+
+Die Fassungsnummer steht an **drei** Stellen. Der Bauplan vergleicht sie und
+bricht ab, wenn eine abweicht — dieser Vergleich ist die eigentliche Absicherung:
+
+| Stelle | Form |
+| --- | --- |
+| `package.json` | `"version": "1.2.3"` |
+| `index.html` | `Fassung 1.2.3` im Fuß |
+| `CHANGELOG.md` | Abschnitt `## [1.2.3] – JJJJ-MM-TT` |
+
+Ablauf:
+
+```bash
+# 1. die drei Stellen auf die neue Nummer setzen, Änderungen in CHANGELOG.md
+# 2. committen
+git tag v1.2.3
+git push origin main v1.2.3
+```
+
+Den Rest macht GitHub: APK bauen, `spieleabend-1.2.3.apk` benennen,
+Veröffentlichung `v1.2.3` anlegen und den passenden Abschnitt aus
+`CHANGELOG.md` als Begleittext einsetzen.
+
+Android verlangt zusätzlich eine ganze Zahl, die nie kleiner werden darf. Sie
+wird aus der Nummer gerechnet: `1.2.3` → `10203`. Dadurch bleibt für jede
+Stelle Platz bis 99 — wer eine dreistellige Unterfassung braucht, muss die
+Formel ändern **und** darauf achten, dass die Zahl trotzdem wächst.
+
+Welche Fassung auf einem Gerät läuft, steht im Fuß der Seite. Das ist die
+einzige Stelle, an der ein Benutzer das ablesen kann — bitte mitführen.
 
 Zu wissen: Capacitor liefert die Seite im App-Container unter `https://localhost`
 aus. Dadurch ist `location.protocol` `https:`, und `connectServer()` versucht
