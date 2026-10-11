@@ -98,6 +98,27 @@ Zu wissen: Capacitor liefert die Seite im App-Container unter `https://localhost
 aus. Dadurch ist `location.protocol` `https:`, und `connectServer()` versucht
 einmal vergeblich `api/sammlung` — harmlos, fällt auf `localStorage` zurück.
 
+### Systemleisten (Rand oben und unten)
+
+Seit Android 15 zeichnet die App unter der Statusleiste und der Navigationsleiste
+hindurch („edge-to-edge"). Ohne Gegenmaßnahme verdeckt die Uhr die Überschrift.
+
+Gelöst **ohne zusätzliches Paket**: Capacitor 8 setzt die Variablen
+`--safe-area-inset-top/right/bottom/left` auf `<html>`, sobald im
+Viewport-Vermerk `viewport-fit=cover` steht. `index.html` rechnet sie in
+`:root` auf eigene Variablen um (`--sicher-oben` …) und schlägt sie im
+Innenabstand von `.wrap` auf — an **zwei** Stellen, der normalen Regel und der
+unter `@media (max-width:520px)`.
+
+Fällt das aus (sehr alte WebView-Fassung unter 140), schiebt Capacitor die
+Ansicht selbst nach innen und setzt die Variablen auf `0px`. Doppelter Abstand
+kann also nicht entstehen. Im Browser ohne Systemleisten greift `env(…)` und
+liefert ebenfalls 0 — der Rand ist dann genau wie vorher.
+
+Deshalb **muss** `viewport-fit=cover` im Viewport-Vermerk stehen bleiben, und
+Capacitor darf nicht unter Fassung 8 zurückfallen. Capacitor 8 verlangt Node 22;
+das ist im Bauplan eingestellt.
+
 ## Veröffentlichte Claude-Fassung
 
 Die Seite lief zusätzlich als Claude-Artifact. Dafür wird aus `index.html` ein

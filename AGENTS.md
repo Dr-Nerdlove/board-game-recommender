@@ -37,6 +37,11 @@ es beim Bearbeiten still verloren: `normalize()`, `submitGame()`, die
 Export-Projektion in `renderCollection()` und gegebenenfalls `startEdit()` /
 `resetForm()`. Dieser Fehler ist schon einmal passiert.
 
+Der Innenabstand von `.wrap` steht an **zwei** Stellen (normale Regel und
+`@media (max-width:520px)`) und enthält in beiden die Variablen `--sicher-*`.
+Die halten in der Android-App die Statusleiste von der Überschrift fern;
+Näheres in `ENTWICKLUNG.md` unter „Systemleisten".
+
 ## Prüfen statt hoffen
 
 Es gibt keine automatischen Tests. Bewährt hat sich:
