@@ -12,6 +12,7 @@ on:
       - 'index.html'
       - 'manifest.webmanifest'
       - 'icon-*.png'
+      - 'app-icon-*.png'
       - 'capacitor.config.json'
       - 'package.json'
       - '.github/workflows/apk.yml'
@@ -47,12 +48,15 @@ jobs:
           ls -la www
 
       - name: Symbol fuer die App vorbereiten
-        # @capacitor/assets erwartet ein Quadrat von mindestens 1024 Punkten.
+        # icon-only ist das klassische quadratische Symbol - da passt das Logo
+        # unveraendert. Fuer Androids adaptive Symbole liegt das Logo dagegen
+        # verkleinert auf durchsichtigem Grund (app-icon-foreground), weil die
+        # Maske aussen rund ein Viertel abschneidet.
         run: |
           mkdir -p assets
           cp icon-512.png assets/icon-only.png
-          cp icon-512.png assets/icon-foreground.png
-          cp icon-512.png assets/icon-background.png
+          cp app-icon-foreground.png assets/icon-foreground.png
+          cp app-icon-background.png assets/icon-background.png
 
       - name: Abhaengigkeiten installieren
         run: npm install

@@ -430,9 +430,16 @@ footer p{margin:0 0 4px}
         <button class="linkbtn danger" type="button" id="restore">Auf Ausgangssammlung zurücksetzen</button>
         <details class="backup">
           <summary>Sicherung &amp; Umzug</summary>
-          <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben, Ergänzen oder Ersetzen.</span>
+          <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben, Ergänzen oder Ersetzen.
+            Für den Umzug auf ein neues Gerät: hier sichern, dort einlesen.</span>
             <textarea id="backup" rows="5" spellcheck="false"></textarea></label>
           <div class="form-actions" style="margin-top:10px">
+            <button class="linkbtn" type="button" id="kopieren">Text kopieren</button>
+            <button class="linkbtn" type="button" id="herunterladen">Als Datei sichern</button>
+            <label class="linkbtn" for="dateiwahl" style="cursor:pointer">Datei einlesen</label>
+            <input type="file" id="dateiwahl" accept=".json,application/json" hidden>
+          </div>
+          <div class="form-actions" style="margin-top:8px">
             <button class="linkbtn" type="button" id="importadd">Dazu einspielen</button>
             <button class="linkbtn danger" type="button" id="import">Sammlung ersetzen</button>
             <span class="hint" id="importnote"></span>
@@ -1346,6 +1353,50 @@ function importGames(mode){
   persist();
   render();
 }
+
+// Sicherung: Kopieren klappt überall, Herunterladen nicht in jeder Umgebung
+// (im Claude-Viewer und in manchen App-Containern sind Downloads gesperrt).
+$("kopieren").addEventListener("click", async () => {
+  const note = $("importnote");
+  const text = $("backup").value;
+  try{
+    await navigator.clipboard.writeText(text);
+    note.textContent = "In die Zwischenablage kopiert — jetzt in eine Notiz oder E-Mail einfügen.";
+  }catch(e){
+    $("backup").select();                       // Rückfall: markieren, Nutzer drückt Strg+C
+    note.textContent = "Text ist markiert — mit Strg+C (am Handy: Antippen und „Kopieren“) sichern.";
+  }
+});
+
+$("herunterladen").addEventListener("click", () => {
+  const note = $("importnote");
+  try{
+    const stand = new Date().toISOString().slice(0,10);
+    const blob = new Blob([$("backup").value], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "spieleabend-sammlung-" + stand + ".json";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    note.textContent = "Datei gespeichert. Passiert nichts, nimm „Text kopieren“.";
+  }catch(e){
+    note.textContent = "Herunterladen geht hier nicht — nimm „Text kopieren“.";
+  }
+});
+
+$("dateiwahl").addEventListener("change", ev => {
+  const datei = ev.target.files && ev.target.files[0];
+  if(!datei) return;
+  const leser = new FileReader();
+  leser.onload = () => {
+    $("backup").value = String(leser.result);
+    $("importnote").textContent = "Datei gelesen — jetzt „Dazu einspielen“ oder „Sammlung ersetzen“ wählen.";
+  };
+  leser.onerror = () => { $("importnote").textContent = "Die Datei liess sich nicht lesen."; };
+  leser.readAsText(datei);
+  ev.target.value = "";                         // dieselbe Datei soll erneut wählbar sein
+});
 
 $("import").addEventListener("click", () => importGames("replace"));
 $("importadd").addEventListener("click", () => importGames("add"));
