@@ -109,18 +109,28 @@ bricht ab, wenn eine abweicht — dieser Vergleich ist die eigentliche Absicheru
 | `index.html` | `Fassung 1.2.3` im Fuß |
 | `CHANGELOG.md` | Abschnitt `## [1.2.3] – JJJJ-MM-TT` |
 
-Ablauf:
+Danach gibt es zwei Wege, und beide landen an derselben Stelle:
+
+**Im Browser** — Reiter „Actions" → „Android-App bauen" → „Run workflow",
+Haken bei `veroeffentlichen`. Die Marke wird dabei angelegt.
+
+**Auf der Kommandozeile**
 
 ```bash
-# 1. die drei Stellen auf die neue Nummer setzen, Änderungen in CHANGELOG.md
-# 2. committen
+git push origin main
 git tag v1.2.3
-git push origin main v1.2.3
+git push origin v1.2.3
 ```
 
 Den Rest macht GitHub: APK bauen, `spieleabend-1.2.3.apk` benennen,
 Veröffentlichung `v1.2.3` anlegen und den passenden Abschnitt aus
 `CHANGELOG.md` als Begleittext einsetzen.
+
+Dass es den Browser-Weg gibt, hat einen handfesten Grund: Aus einer
+Claude-Code-Sitzung heraus lassen sich **keine Marken schieben** — der Server
+lehnt das mit HTTP 403 ab, während Branch-Pushes durchgehen. Ohne diesen Weg
+könnte ein Assistent das Projekt zwar weiterentwickeln, aber keine Fassung
+herausgeben.
 
 Android verlangt zusätzlich eine ganze Zahl, die nie kleiner werden darf. Sie
 wird aus der Nummer gerechnet: `1.2.3` → `10203`. Dadurch bleibt für jede

@@ -1,23 +1,29 @@
 name: Android-App bauen
 
-# Eine Veroeffentlichung entsteht nur aus einer Versionsmarke. Ablauf:
+# Eine Veroeffentlichung entsteht aus einer Fassungsnummer, nie aus einem
+# beliebigen Stand. Zwei Wege fuehren dorthin:
 #
-#   1. Fassung in package.json, index.html und CHANGELOG.md eintragen
-#   2. git tag v1.2.3 && git push origin v1.2.3
+#   A) Im Browser: Reiter "Actions" -> "Android-App bauen" -> "Run workflow",
+#      Haken bei "veroeffentlichen". Die Marke wird dabei angelegt.
+#   B) Auf der Kommandozeile: git tag v1.2.3 && git push origin v1.2.3
 #
-# Den Rest macht dieser Bauplan: er prueft, dass die drei Stellen dieselbe
-# Nummer nennen, baut die APK mit genau dieser Nummer und legt eine eigene
-# Veroeffentlichung v1.2.3 an. Die bleibt danach unveraendert - jede neue
-# Fassung bekommt eine eigene.
+# Beide Male prueft der Bauplan zuerst, ob package.json, der Fuss von
+# index.html und CHANGELOG.md dieselbe Nummer nennen, baut dann die APK mit
+# genau dieser Nummer und legt die Veroeffentlichung v1.2.3 an. Die bleibt
+# danach unveraendert - jede neue Fassung bekommt eine eigene.
 #
-# "Run workflow" im Reiter Actions baut zum Ausprobieren, ohne zu
-# veroeffentlichen.
+# "Run workflow" ohne den Haken baut nur zum Ausprobieren.
 
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      veroeffentlichen:
+        description: 'Veroeffentlichen (Marke anlegen und Release erstellen)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -36,14 +42,24 @@ jobs:
         run: |
           set -eu
           PAKET="$(node -p "require('./package.json').version")"
+          RAUS=nein
 
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
-            MARKE="${GITHUB_REF_NAME#v}"
-            FEHLER=0
-            if [ "$MARKE" != "$PAKET" ]; then
+            RAUS=ja
+            if [ "${GITHUB_REF_NAME#v}" != "$PAKET" ]; then
               echo "::error::Marke $GITHUB_REF_NAME passt nicht zu package.json ($PAKET)."
-              FEHLER=1
+              exit 1
             fi
+          elif [ "${{ inputs.veroeffentlichen }}" = "true" ]; then
+            RAUS=ja
+            if git ls-remote --exit-code --tags origin "refs/tags/v$PAKET" >/dev/null 2>&1; then
+              echo "::error::Die Marke v$PAKET gibt es schon. Erst die Fassung erhoehen."
+              exit 1
+            fi
+          fi
+
+          if [ "$RAUS" = "ja" ]; then
+            FEHLER=0
             if ! grep -q "Fassung $PAKET" index.html; then
               echo "::error::index.html nennt im Fuss nicht die Fassung $PAKET."
               FEHLER=1
@@ -54,6 +70,7 @@ jobs:
             fi
             [ "$FEHLER" -eq 0 ] || exit 1
           fi
+          echo "raus=$RAUS" >> "$GITHUB_OUTPUT"
 
           # Android zaehlt Fassungen als ganze Zahl, die nie kleiner werden
           # darf. 1.2.3 wird zu 10203.
@@ -138,7 +155,7 @@ jobs:
           path: ${{ steps.apk.outputs.name }}
 
       - name: Begleittext aus der Aenderungshistorie holen
-        if: github.ref_type == 'tag'
+        if: steps.fassung.outputs.raus == 'ja'
         run: |
           set -eu
           {
@@ -159,10 +176,14 @@ jobs:
           cat begleittext.md
 
       - name: Veroeffentlichen
-        if: github.ref_type == 'tag'
+        # Gibt es die Marke noch nicht, legt GitHub sie beim Anlegen der
+        # Veroeffentlichung auf diesem Stand an.
+        if: steps.fassung.outputs.raus == 'ja'
         uses: softprops/action-gh-release@v2
         with:
-          name: Spieleabend ${{ github.ref_name }}
+          tag_name: v${{ steps.fassung.outputs.nummer }}
+          target_commitish: ${{ github.sha }}
+          name: Spieleabend v${{ steps.fassung.outputs.nummer }}
           body_path: begleittext.md
           files: ${{ steps.apk.outputs.name }}
           fail_on_unmatched_files: true

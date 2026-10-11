@@ -47,9 +47,13 @@ Näheres in `ENTWICKLUNG.md` unter „Systemleisten".
 
 Die Nummer steht an drei Stellen und muss überall gleich sein, sonst bricht der
 Bau ab: `package.json`, der Fuß in `index.html` (`Fassung 1.2.3`) und ein
-Abschnitt `## [1.2.3]` in `CHANGELOG.md`. Dann `git tag v1.2.3` und
-`git push origin main v1.2.3` — GitHub baut die APK und legt die
-Veröffentlichung an. Näheres in `ENTWICKLUNG.md`.
+Abschnitt `## [1.2.3]` in `CHANGELOG.md`.
+
+Dann entweder `git tag v1.2.3 && git push origin v1.2.3` — oder, **aus einer
+Sitzung heraus notwendig**, im Reiter „Actions" den Bauplan mit dem Haken
+`veroeffentlichen` starten. Marken lassen sich von hier aus nicht schieben,
+der Server antwortet mit HTTP 403; Branch-Pushes gehen. Näheres in
+`ENTWICKLUNG.md`.
 
 ## Prüfen statt hoffen
 
