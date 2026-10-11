@@ -21,6 +21,39 @@ entfernen.
 **Kurz ausprobieren:** [`index.html`](index.html) herunterladen und im Browser
 öffnen.
 
+**Aufs Handy:** [Android-App herunterladen](../../releases/tag/apk) — fertige
+`spieleabend.apk`, kein Server nötig.
+
+---
+
+## Als App auf dem Handy (Android)
+
+1. Am Handy die [Veröffentlichung „apk"](../../releases/tag/apk) öffnen und
+   `spieleabend.apk` herunterladen.
+2. Die heruntergeladene Datei antippen. Android fragt beim ersten Mal, ob Apps
+   aus dieser Quelle installiert werden dürfen — einmalig bestätigen.
+3. Fertig. Die App liegt im App-Menü, mit eigenem Symbol.
+
+Die App enthält die Seite vollständig und braucht **kein Netz und keinen
+Server**. Deine Sammlung liegt im Speicher der App, auf diesem Handy.
+
+**Sicherung — wichtig vor einem Handy-Wechsel.** Unter „Sammlung bearbeiten" →
+„Sicherung & Umzug":
+
+- **Text kopieren** — klappt immer. In eine Notiz oder E-Mail einfügen.
+- **Als Datei sichern** — legt eine `.json`-Datei ab, wo dein Handy Downloads
+  speichert. Falls nichts passiert: den Textweg nehmen.
+- **Datei einlesen** — auf dem neuen Gerät die Sicherung auswählen, dann
+  „Sammlung ersetzen".
+
+**Neue Fassung bauen:** Im Reiter *Actions* → *APK bauen* → *Run workflow*.
+Nach ein paar Minuten hängt die neue Datei an derselben Veröffentlichung. Das
+passiert auch automatisch, sobald sich `index.html` ändert.
+
+Die App ist mit einem Entwicklerschlüssel signiert — für den Eigengebrauch
+genügt das. Android zeigt beim Installieren deshalb einen Hinweis. Käme eine
+Fassung mit anderem Schlüssel, müsste die alte vorher deinstalliert werden.
+
 ---
 
 ## Benutzen
@@ -59,6 +92,9 @@ Windows-PC hosten".
 - Die letzte Einstellung wird im Browser gemerkt.
 
 ## Auf dem eigenen Windows-PC hosten
+
+**Nur nötig, wenn mehrere Geräte dieselbe Sammlung teilen sollen.** Wer die
+Android-App nutzt, braucht diesen Teil nicht.
 
 Zwei Wege, je nachdem, was du brauchst.
 
