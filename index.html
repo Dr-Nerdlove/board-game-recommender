@@ -110,9 +110,15 @@ h1{
   display:inline-flex; align-items:center;
 }
 .kopflink:hover{color:var(--ink); border-color:var(--ink)}
-/* Rechts statt links: Der Kopf liest sich von links nach rechts, der Knopf
-   ist der Absprung ans Ende der Seite. Er steht am Ende der Zeile. */
-.kopflink{align-self:flex-end}
+/* Rechts statt links und auf derselben Hoehe wie der Einleitungssatz, statt
+   eine eigene Reihe zu belegen. Dafuer schwimmt der Knopf, statt in einer
+   starren zweiten Spalte zu stehen: Dort waere der Satz auf 189 Punkte
+   eingezwaengt und braeuchte vier Zeilen statt zwei - gemessen kostete das
+   fast so viel, wie die gesparte Reihe einbringt. So nutzt er die volle
+   Breite, sobald er am Knopf vorbei ist. Kopf von 201 auf 169 Punkte. */
+.kopfzeile{display:block; width:100%}
+.kopfzeile .kopflink{float:right; margin-left:14px}
+.kopfzeile .intro{margin:0}
 @media (max-width:520px){ .brand{gap:14px} .logo{width:64px; height:64px} }
 /* ---------- Filter ---------- */
 .panel{
@@ -500,9 +506,11 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
         <h1>Was spielen wir heute?</h1>
       </div>
     </div>
-    <p class="intro">Sag, wie viele ihr seid und worauf ihr Lust habt — den Rest
-      erledigt das Regal.</p>
-    <button class="kopflink" id="zursammlung" type="button">Sammlung bearbeiten ↓</button>
+    <div class="kopfzeile">
+      <button class="kopflink" id="zursammlung" type="button">Sammlung bearbeiten ↓</button>
+      <p class="intro">Sag, wie viele ihr seid und worauf ihr Lust habt — den Rest
+        erledigt das Regal.</p>
+    </div>
   </header>
 
   <section class="panel" aria-label="Runde beschreiben">
@@ -663,7 +671,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 2.2.1</p>
+    <p class="fassung">Fassung 2.2.2</p>
   </footer>
 </div>
 

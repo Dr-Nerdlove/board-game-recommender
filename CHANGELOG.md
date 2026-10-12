@@ -9,6 +9,15 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.2.2] – 2026-10-12
+
+### Geändert
+
+- **Einleitungssatz und „Sammlung bearbeiten" stehen jetzt auf einer Höhe.**
+  Der Knopf sitzt rechts, der Satz läuft links daneben und unter ihm weiter,
+  statt eine eigene Reihe zu belegen. Der Kopf der Seite ist dadurch von 201
+  auf 169 Punkte geschrumpft; die Filter beginnen entsprechend früher.
+
 ## [2.2.1] – 2026-10-12
 
 ### Behoben
@@ -345,7 +354,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.2...HEAD
+[2.2.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.2
 [2.2.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.1
 [2.2.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.0
 [2.1.3]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.3
