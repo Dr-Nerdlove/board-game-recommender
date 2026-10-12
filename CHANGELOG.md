@@ -9,6 +9,28 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.4.1] – 2026-10-12
+
+Aufräumen am Layout. An der Funktion ändert sich nichts.
+
+### Geändert
+
+- **Der Kopfbereich hing rechts.** Titel, Absatz und der Knopf standen alle in
+  einer Spalte neben dem Logo; links davon blieb eine leere Fläche. Jetzt teilt
+  sich nur die Titelzeile den Platz mit dem Logo, alles andere nutzt die volle
+  Breite.
+- **Die Chips brechen nicht mehr unregelmäßig um.** Acht Stimmungen und vier
+  Zeiten standen mal zu zweit nebeneinander, mal einzeln — der rechte Rand war
+  ausgefranst. Jetzt ein Raster mit gleich breiten Feldern, im Formular
+  genauso wie im Filter.
+- **„Würfel entscheiden" nimmt die freie Breite.** Vorher klebten beide Knöpfe
+  rechts und ließen die halbe Zeile leer.
+- **Die Etiketten auf den Karten sind keine Pillen mehr.** Zwei Reihen Knöpfe,
+  die keine waren, sind jetzt eine ruhige Zeile mit Trennpunkten.
+- **„Spieler 2–5 Spieler"** auf den Karten sagte das Wort zweimal.
+- Kürzere Einleitung, kürzere Erklärung unter „Passt heute", etwas größere
+  Abstände zwischen den Chips.
+
 ## [1.4.0] – 2026-10-12
 
 Ein Durchgang auf Bedienfreundlichkeit, mit Messungen statt Meinungen.
@@ -198,7 +220,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.4.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.4.1
 [1.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.3.0
 [1.2.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.2

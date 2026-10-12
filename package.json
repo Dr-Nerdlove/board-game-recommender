@@ -1,6 +1,6 @@
 {
   "name": "spieleabend",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "description": "Welches Brettspiel passt zur heutigen Runde?",
   "devDependencies": {

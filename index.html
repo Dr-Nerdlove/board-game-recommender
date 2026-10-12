@@ -77,7 +77,10 @@ body{
           calc(64px + var(--sicher-unten)) calc(20px + var(--sicher-links));}
 
 /* ---------- Kopf ---------- */
-.masthead{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px}
+/* Vorher stand alles - Titel, Absatz, Knopf - rechts vom Logo in einer
+   eingerueckten Spalte; links davon blieb eine leere Flaeche. Jetzt teilt sich
+   nur die Titelzeile den Platz mit dem Logo, der Rest nutzt die volle Breite. */
+.masthead{display:flex; flex-direction:column; align-items:flex-start; gap:14px}
 .eyebrow{
   font-size:12px; letter-spacing:.14em; text-transform:uppercase;
   color:var(--muted); margin:0 0 4px; font-weight:700;
@@ -87,13 +90,13 @@ h1{
   font-size:clamp(30px, 5.4vw, 44px); line-height:1.05; margin:0;
   text-wrap:balance; letter-spacing:-.01em;
 }
-.masthead p{margin:6px 0 0; color:var(--muted); max-width:46ch}
-.brand{display:flex; align-items:flex-start; gap:18px}
+.intro{margin:0; color:var(--muted); max-width:46ch}
+.brand{display:flex; align-items:center; gap:18px}
 .logo{flex:none; width:88px; height:88px; border-radius:18px}
 /* Die Sammlung liegt rund drei Bildschirmhoehen weiter unten. Von hier aus
    ist sie einen Tipp entfernt. */
 .kopflink{
-  font:inherit; font-size:13px; cursor:pointer; margin-top:10px;
+  font:inherit; font-size:13px; cursor:pointer;
   background:transparent; border:1px solid var(--line-strong); color:var(--muted);
   border-radius:99px; min-height:44px; padding:0 16px;
   display:inline-flex; align-items:center;
@@ -105,12 +108,25 @@ h1{
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
   box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; gap:18px;
 }
-.field{display:flex; flex-direction:column; gap:9px}
+.field{display:flex; flex-direction:column; gap:10px}
 .field > legend, .field > .lbl{
   font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--muted); padding:0;
 }
 fieldset.field{border:0; margin:0; padding:0}
-.chips{display:flex; flex-wrap:wrap; gap:7px}
+.chips{display:flex; flex-wrap:wrap; gap:10px}
+/* Acht Stimmungen und vier Zeiten brachen vorher unregelmaessig um - mal zwei
+   nebeneinander, mal eine allein. Ein Raster mit gleich breiten Feldern gibt
+   dem Block eine Kante. */
+#moods, #times{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
+#moods .chip, #times .chip{
+  width:100%; justify-content:center; text-align:center;
+  padding:6px 12px; line-height:1.15;
+}
+#weights, #f-weight{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px}
+#weights .chip, #f-weight .chip{width:100%; justify-content:center; padding:0 8px}
+/* Im Formular dieselben Gruppen, also auch dasselbe Raster. */
+#f-moods{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
+#f-moods .chip{width:100%; justify-content:center; text-align:center; padding:6px 12px; line-height:1.15}
 /* Mindestgroesse fuer alles, was angetippt wird: 44 px. Android empfiehlt 48,
    Apple 44 - darunter trifft man im Zug oder mit Handschuhen nicht mehr.
    Vorher waren es 34 px. */
@@ -154,13 +170,14 @@ fieldset.field{border:0; margin:0; padding:0}
 .chip:focus-visible, .dice:focus-visible, .reset:focus-visible, summary:focus-visible{
   outline:2px solid var(--accent); outline-offset:2px;
 }
-.panel-foot{
-  display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:12px;
-  margin-top:14px;
-}
+.panel-foot{display:flex; align-items:center; gap:10px; margin-top:14px}
 .summary-line{margin:0; color:var(--muted); font-size:14px}
 .summary-line strong{color:var(--ink); font-weight:700}
-.actions{display:flex; gap:8px}
+/* Der Hauptknopf nimmt den uebrigen Platz - vorher klebten beide rechts und
+   liessen die halbe Zeile leer. */
+.actions{display:flex; gap:10px; width:100%}
+.actions .dice{flex:1 1 auto}
+.actions .reset{flex:0 0 auto}
 .dice{
   font:inherit; font-weight:700; font-size:15px; cursor:pointer;
   background:var(--accent); color:#FFF8EC; border:1px solid var(--accent);
@@ -195,10 +212,11 @@ details.filters[open] .filters-hint::after{content:" ▴"}
    Bildschirms, obwohl es der Hauptknopf der ganzen App ist. */
 details.filters[open] + .panel-foot{
   position:sticky; bottom:var(--sicher-unten); z-index:30;
-  border-top:1px solid var(--line); margin-top:18px;
-  padding:14px 0 calc(14px + var(--sicher-unten));
+  border-top:1px solid var(--line); margin-top:4px;
+  padding:12px 0 calc(12px + var(--sicher-unten));
   background:var(--surface);
 }
+details.filters:not([open]) + .panel-foot{margin-top:4px}
 .filters-head .summary-line{flex:1 1 auto}
 
 /* ---------- Ergebnis ---------- */
@@ -268,11 +286,11 @@ details.filters[open] + .panel-foot{
 .pips i{color:var(--line-strong); font-style:normal}
 .why{margin:0; font-size:14px; color:var(--teal); font-weight:500}
 .note{margin:0; font-size:14px; color:var(--muted)}
-.tags{display:flex; flex-wrap:wrap; gap:6px; list-style:none; margin:2px 0 0; padding:0}
-.tags li{
-  font-size:12px; color:var(--muted); border:1px solid var(--line);
-  border-radius:99px; padding:3px 9px;
-}
+/* Die Etiketten sahen aus wie Knoepfe, waren aber keine - zwei Reihen Pillen
+   unter jeder Karte, die niemand antippen kann. Jetzt eine ruhige Zeile. */
+.tags{display:flex; flex-wrap:wrap; list-style:none; margin:0; padding:0;
+  font-size:13px; color:var(--muted)}
+.tags li:not(:last-child)::after{content:" ·"; margin-right:7px; color:var(--line-strong)}
 .empty{
   border:1px dashed var(--line-strong); border-radius:var(--radius); padding:26px;
   text-align:center; color:var(--muted);
@@ -444,10 +462,11 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
       <div>
         <p class="eyebrow">Spieleabend · <span id="regalzahl">…</span></p>
         <h1>Was spielen wir heute?</h1>
-        <p>Sag, wie viele ihr seid, wie viel Kopf ihr habt und worauf ihr Lust habt — der Rest ist Regalarbeit.</p>
-        <button class="kopflink" id="zursammlung" type="button">Sammlung bearbeiten ↓</button>
       </div>
     </div>
+    <p class="intro">Sag, wie viele ihr seid und worauf ihr Lust habt — den Rest
+      erledigt das Regal.</p>
+    <button class="kopflink" id="zursammlung" type="button">Sammlung bearbeiten ↓</button>
   </header>
 
   <section class="panel" aria-label="Runde beschreiben">
@@ -498,8 +517,8 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
       <h2>Passt heute</h2>
       <span class="count" id="count"></span>
     </div>
-    <p class="legende" id="legende" hidden>Der Balken unter jedem Namen zeigt die Passung
-      zu eurer Runde — je voller, desto besser. Ocker ist der Vorschlag ganz oben.</p>
+    <p class="legende" id="legende" hidden>Der Balken zeigt die Passung zur Runde —
+      je voller, desto besser.</p>
     <div class="grid" id="results"></div>
   </section>
 
@@ -609,7 +628,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 1.4.0</p>
+    <p class="fassung">Fassung 1.4.1</p>
   </footer>
 </div>
 
@@ -1188,7 +1207,7 @@ function card(g, res, gross, kennzeichen){
     "</div>" +
     '<div class="meter" role="img" aria-label="Passung ' + res.score + ' von 99"><span style="width:' + res.score + '%"></span></div>' +
     '<dl class="specs">' +
-      "<div><dt>Spieler</dt><dd>" + fmtPlayers(g) + "</dd></div>" +
+      "<div><dt>Spieler</dt><dd>" + fmtPlayers(g).replace(" Spieler", "") + "</dd></div>" +
       "<div><dt>Dauer</dt><dd>" + fmtDur(g) + "</dd></div>" +
       '<div><dt>Kopf</dt><dd class="pips">' + pips(g) + "</dd></div>" +
       (g.teach ? "<div><dt>Erklären</dt><dd>+" + erklaerZeit(g) + " Min</dd></div>" : "") +
