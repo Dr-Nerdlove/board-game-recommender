@@ -94,6 +94,14 @@ Drei Dinge, die beim Bauen schiefgingen und wieder schiefgehen können:
   vom Bildrand her (Schwelle 225), danach zwei Punkte abtragen. Nach Farbe
   freistellen geht *nicht*: Der Würfel `(226, 162, 55)` liegt zu dicht am
   Hintergrund-Ocker.
+- **Die hellen Umrisse der Sechsecke fallen dabei mit weg** und müssen
+  zurückgeholt werden, sonst sind die Sechsecke auf dem Grün kaum noch zu
+  ahnen. Sie hängen am Seitengrund, weil die Sechsecke unten aus der Kachel
+  herausragen. Über die Helligkeit geht es nicht — der Seitengrund ist mit
+  rund 248 genauso hell wie der Umriss. Über die Form schon: Ohne Umriss ist
+  jedes Sechseck ein eigener zusammenhängender Teil, abgetrennt vom großen
+  Teil aus Kachel und Inhalt. Also alles außer dem größten Teil nehmen und
+  den Spalt wieder auffüllen, 18 Punkte breit (im Original gemessen).
 - **Erst alles aufbauen, dann die Scheibe ausstanzen.** Das Motiv bringt den
   Kachelgrund mit — der gehört dazu, muss aber mit abgeschnitten werden.
 - **Die beiden Ebenen des adaptiven Symbols füllen beide die ganze
