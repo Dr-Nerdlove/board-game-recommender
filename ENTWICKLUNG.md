@@ -249,6 +249,27 @@ Der Block „Runde beschreiben" klappt zu (`state.filtersOpen`, gemerkt in den
 Einstellungen). Zugeklappt steht nur noch die Zusammenfassung da, und der erste
 Treffer rückt von Pixel 1065 auf 489 — also auf den ersten Bildschirm.
 
+## Hell und dunkel
+
+Es gibt **nur eine** Palette für dunkel, in `@media (prefers-color-scheme: dark)`.
+Einen Schalter in der Seite gibt es nicht mehr; das Gerät entscheidet.
+
+Damit das in der Android-App funktioniert, braucht es eine Kette, die man kennen
+sollte, bevor man daran rührt:
+
+1. Die WebView leitet `prefers-color-scheme` aus dem Attribut **`isLightTheme`**
+   des App-Themes ab — nicht direkt aus der Systemeinstellung.
+2. Capacitors Activity-Theme ist `Theme.AppCompat.DayNight.NoActionBar`, und
+   DayNight setzt `isLightTheme` je nach Nachtmodus des Geräts.
+
+Wer das Theme in `android/app/src/main/res/values/styles.xml` auf eine feste
+helle oder dunkle Variante ändert, nagelt damit auch die Seite fest.
+
+Falls sich die Seite auf einem Gerät **nicht** nach dem System richtet, ist der
+nächste Schritt `WebSettingsCompat.setAlgorithmicDarkeningAllowed(true)` in
+`MainActivity` — das müsste der Bauplan nach `npx cap add android`
+hineinschreiben, weil der Ordner `android/` bei jedem Bau neu entsteht.
+
 ## Das Datumsfeld
 
 `<input type="date">` zeigt das Format der **Systemsprache**, nicht das der

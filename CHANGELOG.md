@@ -9,6 +9,26 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.3.0] – 2026-10-12
+
+### Entfernt
+
+- **Der Schalter „Dunkel/Hell".** Hell oder dunkel entscheidet jetzt allein das
+  Gerät. In der Android-App reicht die WebView die Systemeinstellung durch: Sie
+  leitet `prefers-color-scheme` aus dem Attribut `isLightTheme` des App-Themes
+  ab, und Capacitors `Theme.AppCompat.DayNight` schaltet genau danach um. Stellt
+  man das Handy während des Betriebs um, geht die Seite ohne Neustart mit.
+
+  Nebenbei verschwindet damit die doppelte Farbpalette: Vorher stand jeder
+  dunkle Wert zweimal im Quelltext — einmal für die Systemeinstellung, einmal
+  für den Schalter. Jetzt nur noch einmal.
+
+### Hinzugefügt
+
+- `color-scheme: light dark` als Vermerk und in der Gestaltung. Damit richten
+  sich auch Eingabefelder, Bildlaufleisten und der Kalender des Datumsfelds
+  nach dem gewählten Schema statt hell zu bleiben.
+
 ## [1.2.2] – 2026-10-12
 
 An der App selbst ändert sich nichts; 1.2.1 war bereits richtig signiert. Was
@@ -142,7 +162,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.2.2...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.3.0
 [1.2.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.2
 [1.2.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.0

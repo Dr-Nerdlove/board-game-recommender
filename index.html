@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was spielen wir heute?</title>
+<meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#A96C12">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -32,6 +33,7 @@
   --teal:#1B665F; --warn:#9C3B33;
   --shadow:0 1px 2px rgba(22,32,28,.06), 0 8px 24px -18px rgba(22,32,28,.5);
   --radius:10px;
+  color-scheme:light dark;
   /* Platz fuer Statusleiste, Navigationsleiste und Display-Aussparungen.
      Capacitor setzt --safe-area-inset-*; im Browser greift env(). */
   --sicher-oben:   var(--safe-area-inset-top,    env(safe-area-inset-top,    0px));
@@ -39,21 +41,18 @@
   --sicher-unten:  var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
   --sicher-links:  var(--safe-area-inset-left,   env(safe-area-inset-left,   0px));
 }
+/* Hell oder dunkel entscheidet das Geraet, nicht die Seite. In der
+   Android-App reicht die WebView die Systemeinstellung durch: Sie leitet
+   prefers-color-scheme aus dem Attribut isLightTheme des App-Themes ab, und
+   Capacitors Theme (Theme.AppCompat.DayNight) schaltet genau danach um. */
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :root{
     --ground:#121715; --surface:#1A201D; --surface-2:#242B27; --sunk:#161C19;
     --ink:#E7EDE6; --muted:#95A399; --line:#2E3733; --line-strong:#414D47;
     --accent:#DDA349; --accent-ink:#F0C787; --accent-soft:#372B18;
     --teal:#5FB6A8; --warn:#DE8B82;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -20px #000;
   }
-}
-:root[data-theme="dark"]{
-  --ground:#121715; --surface:#1A201D; --surface-2:#242B27; --sunk:#161C19;
-  --ink:#E7EDE6; --muted:#95A399; --line:#2E3733; --line-strong:#414D47;
-  --accent:#DDA349; --accent-ink:#F0C787; --accent-soft:#372B18;
-  --teal:#5FB6A8; --warn:#DE8B82;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -20px #000;
 }
 *{box-sizing:border-box}
 /* Unter der Statusleiste und der Navigationsleiste zeichnet die App mit.
@@ -92,12 +91,6 @@ h1{
 .brand{display:flex; align-items:flex-start; gap:18px}
 .logo{flex:none; width:88px; height:88px; border-radius:18px}
 @media (max-width:520px){ .brand{gap:14px} .logo{width:64px; height:64px; border-radius:14px} }
-.theme-toggle{
-  border:1px solid var(--line-strong); background:var(--surface); color:var(--muted);
-  border-radius:99px; padding:7px 14px; font:inherit; font-size:13px; cursor:pointer;
-}
-.theme-toggle:hover{color:var(--ink); border-color:var(--ink)}
-
 /* ---------- Filter ---------- */
 .panel{
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
@@ -117,7 +110,7 @@ fieldset.field{border:0; margin:0; padding:0}
 .chip:hover{border-color:var(--ink)}
 .chip[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--ground); font-weight:700}
 .chip.num{min-width:40px; text-align:center; font-variant-numeric:tabular-nums}
-.chip:focus-visible, .theme-toggle:focus-visible, .dice:focus-visible, .reset:focus-visible, summary:focus-visible{
+.chip:focus-visible, .dice:focus-visible, .reset:focus-visible, summary:focus-visible{
   outline:2px solid var(--accent); outline-offset:2px;
 }
 .panel-foot{
@@ -132,8 +125,7 @@ fieldset.field{border:0; margin:0; padding:0}
   background:var(--accent); color:#FFF8EC; border:1px solid var(--accent);
   padding:10px 16px; border-radius:99px;
 }
-:root[data-theme="dark"] .dice{color:#20180A}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dice{color:#20180A}}
+@media (prefers-color-scheme: dark){ .dice{color:#20180A} }
 .dice:hover{filter:brightness(1.06)}
 .reset{
   font:inherit; font-size:14px; cursor:pointer; background:transparent;
@@ -309,8 +301,7 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
   font:inherit; font-size:14px; font-weight:700; cursor:pointer; border-radius:99px;
   padding:10px 16px; border:1px solid var(--accent); background:var(--accent); color:#FFF8EC;
 }
-:root[data-theme="dark"] .btn{color:#20180A}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{color:#20180A}}
+@media (prefers-color-scheme: dark){ .btn{color:#20180A} }
 .btn:hover{filter:brightness(1.06)}
 .btn.ghost{background:transparent; color:var(--muted); border-color:var(--line-strong); font-weight:400}
 .btn.ghost:hover{color:var(--ink); border-color:var(--ink); filter:none}
@@ -396,7 +387,6 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
         <p>Sag, wie viele ihr seid, wie viel Kopf ihr habt und worauf ihr Lust habt — der Rest ist Regalarbeit.</p>
       </div>
     </div>
-    <button class="theme-toggle" id="theme" type="button">Dunkel/Hell</button>
   </header>
 
   <section class="panel" aria-label="Runde beschreiben">
@@ -552,7 +542,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 1.2.2</p>
+    <p class="fassung">Fassung 1.3.0</p>
   </footer>
 </div>
 
@@ -1628,12 +1618,6 @@ $("reset").addEventListener("click", () => {
   state.players = 4; state.moods.clear(); state.weights.clear(); state.time = 0;
   state.picked = null; state.expanded.clear();
   render();
-});
-
-$("theme").addEventListener("click", () => {
-  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
-  const cur = document.documentElement.getAttribute("data-theme") || (dark ? "dark" : "light");
-  document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
 });
 
 /* ================= Start ================= */
