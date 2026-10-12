@@ -45,6 +45,16 @@
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -20px #000;
 }
 *{box-sizing:border-box}
+/* Unter der Statusleiste und der Navigationsleiste zeichnet die App mit.
+   Der Startabstand allein genuegt nicht - beim Scrollen liefe der Inhalt
+   sonst sichtbar unter die Uhr. Diese beiden Baender liegen fest oben und
+   unten und haben die Seitenfarbe, also verschwindet alles dahinter. */
+body::before, body::after{
+  content:""; position:fixed; left:0; right:0; z-index:40;
+  background:var(--ground); pointer-events:none;
+}
+body::before{top:0; height:var(--sicher-oben)}
+body::after{bottom:0; height:var(--sicher-unten)}
 [hidden]{display:none !important}
 html{-webkit-text-size-adjust:100%}
 body{
@@ -462,7 +472,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 1.0.0</p>
+    <p class="fassung">Fassung 1.0.1</p>
   </footer>
 </div>
 

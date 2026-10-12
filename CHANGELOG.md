@@ -9,6 +9,15 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.0.1] – 2026-10-12
+
+### Behoben
+
+- Beim Scrollen lief der Inhalt weiterhin sichtbar unter die Statusleiste und
+  die Navigationsleiste. 1.0.0 hatte nur den Abstand beim Start gesetzt — das
+  ist etwas anderes. Oben und unten liegt jetzt je ein mitlaufendes Band in
+  der Seitenfarbe, hinter dem der Inhalt verschwindet.
+
 ## [1.0.0] – 2026-10-12
 
 Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
@@ -42,5 +51,6 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.0.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.0.0
