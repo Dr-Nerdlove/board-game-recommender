@@ -7,8 +7,14 @@ aufgebaut ist — das Warum steht nirgends im Quelltext und geht sonst verloren.
 ## Der Kern: eine Datei
 
 `index.html` ist die ganze Anwendung — Aufbau, Gestaltung und Logik in einer
-Datei, rund 1300 Zeilen. Kein Baukasten, keine Abhängigkeiten, kein
+Datei, rund 1400 Zeilen. Kein Baukasten, keine Abhängigkeiten, kein
 Übersetzungsschritt. Datei öffnen genügt.
+
+Darin stecken auch die beiden Schriften als Daten (rund 120 KB, Nachweis in
+`SCHRIFTEN.md`). Das ist der Grund, warum die Datei 185 KB groß ist statt 65.
+Der Gegenwert: Es gibt **keine einzige Anfrage ans Netz** mehr, und die Seite
+sieht offline aus wie online. Vorher kamen die Schriften von Google — die App
+versprach „kein Netz nötig" und hielt es beim Aussehen nicht.
 
 Das ist eine bewusste Entscheidung, keine Nachlässigkeit. Das Projekt soll auch
 in fünf Jahren noch laufen und von jemandem weiterentwickelt werden können, der
@@ -172,13 +178,30 @@ Fragment gebaut: alles von `<title>` bis vor `</body>`, abzüglich der Zeilen,
 die dort ins Leere zeigen würden:
 
 ```
-<link rel="preconnect" …>      <link rel="icon" …>
-<link rel="apple-touch-icon" …> <link rel="manifest" …>
-<meta name="apple-mobile-web-app-… …>  <img class="logo" …>
+<link rel="icon" …>            <link rel="apple-touch-icon" …>
+<link rel="manifest" …>        <meta name="apple-mobile-web-app-… …>
+<img class="logo" …>
 ```
 
 Danach `</head>\n<body>\n` entfernen. Die `theme-color` bleibt — die braucht
-keine Datei.
+keine Datei. Die `@font-face`-Blöcke bleiben ebenfalls: Sie zeigen auf Daten in
+der Datei selbst, nicht auf eine Adresse.
+
+## Ausgabe der Treffer
+
+Die ersten `VOLLE_KARTEN` (drei) Treffer stehen als volle Karte da, der Rest als
+Zeile; Antippen macht eine Karte daraus (`state.expanded`). Grund: Bei 19
+Treffern war die Seite 6600 Pixel lang, das sind gut sieben Bildschirme.
+
+Der Würfel schiebt sein Ergebnis in `renderResults()` an **Position 1** und
+springt zur Überschrift, nicht zur Karte. Vorher landete man mitten in der
+Liste, ohne Zusammenhang. Damit die Auskunft „das wäre die Rangfolge" nicht
+verloren geht, wird der beste Treffer **vor** dem Umsortieren gemerkt und
+behält sein Kennzeichen „Top-Treffer".
+
+Der Block „Runde beschreiben" klappt zu (`state.filtersOpen`, gemerkt in den
+Einstellungen). Zugeklappt steht nur noch die Zusammenfassung da, und der erste
+Treffer rückt von Pixel 1065 auf 489 — also auf den ersten Bildschirm.
 
 ## Was absichtlich fehlt
 
@@ -187,6 +210,9 @@ keine Datei.
   Rahmen, der die Oberfläche bedient. Für eine Datei dieser Größe ist ein
   Testgerüst mehr Wartung als Nutzen — bei weiterem Wachstum kippt das.
 - **Keine Übersetzung.** Alles ist deutsch, auch die Commits.
+- **Keine Schachtelbilder.** Jede vergleichbare App lebt davon. Hier bräuchte es
+  dafür entweder Netz oder viel Speicher, und die Rechtelage bei Verlagsbildern
+  ist unklar. Der Gewinn wiegt den Verlust der Offline-Eigenschaft nicht auf.
 - **Kein Offline-Betrieb der Webfassung.** Dafür bräuchte es HTTPS, über eine
   Heimnetzadresse nicht zu haben. Die Android-App löst das anders.
 - **Keine Anmeldung.** Server wie App sind für ein Heimnetz gedacht.

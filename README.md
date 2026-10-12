@@ -8,8 +8,9 @@ Begründung.
 
 ![Die Seite mit fünf Spielern und Party-Stimmung](screenshot.png)
 
-Eine einzelne HTML-Datei, rund 60 KB, ohne Baukasten, ohne Abhängigkeiten,
-ohne Konto. Doppelklick genügt. Wer die Sammlung auf allen Geräten gleich haben
+Eine einzelne HTML-Datei, ohne Baukasten, ohne Abhängigkeiten, ohne Konto und
+**ohne eine einzige Anfrage ans Internet** — die Schriften stecken mit drin.
+Doppelklick genügt. Wer die Sammlung auf allen Geräten gleich haben
 will, startet den mitgelieferten kleinen Server (Node, eine Datei) im Heimnetz —
 für Windows liegen fertige Skripte dabei, die ihn als Hintergrunddienst
 einrichten.
@@ -349,6 +350,11 @@ Die Nummerierung folgt [Semantic Versioning](https://semver.org/lang/de/): bei
 x.y.**Z** wird etwas repariert. Was in welcher Fassung passiert ist, steht in
 der [Änderungshistorie](CHANGELOG.md); jede Fassung hat außerdem eine eigene
 [Veröffentlichung](../../releases) mit der passenden APK.
+
+## Schriften
+
+Die beiden mitgelieferten Schriften stehen unter der SIL Open Font License 1.1;
+Nachweis in [`SCHRIFTEN.md`](SCHRIFTEN.md).
 
 ## Nutzungsrechte
 

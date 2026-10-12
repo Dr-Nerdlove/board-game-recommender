@@ -30,6 +30,7 @@ unleserlich.
 | `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen |
 | `icon-*.png`, `manifest.webmanifest` | Symbole fürs Handy |
 | `CHANGELOG.md` | Änderungshistorie, gepflegt bei jeder Fassung |
+| `SCHRIFTEN.md` | Lizenznachweis der eingebetteten Schriften |
 
 ## Vor dem Ändern von `index.html` lesen
 
@@ -37,6 +38,11 @@ Ein neues Feld am Spiel muss an **vier** Stellen mitgeführt werden, sonst geht
 es beim Bearbeiten still verloren: `normalize()`, `submitGame()`, die
 Export-Projektion in `renderCollection()` und gegebenenfalls `startEdit()` /
 `resetForm()`. Dieser Fehler ist schon einmal passiert.
+
+Die Datei ist 185 KB groß, weil zwei Schriften als Daten darin stecken. Nicht
+erschrecken und nicht „aufräumen": Sie sind der Grund, warum die App ohne Netz
+aussieht wie mit. Lizenznachweis in `SCHRIFTEN.md`, Begründung in
+`ENTWICKLUNG.md`.
 
 Der Innenabstand von `.wrap` steht an **zwei** Stellen (normale Regel und
 `@media (max-width:520px)`) und enthält in beiden die Variablen `--sicher-*`.

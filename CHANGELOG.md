@@ -9,6 +9,40 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.1.0] – 2026-10-12
+
+Ein Rundgang durch die App auf einem Handy hat fünf Stellen zutage gefördert,
+an denen sie mehr Arbeit macht als nötig. Alle fünf sind hier erledigt.
+
+### Geändert
+
+- **Der Würfel zeigt sein Ergebnis oben.** Bisher landete man mitten in einer
+  langen Liste — das gewürfelte Spiel stand auf Platz 6 von 19, und warum,
+  stand nirgends. Jetzt rückt es an die erste Stelle, bekommt das Kennzeichen
+  „Der Würfel sagt" und einen Knopf „Nochmal würfeln". Welches Spiel die beste
+  Passung hat, steht weiterhin daneben.
+- **„Runde beschreiben" klappt zu.** Zugeklappt bleibt die Zusammenfassung
+  stehen, und der erste Vorschlag rückt von Pixel 1065 auf 489 — auf den ersten
+  Bildschirm statt dahinter. Ob auf- oder zugeklappt, wird gemerkt.
+- **Nur die ersten drei Treffer sind volle Karten**, der Rest je eine Zeile mit
+  Name, Eckwerten und Grund. Antippen macht eine Karte daraus. Die Seite ist
+  damit 3500 statt 6600 Pixel lang.
+- **Die Regalliste ist halb so hoch.** „Ändern" und „Entfernen" standen unter
+  jedem der 21 Einträge und sagten dort nichts; sie erscheinen jetzt an der
+  Zeile, die man antippt.
+
+### Hinzugefügt
+
+- **Die Schriften stecken in der Datei.** Vorher kamen sie von Google: ohne
+  Internet sah die App anders aus, obwohl sie „kein Netz nötig" verspricht.
+  Jetzt gibt es keine einzige Anfrage mehr nach draußen. Kostet 120 KB,
+  Lizenznachweis in `SCHRIFTEN.md`.
+- Die Seite nennt ihre Fassung unten im Fuß.
+
+### Behoben
+
+- Sprungziele landeten hinter dem Band der Statusleiste.
+
 ## [1.0.1] – 2026-10-12
 
 ### Behoben
@@ -51,6 +85,7 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.0.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.1.0
 [1.0.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.0.0
