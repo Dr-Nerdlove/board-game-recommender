@@ -249,6 +249,36 @@ Der Block „Runde beschreiben" klappt zu (`state.filtersOpen`, gemerkt in den
 Einstellungen). Zugeklappt steht nur noch die Zusammenfassung da, und der erste
 Treffer rückt von Pixel 1065 auf 489 — also auf den ersten Bildschirm.
 
+## Bedienung auf dem Handy
+
+**44 Pixel sind die Untergrenze für alles, was angetippt wird.** Android
+empfiehlt 48, Apple 44. Vorher lagen 72 von 112 Bedienelementen darunter — die
+Chips bei 34, die Sortierknöpfe bei 27, eine Aufklappzeile bei 18. Das fällt am
+Schreibtisch mit der Maus nie auf und im Zug sofort.
+
+Prüfen lässt sich das in einem Durchgang: alle `button`, `input`, `summary` und
+`textarea` einsammeln, die Höhe messen, alles unter 44 melden. Bei
+Kontrollkästchen zählt die umgebende Beschriftung, nicht das Kästchen.
+
+Zwei Stellen hängen daran:
+
+- **Die Knopfzeile unter dem Filter klebt** (`position:sticky`), solange der
+  Block offen ist. Ohne das beginnt „Würfel entscheiden" bei Pixel 882 von 915.
+- **Die Spielerzahl ist ein Zähler**, kein Chip je Zahl. Das bezahlt den Platz,
+  den die größeren Chips kosten — und hebt die willkürliche Grenze von 12 auf.
+
+## Warum „Heute gespielt" nicht neu sortiert
+
+Der Knopf setzt `lastPlayed` auf heute. In der Bewertung kostet das 25 Punkte,
+das Spiel rutscht also ans Ende — und verschwindet damit genau in dem Moment
+unter dem Finger, in dem man es bestätigt hat. Gemessen: Danach lag ein Etikett
+einer fremden Karte an derselben Stelle.
+
+Deshalb ruft der Knopf **nicht** `render()`, sondern `frischeKarte(g)`: Diese
+eine Karte wird neu gebaut, die Reihenfolge bleibt. Die neue Rangfolge greift
+beim nächsten Würfeln oder Filterwechsel. Wer hier auf `render()` zurückstellt,
+holt das Problem zurück.
+
 ## Hell und dunkel
 
 Es gibt **nur eine** Palette für dunkel, in `@media (prefers-color-scheme: dark)`.

@@ -70,6 +70,15 @@ Sitzung heraus notwendig**, im Reiter „Actions" den Bauplan mit dem Haken
 der Server antwortet mit HTTP 403; Branch-Pushes gehen. Näheres in
 `ENTWICKLUNG.md`.
 
+## Zwei Regeln für die Oberfläche
+
+- **Nichts Antippbares unter 44 Pixel.** Chips, Textknöpfe, Aufklappzeilen,
+  Kontrollkästchen samt Beschriftung. Das war schon einmal verletzt — 72 von
+  112 Elementen.
+- **„Heute gespielt" sortiert die Liste nicht neu** (`frischeKarte()` statt
+  `render()`), sonst verschwindet die bestätigte Karte unter dem Finger.
+  Begründung in `ENTWICKLUNG.md`.
+
 ## Prüfen statt hoffen
 
 Es gibt keine automatischen Tests. Bewährt hat sich:

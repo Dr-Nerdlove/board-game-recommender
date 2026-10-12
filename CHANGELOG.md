@@ -9,6 +9,42 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.4.0] – 2026-10-12
+
+Ein Durchgang auf Bedienfreundlichkeit, mit Messungen statt Meinungen.
+
+### Geändert
+
+- **Die Spielerzahl ist ein Zähler statt zwölf Knöpfen.** Minus, Feld, Plus.
+  Die Obergrenze von 12 war keine Entscheidung, sondern eine Schleife im
+  Quelltext — jetzt sind es 99, und wer zu fünfzehnt ist, tippt die Zahl
+  einfach ein. Die Reihe schrumpft dabei von 93 auf 66 Pixel.
+- **Alles, was angetippt wird, ist mindestens 44 Pixel hoch.** Vorher waren
+  72 von 112 Bedienelementen kleiner: die Chips 34, die kleinen Textknöpfe
+  ebenfalls 34, die Sortierknöpfe 27 und die Zeile „N Spiele fallen heute
+  raus" ganze 18. Android empfiehlt 48, Apple 44.
+- **Die Knopfzeile bleibt am unteren Rand stehen, solange der Filter offen
+  ist.** „Würfel entscheiden" begann vorher bei Pixel 882 von 915 — also
+  unterhalb des Bildschirms, obwohl es der Hauptknopf der App ist.
+- **„Heute gespielt" zieht die Karte nicht mehr weg.** Frisch Gespieltes
+  rutscht in der Rangfolge nach unten; dadurch verschwand genau die Karte, die
+  man gerade bestätigt hatte, und eine fremde rutschte unter den Finger. Jetzt
+  wird nur diese eine Karte aufgefrischt und bleibt stehen. Die neue Rangfolge
+  greift beim nächsten Würfeln oder Filterwechsel.
+
+### Hinzugefügt
+
+- **Mehrfachauswahl ist erkennbar.** „Worauf habt ihr Lust?" und „Wie viel
+  Kopf?" tragen den Zusatz „mehrere möglich", ausgewählte Chips ein Häkchen.
+  Vorher sahen „eins von" und „mehrere davon" identisch aus.
+- **„Sammlung bearbeiten ↓" im Kopfbereich.** Die Sammlung beginnt rund drei
+  Bildschirmhöhen weiter unten; von hier ist sie einen Tipp entfernt.
+
+### Nicht geändert
+
+Der Kontrast wurde durchgerechnet: Der schlechteste Wert liegt bei 6,29 — die
+Norm verlangt 4,5. Hier war nichts zu tun.
+
 ## [1.3.0] – 2026-10-12
 
 ### Entfernt
@@ -162,7 +198,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.3.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.3.0
 [1.2.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.2
 [1.2.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.1
