@@ -49,6 +49,15 @@ Der Innenabstand von `.wrap` steht an **zwei** Stellen (normale Regel und
 Die halten in der Android-App die Statusleiste von der Überschrift fern;
 Näheres in `ENTWICKLUNG.md` unter „Systemleisten".
 
+## Signatur: nicht anfassen
+
+Die APK wird mit einem festen Schlüssel aus den Geheimnissen
+`SIGNIER_SCHLUESSEL` und `SIGNIER_PASSWORT` signiert. Ändert sich der Schlüssel,
+lässt sich die App nicht mehr über die vorige Fassung aktualisieren, und jeder
+Benutzer verliert beim nötigen Deinstallieren seine Sammlung. Jeder Bau schreibt
+den Fingerabdruck ins Protokoll — er muss gleich bleiben. Hintergrund in
+`ENTWICKLUNG.md`.
+
 ## Eine neue Fassung herausgeben
 
 Die Nummer steht an drei Stellen und muss überall gleich sein, sonst bricht der

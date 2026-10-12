@@ -81,6 +81,26 @@ jobs:
           echo "code=$((MA * 10000 + MI * 100 + PA))" >> "$GITHUB_OUTPUT"
           echo "Fassung $PAKET, Android-Zaehler $((MA * 10000 + MI * 100 + PA))"
 
+      - name: Signaturschluessel bereitlegen
+        # Ohne festen Schluessel signiert Gradle jeden Bau mit einem neuen
+        # Zufallsschluessel. Fuer Android ist die Signatur der Ausweis der App:
+        # Zwei Pakete mit verschiedenen Ausweisen sind zwei verschiedene Apps,
+        # und eine Aktualisierung scheitert mit "App nicht installiert".
+        env:
+          SCHLUESSEL: ${{ secrets.SIGNIER_SCHLUESSEL }}
+          PASSWORT: ${{ secrets.SIGNIER_PASSWORT }}
+        run: |
+          set -eu
+          if [ -z "${SCHLUESSEL:-}" ] || [ -z "${PASSWORT:-}" ]; then
+            echo "::error::Die Geheimnisse SIGNIER_SCHLUESSEL und SIGNIER_PASSWORT fehlen."
+            echo "::error::Anzulegen unter Settings -> Secrets and variables -> Actions."
+            echo "::error::Naeheres in ENTWICKLUNG.md, Abschnitt \"Signatur\"."
+            exit 1
+          fi
+          printf '%s' "$SCHLUESSEL" | base64 -d > "$RUNNER_TEMP/spieleabend.keystore"
+          test -s "$RUNNER_TEMP/spieleabend.keystore"
+          echo "Schluessel bereit ($(wc -c < "$RUNNER_TEMP/spieleabend.keystore") Bytes)."
+
       - name: Node einrichten
         uses: actions/setup-node@v4
         with:
@@ -125,6 +145,30 @@ jobs:
           sed -i 's/versionName .*/versionName "${{ steps.fassung.outputs.nummer }}"/' android/app/build.gradle
           grep -n 'version\(Code\|Name\)' android/app/build.gradle
 
+      - name: Signatur ins Android-Projekt eintragen
+        # Ein zweiter android-Block ergaenzt den aus der Vorlage; das ist
+        # stabiler als in den vorhandenen hineinzuschneiden.
+        run: |
+          cat >> android/app/build.gradle <<'GRADLE'
+
+          android {
+              signingConfigs {
+                  freigabe {
+                      storeFile file(System.getenv("SPIELEABEND_KEYSTORE"))
+                      storePassword System.getenv("SPIELEABEND_PASSWORT")
+                      keyAlias "spieleabend"
+                      keyPassword System.getenv("SPIELEABEND_PASSWORT")
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.freigabe
+                  }
+              }
+          }
+          GRADLE
+          tail -18 android/app/build.gradle
+
       - name: Symbole erzeugen
         # Schlaegt das fehl, baut die App trotzdem - nur mit Standardsymbol.
         continue-on-error: true
@@ -134,19 +178,27 @@ jobs:
         run: npx cap sync android
 
       - name: APK bauen
+        env:
+          SPIELEABEND_KEYSTORE: ${{ runner.temp }}/spieleabend.keystore
+          SPIELEABEND_PASSWORT: ${{ secrets.SIGNIER_PASSWORT }}
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon
 
-      - name: APK benennen
+      - name: APK benennen und Ausweis zeigen
         id: apk
         run: |
           set -eu
           NAME="spieleabend-${{ steps.fassung.outputs.nummer }}.apk"
-          cp android/app/build/outputs/apk/debug/app-debug.apk "$NAME"
+          cp android/app/build/outputs/apk/release/app-release.apk "$NAME"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           ls -la "$NAME"
+          # Dieser Fingerabdruck muss bei jedem Bau derselbe sein. Aendert er
+          # sich, laesst sich die App nicht mehr aktualisieren.
+          ABDRUCK="$(keytool -printcert -jarfile "$NAME" | grep -m1 'SHA256:' | sed 's/.*SHA256: *//')"
+          echo "abdruck=$ABDRUCK" >> "$GITHUB_OUTPUT"
+          echo "Fingerabdruck der Signatur: $ABDRUCK"
 
       - name: APK als Arbeitsergebnis anhaengen
         uses: actions/upload-artifact@v4
@@ -163,6 +215,8 @@ jobs:
             echo "Handy oeffnen. Android fragt beim ersten Mal, ob Apps aus dieser"
             echo "Quelle erlaubt sind - das muss einmalig bestaetigt werden. Eine"
             echo "bereits vorhandene Fassung wird ersetzt, die Sammlung bleibt."
+            echo
+            echo "Signatur: \`${{ steps.apk.outputs.abdruck }}\`"
             echo
             echo "---"
             echo

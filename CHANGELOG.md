@@ -9,6 +9,27 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.2.1] – 2026-10-12
+
+### Behoben
+
+- **Die App ließ sich nicht über die vorige Fassung aktualisieren.** Gebaut
+  wurde bisher mit `assembleDebug`. Debug-Pakete werden mit dem Debug-Schlüssel
+  signiert, der auf dem Entwicklerrechner liegt — GitHubs Maschinen sind bei
+  jedem Lauf frisch, also legte Gradle jedes Mal einen neuen Zufallsschlüssel
+  an. Für Android ist die Signatur der Ausweis einer App; mit neuem Ausweis ist
+  es eine fremde App, und die Aktualisierung scheitert. Jede Fassung bis
+  einschließlich 1.2.0 war davon betroffen.
+
+  Gebaut wird jetzt mit `assembleRelease` und einem festen Schlüssel aus den
+  GitHub-Geheimnissen. Der Fingerabdruck der Signatur steht im Bauprotokoll
+  und bei jeder Veröffentlichung.
+
+  **Einmalig nötig:** Die installierte App trägt noch einen der alten
+  Zufallsausweise. Sie muss ein letztes Mal deinstalliert werden — **vorher
+  die Sammlung sichern**, Deinstallieren löscht den Speicher der App mit.
+  Ab 1.2.1 laufen Aktualisierungen dann normal durch.
+
 ## [1.2.0] – 2026-10-12
 
 Der Kleinkram aus dem Rundgang.
@@ -103,7 +124,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.2.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.1.0
 [1.0.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.0.1

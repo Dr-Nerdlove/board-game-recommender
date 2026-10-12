@@ -104,6 +104,44 @@ Der Bauplan springt **nur auf Versionsmarken** an (`v*`) und legt dafür je eine
 eigene Veröffentlichung an, die danach unverändert bleibt. „Run workflow" baut
 zum Ausprobieren, ohne zu veröffentlichen.
 
+### Signatur
+
+**Das Wichtigste am ganzen Bauplan.** Für Android ist die Signatur der Ausweis
+einer App. Zwei Pakete mit verschiedenen Ausweisen sind zwei verschiedene Apps,
+auch bei gleichem Namen und gleicher Kennung — eine Aktualisierung scheitert
+dann mit „App nicht installiert", und es hilft nur Deinstallieren. Dabei löscht
+Android den Speicher der App, also die ganze Sammlung.
+
+Genau das ist bis einschließlich 1.2.0 passiert: Gebaut wurde mit
+`assembleDebug`, und der Debug-Schlüssel liegt normalerweise auf dem
+Entwicklerrechner unter `~/.android/debug.keystore`. GitHubs Maschinen sind bei
+jedem Lauf frisch — die Datei fehlt dort, also legte Gradle **jedes Mal einen
+neuen Zufallsschlüssel** an.
+
+Seither: `assembleRelease` mit einem festen Schlüssel aus zwei Geheimnissen.
+
+| Geheimnis | Inhalt |
+| --- | --- |
+| `SIGNIER_SCHLUESSEL` | die Schlüsseldatei, Base64-kodiert |
+| `SIGNIER_PASSWORT` | das Passwort, für Speicher und Schlüssel dasselbe |
+
+Anzulegen unter *Settings → Secrets and variables → Actions*. Fehlen sie,
+bricht der Bau gleich im zweiten Schritt mit einer verständlichen Meldung ab —
+lieber das als ein Paket, das sich später nicht aktualisieren lässt.
+
+Der Schlüssel heißt innen `spieleabend` (Alias, steht fest im Bauplan). Jeder
+Bau schreibt den Fingerabdruck der Signatur ins Protokoll und in den Text der
+Veröffentlichung. **Der muss über alle Fassungen hinweg gleich bleiben.**
+
+Drei Dinge, die man wissen muss:
+
+- **Geht der Schlüssel verloren, ist er weg.** Dann lässt sich keine
+  Aktualisierung mehr bauen, und alle Benutzer müssten einmal deinstallieren.
+  Eine Kopie gehört an einen sicheren Ort außerhalb von GitHub.
+- **Der Schlüssel gehört nie ins Repository.** Deshalb die Geheimnisse.
+- **Nie austauschen, solange es nicht sein muss.** Ein Tausch bedeutet für
+  jeden Benutzer: deinstallieren, neu installieren, Sammlung vorher sichern.
+
 ### Eine neue Fassung herausgeben
 
 Die Fassungsnummer steht an **drei** Stellen. Der Bauplan vergleicht sie und

@@ -35,11 +35,15 @@ fertige APK, kein Server nötig.
    aus dieser Quelle installiert werden dürfen — einmalig bestätigen.
 3. Fertig. Die App liegt im App-Menü, mit eigenem Symbol.
 
+Eine neuere Fassung installiert sich über die alte, die Sammlung bleibt dabei
+erhalten. **Ausnahme:** Wer noch eine Fassung bis 1.2.0 installiert hat, muss
+einmalig deinstallieren — vorher die Sammlung sichern, Deinstallieren löscht sie
+mit. Der Grund steht in der [Änderungshistorie](CHANGELOG.md) unter 1.2.1.
+
 Jede Fassung bekommt eine eigene Veröffentlichung, die danach unverändert
 bleibt. Was sich geändert hat, steht dort und in der
 [Änderungshistorie](CHANGELOG.md). Welche Fassung bei dir läuft, steht ganz
-unten auf der Seite. Eine neuere installiert sich über die alte, deine Sammlung
-bleibt dabei erhalten.
+unten auf der Seite.
 
 Die App enthält die Seite vollständig und braucht **kein Netz und keinen
 Server**. Deine Sammlung liegt im Speicher der App, auf diesem Handy.
