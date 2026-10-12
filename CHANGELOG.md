@@ -9,6 +9,25 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.1.3] – 2026-10-12
+
+### Geändert
+
+- **„Sammlung bearbeiten" steht jetzt rechts.** Der Kopf liest sich von links
+  nach rechts, der Knopf ist der Absprung ans Seitenende — er sitzt am Ende
+  der Zeile.
+
+### Behoben
+
+- **Die Überschriften im Filter klebten auf ihren Knöpfen.** Gemeint waren
+  8 Punkte Abstand, tatsächlich waren es null: Ein `<legend>` ist kein
+  Flex-Element, der dafür vorgesehene Spaltenabstand greift bei ihm nicht.
+  Jetzt stehen überall 12 Punkte, im Filter wie im Formular.
+- **Unter „Zurücksetzen" und „Würfel entscheiden" war zu viel Luft.** Der
+  Platz für die Navigationsleiste des Handys wurde doppelt gerechnet — einmal
+  in der Position der Knopfzeile, einmal in ihrer Polsterung. Gemessen
+  80 Punkte statt 46.
+
 ## [2.1.2] – 2026-10-12
 
 ### Behoben
@@ -301,7 +320,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.1.2...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.1.3...HEAD
+[2.1.3]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.3
 [2.1.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.2
 [2.1.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.1
 [2.1.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.0
