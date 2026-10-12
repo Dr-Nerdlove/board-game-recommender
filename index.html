@@ -635,7 +635,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 2.0.0</p>
+    <p class="fassung">Fassung 2.0.1</p>
   </footer>
 </div>
 
@@ -1084,6 +1084,10 @@ function fmtGespielt(g){
   return jahre === 1 ? "vor über einem Jahr" : "vor über " + jahre + " Jahren";
 }
 
+const aufzaehlung = teile =>
+  teile.length < 2 ? (teile[0] || "")
+                   : teile.slice(0, -1).join(", ") + " und " + teile[teile.length - 1];
+
 function evaluate(g){
   if(state.players < g.min) return { ok:false, why:"ab " + g.min + " Spielern" };
   if(state.players > g.max) return { ok:false, why:"nur bis " + g.max };
@@ -1105,7 +1109,7 @@ function evaluate(g){
 
   if(hits.length){
     score += Math.min(hits.length, 2) * 13;
-    reasons.push(hits.map(m => MOODS[m]).join(" und "));
+    reasons.push(aufzaehlung(hits.map(m => MOODS[m])));
   }
   if(isBest(g)) score += 14;
   else if(state.players === g.min || state.players === g.max) score += 2;
@@ -1133,7 +1137,8 @@ function evaluate(g){
   else { score -= 25; }
 
   // Ohne Filter sagen Kennzeichen und Balken schon alles — dann bleibt die Zeile leer.
-  return { ok:true, score:Math.max(5, Math.min(99, Math.round(score))), why:reasons.join(" · ") };
+  return { ok:true, score:Math.max(5, Math.min(99, Math.round(score))),
+           why:reasons.join(" · "), genannt:hits };
 }
 
 /* ================= Ausgabe: Vorschläge ================= */
@@ -1141,6 +1146,16 @@ function evaluate(g){
 function pips(g){
   const filled = g.weight <= 1.5 ? 1 : g.weight <= 2.6 ? 2 : 3;
   return "●".repeat(filled) + "<i>" + "●".repeat(3 - filled) + "</i>";
+}
+
+// Die gruene Begruendungszeile nennt bereits die Stimmungen, die gepasst haben.
+// Sie noch einmal grau darunter zu wiederholen, sagt nichts - also nur den Rest.
+// Bleibt nichts uebrig, entfaellt die Zeile ganz.
+function uebrigeTags(g, res){
+  const genannt = res.genannt || [];
+  const rest = g.moods.filter(m => !genannt.includes(m));
+  if(!rest.length) return "";
+  return '<ul class="tags">' + rest.map(m => "<li>" + esc(MOODS[m]) + "</li>").join("") + "</ul>";
 }
 
 // kennzeichen: "wuerfel" | "top" | "" - was oben rechts auf der Karte steht.
@@ -1163,7 +1178,7 @@ function card(g, res, gross, kennzeichen){
     "</dl>" +
     (res.why ? '<p class="why">' + esc(res.why) + "</p>" : "") +
     (g.note ? '<p class="note">' + esc(g.note) + "</p>" : "") +
-    '<ul class="tags">' + g.moods.map(m => "<li>" + esc(MOODS[m]) + "</li>").join("") + "</ul>" +
+    uebrigeTags(g, res) +
     '<div class="cardfoot">' +
       '<button class="linkbtn played' + (istHeute(g.lastPlayed) ? " on" : "") + '" type="button" data-played="' +
         esc(g.id) + '">' + (istHeute(g.lastPlayed) ? "Heute gespielt ✓" : "Heute gespielt") + "</button>" +

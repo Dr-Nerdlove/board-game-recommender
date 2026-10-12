@@ -55,6 +55,9 @@ beim Feld `lastPlayed` einmal passiert.
 - **Begründungen statt stillem Verschwinden.** Was durch einen Filter fällt,
   steht unten mit Grund („mit Erklärung ab 65 Min"). Das ist die Eigenschaft,
   die das Werkzeug benutzbar macht.
+- **Nichts zweimal sagen.** Die Begründungszeile nennt die Stimmungen, die
+  gepasst haben; die Etikettenzeile darunter lässt sie deshalb weg
+  (`uebrigeTags()`) und entfällt ganz, wenn nichts übrig bleibt.
 - **Keine Zeile, die auf jeder Karte steht.** Ein Hinweis, den alle teilen,
   sagt nichts. Deshalb erscheint „noch nie gespielt" erst, wenn es überhaupt
   eine Spielhistorie gibt, und die Begründungszeile bleibt ohne gesetzten
