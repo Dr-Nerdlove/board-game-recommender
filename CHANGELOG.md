@@ -9,6 +9,19 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.2.0] – 2026-10-12
+
+### Geändert
+
+- **Der Zeitfilter ist jetzt ein Balken.** Vorher vier gleich aussehende
+  Kacheln im Quadrat — als wären es Stimmungen, obwohl Zeit als einziges Feld
+  eine Reihenfolge hat. Jetzt eine durchgehende Leiste, von links nach rechts
+  zu lesen: Egal · 30 · 60 · 90 Minuten, das „höchstens" steht in der
+  Überschrift. Angetippt wird weiter, nicht geschoben: Bei vier Werten ist ein
+  Tipp eine Bewegung und Ziehen sind drei, und „Egal" ist kein Punkt auf einer
+  Zeitachse. Der Block ist dabei von 128 auf 77 Punkte geschrumpft, jede
+  Fläche misst weiterhin 86 × 44 Punkte.
+
 ## [2.1.3] – 2026-10-12
 
 ### Geändert
@@ -320,7 +333,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.1.3...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.0
 [2.1.3]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.3
 [2.1.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.2
 [2.1.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.1
