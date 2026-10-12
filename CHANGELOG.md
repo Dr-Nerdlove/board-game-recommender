@@ -9,6 +9,46 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.0.0] – 2026-10-12
+
+Das Projekt ist von nun an eine Android-App. Alles, was zum Heimserver gehörte,
+ist raus.
+
+### Entfernt
+
+- **Der mitgelieferte Heimserver und die Windows-Skripte.** `spieleabend-server.mjs`,
+  `windows-dienst.ps1`, die vier `dienst-*.cmd` und `start-windows.cmd` sind
+  gelöscht, ebenso der Code in der Seite, der nach `api/sammlung` suchte. Beim
+  Start der App entfällt damit eine Anfrage, die ohnehin immer ins Leere lief.
+  Wer den Server noch braucht: Er steht in der Geschichte, `git log`.
+- Von drei Speicherwegen bleiben zwei: **Gerät** und, nur in der
+  veröffentlichten Claude-Fassung, **Konto**. Der Hinweis über dem Formular
+  sagt „auf diesem Gerät" statt „in diesem Browser" — in einer App ist Browser
+  das falsche Wort.
+
+### Geändert
+
+- **Das App-Symbol füllt die Maske aus.** Vorher saß das Logo klein in einem
+  ockernen Ring; jetzt reicht es bis an den Rand. Nachgemessen: bei jeder
+  üblichen Maskenform ist kein Punkt Hintergrund mehr zu sehen. Die Ecken des
+  Motivs werden dafür beschnitten.
+- **Eine Abstandsleiter statt sieben Einzelwerten.** Im Quelltext standen
+  8, 10, 14, 16, 18, 22 und 26 Pixel ohne Zusammenhang — das ist der Grund für
+  einen unruhigen Satzspiegel, nicht ein einzelner falscher Wert. Jetzt vier
+  Stufen: 8 innerhalb einer Beschriftung, 12 in einer Karte, 20 zwischen
+  Feldern, 24 zwischen Blöcken.
+- **Der Zähler für die Personenanzahl steht mittig**, Minus und Plus
+  gleich weit vom Rand. Das Wort „Personen" ist entfallen: Es stand zwischen
+  Zahl und Plus und riss die Gruppe auseinander — die Beschriftung darüber
+  fragt ohnehin „Wie viele seid ihr?".
+
+### Behoben
+
+- **Der Filterblock klappte sich wieder auf**, wenn man unmittelbar nach dem
+  Zuklappen einen Chip antippte. `renderFilters()` erzwang den Klappzustand bei
+  jedem Neuaufbau, während das `toggle`-Ereignis verzögert eintrifft. Jetzt wird
+  er einmal beim Start gesetzt; danach führt das Element selbst Buch.
+
 ## [1.4.1] – 2026-10-12
 
 Aufräumen am Layout. An der Funktion ändert sich nichts.
@@ -220,7 +260,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.4.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.0.0
 [1.4.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.4.1
 [1.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.3.0

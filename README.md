@@ -8,22 +8,19 @@ Begründung.
 
 ![Die Seite mit fünf Spielern und Party-Stimmung](screenshot.png)
 
-Eine einzelne HTML-Datei, ohne Baukasten, ohne Abhängigkeiten, ohne Konto und
-**ohne eine einzige Anfrage ans Internet** — die Schriften stecken mit drin.
-Doppelklick genügt. Wer die Sammlung auf allen Geräten gleich haben
-will, startet den mitgelieferten kleinen Server (Node, eine Datei) im Heimnetz —
-für Windows liegen fertige Skripte dabei, die ihn als Hintergrunddienst
-einrichten.
+Eine **Android-App**, und darunter eine einzelne HTML-Datei: ohne Baukasten,
+ohne Abhängigkeiten, ohne Konto und **ohne eine einzige Anfrage ans Internet** —
+selbst die Schriften stecken mit drin. Dieselbe Datei lässt sich auch einfach im
+Browser öffnen, per Doppelklick.
 
 Die Ausgangssammlung sind 21 Spiele aus meinem Regal. Sie ist nur der
 Startpunkt: Spiele lassen sich auf der Seite selbst hinzufügen, ändern und
 entfernen.
 
-**Kurz ausprobieren:** [`index.html`](index.html) herunterladen und im Browser
-öffnen.
+**Aufs Handy:** [neueste Android-App herunterladen](../../releases/latest).
 
-**Aufs Handy:** [neueste Android-App herunterladen](../../releases/latest) —
-fertige APK, kein Server nötig.
+**Nur kurz ansehen:** [`index.html`](index.html) herunterladen und im Browser
+öffnen — dieselbe Anwendung, ohne Installation.
 
 ---
 
@@ -45,8 +42,8 @@ bleibt. Was sich geändert hat, steht dort und in der
 [Änderungshistorie](CHANGELOG.md). Welche Fassung bei dir läuft, steht ganz
 unten auf der Seite.
 
-Die App enthält die Seite vollständig und braucht **kein Netz und keinen
-Server**. Deine Sammlung liegt im Speicher der App, auf diesem Handy.
+Die App enthält alles und braucht **kein Netz**. Deine Sammlung liegt im
+Speicher der App, auf diesem Handy.
 
 **Sicherung — wichtig vor einem Handy-Wechsel.** Unter „Sammlung bearbeiten" →
 „Sicherung & Umzug":
@@ -61,21 +58,11 @@ Server**. Deine Sammlung liegt im Speicher der App, auf diesem Handy.
 Nach ein paar Minuten hängt die neue Datei an derselben Veröffentlichung. Das
 passiert auch automatisch, sobald sich `index.html` ändert.
 
-Die App ist mit einem Entwicklerschlüssel signiert — für den Eigengebrauch
-genügt das. Android zeigt beim Installieren deshalb einen Hinweis. Käme eine
-Fassung mit anderem Schlüssel, müsste die alte vorher deinstalliert werden.
+Die App ist mit einem festen eigenen Schlüssel signiert; der Fingerabdruck steht
+bei jeder Veröffentlichung. Weil sie nicht aus dem Play Store kommt, zeigt
+Android beim Installieren trotzdem einen Hinweis.
 
 ---
-
-## Benutzen
-
-`index.html` im Browser öffnen — das genügt für den Anfang: keine Installation,
-kein Server, kein Internet nötig (nur die Schriften kommen aus dem Netz, sonst
-greifen Systemschriften). Läuft auch auf dem Handy, die Filter sind
-Antippknöpfe statt Dropdowns.
-
-Soll die Sammlung auf allen Geräten dieselbe sein, siehe „Auf dem eigenen
-Windows-PC hosten".
 
 ## Was die Seite macht
 
@@ -101,155 +88,6 @@ Windows-PC hosten".
   soll auffindbar bleiben. Der Chip **„Lange nicht gespielt"** in der Filterreihe
   „Regal" zeigt nur, was seit über 90 Tagen nicht dran war.
 - Die letzte Einstellung wird im Browser gemerkt.
-
-## Auf dem eigenen Windows-PC hosten
-
-**Nur nötig, wenn mehrere Geräte dieselbe Sammlung teilen sollen.** Wer die
-Android-App nutzt, braucht diesen Teil nicht.
-
-Zwei Wege, je nachdem, was du brauchst.
-
-### A) Nur die Seite ausliefern (IIS, ohne Installation)
-
-Der Webserver steckt schon in Windows. Er liefert Dateien aus — mehr nicht,
-also **ohne** gemeinsame Sammlung über mehrere Geräte.
-
-1. Start → „Windows-Features aktivieren oder deaktivieren" → Haken bei
-   **Internetinformationsdienste** → OK.
-2. Ordner `C:\inetpub\wwwroot\spieleabend` anlegen, `index.html` hineinkopieren.
-3. Aufrufen unter `http://localhost/spieleabend`, im Heimnetz unter
-   `http://<IP-des-PCs>/spieleabend`.
-
-Der Unterordner ist Absicht: `wwwroot` ist die Wurzel, jeder Unterordner darin
-ist eine eigene Adresse. `\notizen`, `\fotos` und so weiter liegen daneben,
-ohne sich zu stören. Andere Programme mit eigenem Port (Jellyfin auf 8096) sind
-davon ohnehin unberührt — IIS nutzt Port 80.
-
-### B) Sammlung auf allen Geräten gleich (mitgelieferter Server)
-
-`spieleabend-server.mjs` liefert die Seite aus **und** verwahrt die Sammlung in
-`sammlung.json`. Handy, Tablet und PC sehen dieselbe Liste; wer etwas ändert,
-schreibt sie für alle.
-
-1. **Node installieren** — in PowerShell `winget install OpenJS.NodeJS.LTS`,
-   oder den Installer von nodejs.org. Einmalig.
-2. Alle Dateien aus dem Projekt in einen Ordner legen, zum Beispiel
-   `C:\Spieleabend` — `index.html`, `spieleabend-server.mjs`,
-   `windows-dienst.ps1` und die drei `.cmd`-Dateien gehören zusammen.
-3. **`dienst-einrichten.cmd` doppelklicken** und die Nachfrage nach
-   Administratorrechten bestätigen. Das Fenster meldet, ob der Server läuft, und
-   nennt die Adressen — danach kann es zu.
-4. Im Browser `http://localhost:8099`, am Handy `http://<IP-des-PCs>:8099` oder
-   `http://<PC-Name>:8099`.
-
-Das Einrichtungsfenster listet mehrere Adressen — das ist normal: der Server
-lauscht auf allen Netzwerkkarten des PCs, und Windows zählt VPN-, WSL- und
-Hyper-V-Karten mit. Gemeint ist die Adresse der Karte, über die der PC ins
-Netz geht (im Fenster markiert, meist `192.168.…`). Adressen mit `169.254.…`
-gehören zu Karten ohne Verbindung und werden gar nicht erst angezeigt.
-
-Praktischer als die IP ist der Rechnername: `http://<PC-Name>:8099` bleibt
-gleich, auch wenn der Router dem PC irgendwann eine andere IP gibt. Wer lieber
-bei der IP bleibt, vergibt sie im Router fest (DHCP-Reservierung).
-
-Das Einrichten legt eine Aufgabe an, die beim Hochfahren startet — **ohne
-Fenster, ohne Anmeldung, mit automatischem Neustart nach einem Absturz** — und
-gibt Port 8099 in der Firewall für das private Netz frei.
-
-Über dem Formular steht dann „Sammlung liegt auf deinem Server". Wechselst du
-auf einem Gerät zurück in den Tab, holt die Seite die aktuelle Liste nach.
-
-**Neu starten:** `dienst-neustart.cmd` doppelklicken. Nötig, wenn du
-`spieleabend-server.mjs` ausgetauscht hast — für eine neue `index.html` reicht
-das Neuladen der Seite. Das Skript beendet den Dienst, wartet, bis der Port
-wirklich frei ist, startet neu und meldet, ob der Server wieder antwortet.
-
-**Protokoll:** Der Server schreibt neben der Sammlung eine Datei
-`spieleabend.log` — Start, Portkonflikte, fehlgeschlagene Sicherungen, Abstürze.
-Als Hintergrunddienst sieht man ja keine Konsole; wenn etwas nicht läuft, steht
-hier warum. Die Datei wird bei 200 KB automatisch gekürzt.
-
-**Läuft er?** `dienst-status.cmd` doppelklicken — prüft zuerst, ob der Server
-antwortet, und zeigt dann Zustand und letzten Lauf der Aufgabe. Für den Blick
-auf die Aufgabe holt sich die Datei Administratorrechte: die Aufgabe läuft unter
-dem Systemkonto und ist ohne diese Rechte nicht sichtbar.
-
-**Wo steckt er im System?** Es ist eine *geplante Aufgabe*, kein Windows-Dienst
-— im Task-Manager also nicht unter „Dienste" zu finden, sondern unter
-**Details** als `node.exe` mit Benutzer `SYSTEM` (Spalte „Befehlszeile"
-einblenden, dann steht `spieleabend-server.mjs` dabei). Verwaltet wird sie in
-der Aufgabenplanung: Windows-Taste + R → `taskschd.msc` →
-Aufgabenplanungsbibliothek → **Spieleabend**. Dort lässt sie sich auch
-deaktivieren. Ein im Task-Manager beendeter Prozess gilt als Absturz und wird
-nach einer Minute neu gestartet.
-
-**Wieder loswerden:** `dienst-entfernen.cmd`. Entfernt Aufgabe und
-Firewall-Regel; `sammlung.json` bleibt liegen.
-
-**Anderer Port:** beim Einrichten mitgeben, zum Beispiel
-
-```
-powershell -ExecutionPolicy Bypass -File windows-dienst.ps1 -Port 8100
-```
-
-8099 ist frei gewählt und stört Jellyfin auf 8096 nicht.
-
-**`start-windows.cmd`** startet den Server stattdessen im Vordergrund, mit
-Fenster und sichtbaren Meldungen. Gut zum Ausprobieren oder zur Fehlersuche —
-für den Dauerbetrieb ist der Dienst gedacht.
-
-**Wenn es nicht klappt:** Fast immer liegt es an einem von zwei Dingen. Der Port
-ist belegt (anderen Port wählen, siehe oben), oder Node wurde nur für den
-eigenen Benutzer installiert — der Dienst läuft unter dem Systemkonto und findet
-es dann nicht; in dem Fall Node für alle Benutzer neu installieren. Das
-Einrichtungsfenster weist auf beides hin.
-
-**Sicherung:** die ganze Sammlung steht in `sammlung.json`. Datei kopieren
-genügt.
-
-Der Server sichert außerdem selbst: Vor jedem Überschreiben legt er den bisherigen
-Stand in `sicherungen/` ab und hält dort die letzten zehn vor. Identische
-Speichervorgänge erzeugen keine neue Kopie. Ging etwas schief — etwa ein
-versehentliches „Sammlung ersetzen" —, kopierst du die passende Datei aus
-`sicherungen/` über `sammlung.json` und lädst die Seite neu. Ein Neustart des
-Dienstes ist nicht nötig, der Server liest bei jeder Abfrage frisch von der
-Platte.
-
-### Aufs Handy legen
-
-Die Seite bringt ein eigenes Symbol mit. Es entsteht aus
-`Board-Game-Recommender_Logo.png`; die vier `icon-*.png` sind daraus verkleinert,
-der Rand ist durchsichtig. So landet sie auf dem Startbildschirm:
-
-- **iPhone:** Seite in Safari öffnen → Teilen-Symbol → „Zum Home-Bildschirm".
-- **Android:** Seite in Chrome öffnen → Menü (drei Punkte) → „Zum Startbildschirm
-  hinzufügen".
-
-Darunter steht dann „Spieleabend". Getippt öffnet sie sich ohne Adressleiste,
-also wie eine App.
-
-Sie **ist** aber keine App: Es ist eine Verknüpfung, die weiterhin den Server im
-Heimnetz braucht. Offline funktioniert sie nicht — das setzte HTTPS voraus, und
-über `http://192.168.…` sperren Browser die dafür nötige Technik. Für den
-Spieleabend am eigenen Tisch spielt das keine Rolle.
-
-### Was wo gespeichert wird
-
-| | veröffentlichte Seite | eigener Server (B) | nur Dateien (A oder Doppelklick) |
-| --- | --- | --- | --- |
-| Sammlung | im Claude-Konto | in `sammlung.json` auf dem PC | im jeweiligen Browser |
-| Auf allen Geräten gleich | ja | ja, im Heimnetz | nein |
-| „Daten vorschlagen" | ja | nein | nein |
-| Erreichbar | überall | Heimnetz | nur dieser Rechner |
-
-Die Sammlung umziehen: unter „Sammlung bearbeiten" → „Sicherung & Umzug" den
-Text kopieren und auf der anderen Seite einfügen, dann „Sammlung ersetzen".
-
-**Nicht am Router nach außen freigeben.** Weder die Seite noch der Server haben
-eine Anmeldung: wer die Adresse erreicht, darf die Sammlung ändern. Im Heimnetz
-ist das in Ordnung, im offenen Internet nicht. Soll die Seite von unterwegs
-erreichbar sein, führt der sichere Weg über ein VPN ins Heimnetz (etwa
-WireGuard oder Tailscale), nicht über eine Portfreigabe.
 
 ## Sammlung pflegen
 
@@ -312,20 +150,15 @@ fremden Seiten ohnehin nicht. Darum der Weg über den Link und das Formular.
 
 ### Wo die Sammlung liegt
 
-Die Zeile über dem Formular sagt es jeweils:
+Die Zeile über dem Formular sagt es:
 
-- **Als veröffentlichte Seite** in der `db`-Ablage des Artifacts, also im Konto —
-  Handy und Laptop sehen dieselbe Sammlung, Änderungen erscheinen auf offenen
-  Seiten von selbst.
-- **Hinter dem mitgelieferten Server** in `sammlung.json` auf dem eigenen PC.
-  Die Seite erkennt ihn daran, dass `api/sammlung` antwortet, und benutzt dann
-  ihn; beim Zurückkehren auf den Tab holt sie den Stand der anderen Geräte nach.
-- **Als lokale Datei** (`index.html` im Browser geöffnet) im `localStorage`
-  dieses Browsers. Umzug auf ein anderes Gerät: über „Sicherung & Umzug".
+- **In der App und im Browser** auf dem jeweiligen Gerät. Umzug auf ein anderes
+  Gerät: über „Sicherung & Umzug".
+- **Als veröffentlichte Claude-Seite** zusätzlich im Konto — dann sehen Handy
+  und Laptop dieselbe Sammlung.
 
-Die Reihenfolge ist fest: eigener Server, sonst Konto, sonst Browser. Der
-Browser bekommt in allen Fällen eine Kopie, damit die Seite auch offline etwas
-anzeigen kann.
+Auf das Gerät wird in beiden Fällen geschrieben, damit auch offline etwas da
+ist.
 
 Ist beim ersten Öffnen noch nichts gespeichert, gilt die Ausgangssammlung aus
 `DEFAULT_GAMES` in `index.html`. Diese Liste ist nur der Startpunkt — wer lieber

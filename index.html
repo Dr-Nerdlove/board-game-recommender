@@ -34,6 +34,14 @@
   --shadow:0 1px 2px rgba(22,32,28,.06), 0 8px 24px -18px rgba(22,32,28,.5);
   --radius:10px;
   color-scheme:light dark;
+  /* Abstandsleiter. Vorher standen sieben verschiedene Werte im Quelltext
+     (8, 10, 14, 16, 18, 22, 26) ohne Zusammenhang - das macht den unruhigen
+     Eindruck, nicht ein einzelner falscher Wert. Neue Abstaende bitte von
+     hier nehmen, nicht frei erfinden. */
+  --luft-eng:8px;       /* Beschriftung zu ihrem Bedienelement */
+  --luft-mittel:12px;   /* Teile innerhalb einer Karte */
+  --luft-weit:20px;     /* Felder innerhalb eines Blocks */
+  --luft-block:24px;    /* Bloecke der Seite */
   /* Platz fuer Statusleiste, Navigationsleiste und Display-Aussparungen.
      Capacitor setzt --safe-area-inset-*; im Browser greift env(). */
   --sicher-oben:   var(--safe-area-inset-top,    env(safe-area-inset-top,    0px));
@@ -72,7 +80,7 @@ body{
   font-family:Karla, "Segoe UI", system-ui, sans-serif;
   font-size:16px; line-height:1.5;
 }
-.wrap{max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:26px;
+.wrap{max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:var(--luft-block);
   padding:calc(28px + var(--sicher-oben)) calc(20px + var(--sicher-rechts))
           calc(64px + var(--sicher-unten)) calc(20px + var(--sicher-links));}
 
@@ -80,7 +88,7 @@ body{
 /* Vorher stand alles - Titel, Absatz, Knopf - rechts vom Logo in einer
    eingerueckten Spalte; links davon blieb eine leere Flaeche. Jetzt teilt sich
    nur die Titelzeile den Platz mit dem Logo, der Rest nutzt die volle Breite. */
-.masthead{display:flex; flex-direction:column; align-items:flex-start; gap:14px}
+.masthead{display:flex; flex-direction:column; align-items:flex-start; gap:var(--luft-mittel)}
 .eyebrow{
   font-size:12px; letter-spacing:.14em; text-transform:uppercase;
   color:var(--muted); margin:0 0 4px; font-weight:700;
@@ -106,9 +114,9 @@ h1{
 /* ---------- Filter ---------- */
 .panel{
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-  box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; gap:18px;
+  box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; gap:var(--luft-weit);
 }
-.field{display:flex; flex-direction:column; gap:10px}
+.field{display:flex; flex-direction:column; gap:var(--luft-eng)}
 .field > legend, .field > .lbl{
   font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--muted); padding:0;
 }
@@ -149,7 +157,7 @@ fieldset.field{border:0; margin:0; padding:0}
 
 /* Zaehler fuer die Spielerzahl. Loest zwei Dinge auf einmal: Er braucht eine
    Reihe statt zwei, und er kennt keine Obergrenze von zwoelf. */
-.zaehler{display:flex; align-items:center; gap:10px}
+.zaehler{display:flex; align-items:center; justify-content:center; gap:14px}
 .zbtn{
   flex:none; width:48px; height:48px; border-radius:99px; cursor:pointer;
   font:inherit; font-size:22px; line-height:1;
@@ -158,7 +166,7 @@ fieldset.field{border:0; margin:0; padding:0}
 .zbtn:hover:not(:disabled){border-color:var(--ink)}
 .zbtn:disabled{opacity:.35; cursor:default}
 #anzahl{
-  width:74px; height:48px; text-align:center; font-size:19px; font-weight:700;
+  width:96px; height:48px; text-align:center; font-size:19px; font-weight:700;
   font-variant-numeric:tabular-nums; border:1px solid var(--line-strong);
   border-radius:var(--radius); background:var(--sunk); color:var(--ink); padding:0;
 }
@@ -166,11 +174,11 @@ fieldset.field{border:0; margin:0; padding:0}
   -webkit-appearance:none; margin:0;
 }
 #anzahl{-moz-appearance:textfield; appearance:textfield}
-.zeinheit{flex:1 1 auto; color:var(--muted); font-size:14px}
+
 .chip:focus-visible, .dice:focus-visible, .reset:focus-visible, summary:focus-visible{
   outline:2px solid var(--accent); outline-offset:2px;
 }
-.panel-foot{display:flex; align-items:center; gap:10px; margin-top:14px}
+.panel-foot{display:flex; align-items:center; gap:10px; margin-top:var(--luft-mittel)}
 .summary-line{margin:0; color:var(--muted); font-size:14px}
 .summary-line strong{color:var(--ink); font-weight:700}
 /* Der Hauptknopf nimmt den uebrigen Platz - vorher klebten beide rechts und
@@ -206,7 +214,7 @@ details.filters{display:block}
 .filters-hint::after{content:" ▾"}
 details.filters[open] .filters-hint::after{content:" ▴"}
 .filters-head:hover .filters-hint{color:var(--ink)}
-.filter-body{display:flex; flex-direction:column; gap:18px; margin-top:18px}
+.filter-body{display:flex; flex-direction:column; gap:var(--luft-weit); margin-top:var(--luft-weit)}
 /* Solange der Filter offen ist, klebt die Knopfzeile am unteren Rand. Sonst
    beginnt "Wuerfel entscheiden" bei Pixel 882 von 915 - also unterhalb des
    Bildschirms, obwohl es der Hauptknopf der ganzen App ist. */
@@ -216,7 +224,7 @@ details.filters[open] + .panel-foot{
   padding:12px 0 calc(12px + var(--sicher-unten));
   background:var(--surface);
 }
-details.filters:not([open]) + .panel-foot{margin-top:4px}
+details.filters:not([open]) + .panel-foot{margin-top:0}
 .filters-head .summary-line{flex:1 1 auto}
 
 /* ---------- Ergebnis ---------- */
@@ -226,7 +234,7 @@ details.filters:not([open]) + .panel-foot{margin-top:4px}
 }
 .count{color:var(--muted); font-size:14px; font-variant-numeric:tabular-nums}
 /* Einmal erklaert, nicht auf jeder Karte wiederholt. */
-.legende{margin:-6px 0 0; font-size:13px; color:var(--muted)}
+.legende{margin:-4px 0 0; font-size:13px; color:var(--muted)}
 .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(272px,1fr)); gap:14px; align-items:start}
 
 /* Sprungziele muessen unter dem Band fuer die Statusleiste anfangen, sonst
@@ -255,7 +263,7 @@ details.filters:not([open]) + .panel-foot{margin-top:4px}
 
 .game{
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-  padding:16px 16px 15px; display:flex; flex-direction:column; gap:10px; position:relative;
+  padding:16px 16px 15px; display:flex; flex-direction:column; gap:var(--luft-mittel); position:relative;
 }
 .game.top{
   grid-column:1/-1; border-color:var(--line-strong); box-shadow:var(--shadow);
@@ -388,7 +396,7 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
 #colhits{margin:-4px 0 0}
 
 /* Die Knöpfe sitzen unten in der Karte und bleiben zurückhaltend */
-.cardfoot{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px}
+.cardfoot{display:flex; flex-wrap:wrap; gap:8px}
 .linkbtn.played{margin-top:0}
 .linkbtn.played.on{
   color:var(--accent-ink); border-color:var(--accent); background:var(--accent-soft); font-weight:700;
@@ -448,7 +456,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 @media (max-width:520px){
   .wrap{padding:calc(20px + var(--sicher-oben)) calc(14px + var(--sicher-rechts))
           calc(48px + var(--sicher-unten)) calc(14px + var(--sicher-links))}
-  .panel{padding:16px}
+  .panel{padding:18px}
   .game.top{padding-left:16px}
 }
 </style>
@@ -482,7 +490,6 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
             <button type="button" class="zbtn" id="weniger" aria-label="Eine Person weniger">&minus;</button>
             <input type="number" id="anzahl" min="1" max="99" step="1" inputmode="numeric"
                    aria-label="Anzahl Personen">
-            <span class="zeinheit" id="zeinheit">Spieler</span>
             <button type="button" class="zbtn" id="mehr" aria-label="Eine Person mehr">+</button>
           </div>
         </fieldset>
@@ -512,7 +519,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
     </div>
   </section>
 
-  <section aria-label="Vorschläge" style="display:flex; flex-direction:column; gap:14px">
+  <section aria-label="Vorschläge" style="display:flex; flex-direction:column; gap:var(--luft-mittel)">
     <div class="result-head">
       <h2>Passt heute</h2>
       <span class="count" id="count"></span>
@@ -628,7 +635,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 1.4.1</p>
+    <p class="fassung">Fassung 2.0.0</p>
   </footer>
 </div>
 
@@ -803,34 +810,22 @@ let localTouched = false;
 
 let storageMode = "local";
 let dbDoc = null;
-let apiUrl = null;           // gesetzt, sobald ein eigener Server antwortet
 
 function updateStorageNote(msg){
   const el = $("storagenote");
   el.dataset.mode = storageMode === "local" ? "local" : "geteilt";
   el.textContent = msg || (
-    storageMode === "server" ? "Sammlung liegt auf deinem Server — auf jedem Gerät im Heimnetz dieselbe." :
-    storageMode === "db"     ? "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe." :
-                               "Sammlung liegt nur in diesem Browser.");
+    storageMode === "db" ? "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe."
+                         : "Sammlung liegt auf diesem Gerät.");
 }
 
 function persist(){
   localTouched = true;
   try{ localStorage.setItem(COLLECTION_KEY, JSON.stringify({ games })); }catch(e){/* Privatmodus */}
-  if(apiUrl){
-    fetch(apiUrl, {
-      method:"PUT",
-      headers:{ "content-type":"application/json" },
-      body: JSON.stringify({ games })
-    }).then(res => {
-      if(res.ok) updateStorageNote();
-      else updateStorageNote("Server hat die Änderung abgelehnt (" + res.status + ") — sie liegt vorerst nur in diesem Browser.");
-    }, () => updateStorageNote("Server nicht erreichbar — die Änderung liegt vorerst nur in diesem Browser."));
-  }
   if(dbDoc){
     dbDoc.set({ games, updatedAt:Date.now() }).then(
       () => updateStorageNote(),
-      e => updateStorageNote("Konnte nicht ins Konto speichern (" + (e && e.code ? e.code : "Fehler") + ") — die Änderung liegt vorerst nur in diesem Browser.")
+      e => updateStorageNote("Konnte nicht ins Konto speichern (" + (e && e.code ? e.code : "Fehler") + ") — die Änderung liegt vorerst auf diesem Gerät.")
     );
   }
 }
@@ -843,53 +838,6 @@ function loadCollection(){
     const list = Array.isArray(parsed && parsed.games) ? parsed.games.map(normalize).filter(Boolean) : [];
     if(list.length){ games = list; localTouched = true; }
   }catch(e){/* dann eben die Ausgangssammlung */}
-}
-
-// Eigener Server: nur außerhalb des Claude-Viewers und nur über http(s) sinnvoll.
-async function connectServer(){
-  if(window.claude && typeof window.claude.use === "function") return false;
-  if(!/^https?:$/.test(location.protocol)) return false;
-  const url = new URL("api/sammlung", location.href).href;
-  let data;
-  try{
-    const res = await fetch(url, { headers:{ accept:"application/json" } });
-    if(!res.ok) return false;
-    data = await res.json();
-  }catch(e){ return false; }
-  if(!data || !Array.isArray(data.games)) return false;
-
-  apiUrl = url;
-  storageMode = "server";
-  const list = data.games.map(normalize).filter(Boolean);
-  if(list.length){
-    games = list;
-    if(state.editing && !games.some(g => g.id === state.editing)) resetForm();
-    render();
-  }else if(localTouched){
-    persist();                       // erste eigene Sammlung auf den Server heben
-  }
-  updateStorageNote();
-
-  // Beim Zurückkehren auf den Tab nachsehen, ob ein anderes Gerät etwas geändert hat
-  document.addEventListener("visibilitychange", () => { if(!document.hidden) refreshFromServer(); });
-  window.addEventListener("focus", refreshFromServer);
-  return true;
-}
-
-async function refreshFromServer(){
-  if(!apiUrl || state.editing) return;
-  try{
-    const res = await fetch(apiUrl, { headers:{ accept:"application/json" }, cache:"no-store" });
-    if(!res.ok) return;
-    const data = await res.json();
-    const list = Array.isArray(data.games) ? data.games.map(normalize).filter(Boolean) : [];
-    if(!list.length) return;
-    if(JSON.stringify(list) === JSON.stringify(games)) return;
-    games = list;
-    hideUndo();
-    render();
-    updateStorageNote();
-  }catch(e){ /* offline: die lokale Liste bleibt stehen */ }
 }
 
 async function connectDb(){
@@ -915,7 +863,7 @@ async function connectDb(){
     updateStorageNote();
   }, () => {
     storageMode = "local";
-    updateStorageNote("Server gerade nicht erreichbar — Änderungen bleiben in diesem Browser.");
+    updateStorageNote("Konto gerade nicht erreichbar — Änderungen bleiben auf diesem Gerät.");
   });
   updateStorageNote();
 }
@@ -1273,7 +1221,6 @@ function renderFilters(){
   if(document.activeElement !== $("anzahl")) $("anzahl").value = String(state.players);
   $("weniger").disabled = state.players <= 1;
   $("mehr").disabled = state.players >= 99;
-  $("zeinheit").textContent = state.players === 1 ? "Person" : "Personen";
 
   $("moods").innerHTML = Object.entries(MOODS).map(([id,label]) =>
     '<button type="button" class="chip mehrfach" data-mood="' + id + '" aria-pressed="' + state.moods.has(id) + '">' + label + "</button>"
@@ -1288,7 +1235,6 @@ function renderFilters(){
     '<button type="button" class="chip" data-shelf="1" aria-pressed="' + state.neglected + '">' +
     "Lange nicht gespielt</button>";
   $("summary").innerHTML = summaryText();
-  $("filters").open = state.filtersOpen;
 }
 
 function renderResults(){
@@ -1766,11 +1712,13 @@ $("reset").addEventListener("click", () => {
 /* ================= Start ================= */
 
 loadSettings();
+$("filters").open = state.filtersOpen;     // einmal beim Start, danach fuehrt
+                                           // das Element selbst Buch
 loadCollection();
 resetForm();
 render();
 updateStorageNote();
-connectServer().then(gefunden => { if(!gefunden) connectDb(); });
+connectDb();
 connectSample();
 </script>
 </body>

@@ -1,14 +1,3 @@
-# Vom Server angelegt - gehört nicht ins Repository, sondern auf den eigenen Rechner
-sammlung.json
-sammlung.json.tmp
-sicherungen/
-spieleabend.log
-
-# Betriebssystem-Beiwerk
-Thumbs.db
-desktop.ini
-.DS_Store
-
 # Beim APK-Bau erzeugt (passiert auf GitHubs Maschinen, nicht hier)
 node_modules/
 www/
@@ -16,3 +5,8 @@ android/
 assets/
 package-lock.json
 *.apk
+
+# Betriebssystem-Beiwerk
+Thumbs.db
+desktop.ini
+.DS_Store

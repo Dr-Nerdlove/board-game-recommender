@@ -11,22 +11,23 @@ Sammlung passt zur heutigen Runde (Spielerzahl, Stimmung, Anspruch, Zeit)?
 Alles steckt in `index.html` — eine Datei, kein Baukasten, keine
 Abhängigkeiten, kein Übersetzungsschritt.
 
+**Das Ziel ist die Android-App.** Seit 2.0.0 gibt es keinen Heimserver und
+keine Windows-Skripte mehr; was hier liegt, dient dem APK-Bau. Die Seite lässt
+sich weiterhin einfach im Browser öffnen.
+
 ## Sprache
 
 **Alles auf Deutsch**: Oberfläche, Kommentare, Variablennamen in neuerem Code,
 Dokumentation und Commit-Meldungen. Bitte beibehalten.
 
-Ausnahme: **Windows-Dateien** (`*.cmd`, `*.ps1`) sind reines ASCII, Umlaute
-umschrieben („moeglicherweise"). Je nach Codepage werden sie sonst
-unleserlich.
+Ausnahme: **Bauplan und Commit-Meldungen** sind reines ASCII, Umlaute
+umschrieben („moeglicherweise").
 
 ## Dateien
 
 | Datei | Zweck |
 | --- | --- |
 | `index.html` | die ganze Anwendung |
-| `spieleabend-server.mjs` | optionaler Heimserver, verwahrt die Sammlung |
-| `windows-dienst.ps1` + `dienst-*.cmd` | Dienst einrichten, Status, Neustart, entfernen |
 | `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen |
 | `icon-*.png`, `manifest.webmanifest` | Symbole fürs Handy |
 | `CHANGELOG.md` | Änderungshistorie, gepflegt bei jeder Fassung |
@@ -88,15 +89,20 @@ Es gibt keine automatischen Tests. Bewährt hat sich:
 python3 -c "s=open('index.html').read(); open('/tmp/app.js','w').write(s[s.index('<script>')+8:s.index('</script>')])"
 node --check /tmp/app.js
 
-# Server starten und gegen ihn prüfen (Chromium ist vorhanden)
-node spieleabend-server.mjs --port 8099
+# Ausliefern, um sie im Browser zu pruefen
+python3 -m http.server 8111
 ```
 
-Für Oberflächenprüfungen eine Hilfsseite neben die Anwendung legen, die
-`index.html` in einem `<iframe>` lädt, dort Knöpfe anklickt und das Ergebnis
-in ein `<pre>` schreibt; dann mit
-`chromium --headless --dump-dom http://localhost:8099/pruefung.html` auslesen.
-So wurden alle bisherigen Funktionen abgenommen.
+Für Oberflächenprüfungen hat sich **puppeteer-core** gegen das vorhandene
+Chromium (`/opt/pw-browsers/...`) bewährt: echte Geräteemulation (412×915,
+Pixeldichte 2), `emulateMediaFeatures` für hell/dunkel, Klicks auf die
+Oberfläche, und am Ende messen statt schauen — Trefferflächen, Abstände,
+Kontraste. Auf Konsolenfehler horchen (`pageerror`), sonst entgehen einem
+stille Ausfälle.
+
+**Achtung bei `getComputedStyle` nach einem Klick:** `render()` baut die Chips
+neu auf, das alte Element ist dann abgehängt und liefert leere Werte. Nach dem
+Klick neu suchen.
 
 **Vorsicht bei `pkill -f`**: Das Muster trifft auch die eigene
 Kommandozeile und beendet die laufende Shell. `pkill -x node` benutzen oder
