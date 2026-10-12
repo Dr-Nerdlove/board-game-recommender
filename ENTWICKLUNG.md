@@ -96,9 +96,19 @@ Drei Dinge, die beim Bauen schiefgingen und wieder schiefgehen können:
   Hintergrund-Ocker.
 - **Erst alles aufbauen, dann die Scheibe ausstanzen.** Das Motiv bringt den
   Kachelgrund mit — der gehört dazu, muss aber mit abgeschnitten werden.
-- **Die beiden Ebenen des adaptiven Symbols**: Hintergrund trägt die
-  Zweiteilung über die ganze Fläche, damit jede Maskenform nur Markenfarbe
-  zeigt. Sichtbar sind nur die mittleren 66 Prozent.
+- **Die beiden Ebenen des adaptiven Symbols füllen beide die ganze
+  Bildfläche** — auch der Vordergrund. Das klingt falsch, weil Android von
+  einer 108-dp-Ebene nur die mittleren 72 dp zeigt, und war auch mein erster
+  Fehler: Ich habe das Motiv auf diese 66 Prozent gerechnet, und es erschien
+  auf dem Startbildschirm nur halb so groß wie gedacht. Der Grund steht in
+  `ic_launcher.xml`, das `capacitor-assets` schreibt: Es legt beide Ebenen mit
+  `<inset android:inset="16.7%">` an. Damit landet unser Bild als Ganzes in
+  der sichtbaren Fläche. Wer hier noch einmal auf 66 Prozent rechnet,
+  verkleinert ein zweites Mal.
+
+  Nachprüfen lässt sich das ohne Gerät: `npx cap add android`, dann
+  `npx capacitor-assets generate --android`, und in
+  `android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml` nachsehen.
 
 ### Signatur
 

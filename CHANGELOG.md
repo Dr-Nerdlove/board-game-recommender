@@ -9,6 +9,17 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.1.1] – 2026-10-12
+
+### Behoben
+
+- **Das Symbol saß zu klein in seiner Scheibe.** Der Rand war viel zu breit,
+  das Motiv wirkte herausgezoomt. Ursache: Android zeigt von einer Symbolebene
+  nur die mittlere Fläche, und darauf hatte ich das Motiv gerechnet — das
+  Baukastenwerkzeug legt die Ebenen aber ohnehin schon passend hinein, so dass
+  verkleinert wurde. Das Motiv füllt die Scheibe jetzt so aus wie überall
+  sonst; es ist rund die Hälfte größer als in 2.1.0.
+
 ## [2.1.0] – 2026-10-12
 
 ### Geändert
@@ -281,7 +292,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.1.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.1
 [2.1.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.0
 [2.0.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.0.1
 [2.0.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.0.0
