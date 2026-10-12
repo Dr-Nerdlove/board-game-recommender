@@ -130,10 +130,10 @@ jobs:
           ls -la www
 
       - name: Symbol fuer die App vorbereiten
-        # icon-only ist das klassische quadratische Symbol - da passt das Logo
-        # unveraendert. Fuer Androids adaptive Symbole liegt das Logo dagegen
-        # verkleinert auf durchsichtigem Grund (app-icon-foreground), weil die
-        # Maske aussen rund ein Viertel abschneidet.
+        # icon-only ist das Symbol fuer Oberflaechen ohne adaptive Darstellung:
+        # die fertige runde Scheibe. Fuer adaptive Symbole liefern wir zwei
+        # Ebenen - app-icon-background traegt die Zweiteilung, app-icon-foreground
+        # das Motiv.
         run: |
           mkdir -p assets
           cp icon-512.png assets/icon-only.png

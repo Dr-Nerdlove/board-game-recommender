@@ -75,6 +75,31 @@ Der Bauplan springt **nur auf Versionsmarken** an (`v*`) und legt dafür je eine
 eigene Veröffentlichung an, die danach unverändert bleibt. „Run workflow" baut
 zum Ausprobieren, ohne zu veröffentlichen.
 
+### Das Symbol
+
+Quelle ist **`Board-Game-Recommender_Logo.png`**; alle `icon-*.png` und die
+beiden `app-icon-*.png` sind daraus gerechnet. Wer eines davon von Hand
+bearbeitet, bekommt beim nächsten Durchlauf Abweichungen.
+
+Die Marke ist eine **Scheibe**: links das Dunkelgrün `(35, 84, 62)`, rechts das
+Ocker `(234, 171, 54)`, Trennlinie genau in der Mitte — dieselbe Zweiteilung wie
+im Logo. Darauf das Motiv, auf **118 % der Kreisdiagonale** skaliert und
+1,5 % nach oben gerückt. Bei diesen Werten ist nichts angeschnitten und der Rand
+bleibt gleichmäßig; sie stammen aus einem Vergleich von 112, 118 und 124 Prozent.
+
+Drei Dinge, die beim Bauen schiefgingen und wieder schiefgehen können:
+
+- **Der helle Rand des Originals muss weg**, sonst zeichnet sein
+  Anti-Aliasing-Saum die Silhouette der alten Kachel in die Scheibe. Flutfüllung
+  vom Bildrand her (Schwelle 225), danach zwei Punkte abtragen. Nach Farbe
+  freistellen geht *nicht*: Der Würfel `(226, 162, 55)` liegt zu dicht am
+  Hintergrund-Ocker.
+- **Erst alles aufbauen, dann die Scheibe ausstanzen.** Das Motiv bringt den
+  Kachelgrund mit — der gehört dazu, muss aber mit abgeschnitten werden.
+- **Die beiden Ebenen des adaptiven Symbols**: Hintergrund trägt die
+  Zweiteilung über die ganze Fläche, damit jede Maskenform nur Markenfarbe
+  zeigt. Sichtbar sind nur die mittleren 66 Prozent.
+
 ### Signatur
 
 **Das Wichtigste am ganzen Bauplan.** Für Android ist die Signatur der Ausweis
