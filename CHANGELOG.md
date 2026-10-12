@@ -9,6 +9,24 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.2.0] – 2026-10-12
+
+Der Kleinkram aus dem Rundgang.
+
+### Hinzugefügt
+
+- **Das Datum steht ausgeschrieben darunter.** Welches Format das Eingabefeld
+  anzeigt, bestimmt allein die Systemsprache des Geräts — bei englischer
+  Einstellung also `mm/dd/yyyy`. Die Seite kann das nicht ändern (`lang` am
+  Feld wirkt nicht, nachgeprüft). Stattdessen steht der gewählte Tag jetzt
+  darunter deutsch ausgeschrieben, samt Wochentag: „Montag, 12.10.2026 —
+  heute". Damit ist egal, was das Feld selbst zeigt.
+- **Knöpfe „Heute", „Gestern" und „Leeren"** am Datumsfeld. Nach einem
+  Spieleabend will man meist genau eines davon.
+- **Der Balken ist erklärt.** Unter „Passt heute" steht einmal, was er bedeutet
+  und warum einer ocker ist — bisher stand das nirgends. Einmal, nicht auf
+  jeder Karte.
+
 ## [1.1.0] – 2026-10-12
 
 Ein Rundgang durch die App auf einem Handy hat fünf Stellen zutage gefördert,
@@ -85,7 +103,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.1.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.1.0
 [1.0.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.0.0

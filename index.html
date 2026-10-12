@@ -165,6 +165,8 @@ details.filters[open] + .panel-foot{border-top:1px solid var(--line); padding-to
   font-family:Fraunces, Georgia, serif; font-weight:600; font-size:22px; margin:0;
 }
 .count{color:var(--muted); font-size:14px; font-variant-numeric:tabular-nums}
+/* Einmal erklaert, nicht auf jeder Karte wiederholt. */
+.legende{margin:-6px 0 0; font-size:13px; color:var(--muted)}
 .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(272px,1fr)); gap:14px; align-items:start}
 
 /* Sprungziele muessen unter dem Band fuer die Statusleiste anfangen, sonst
@@ -297,6 +299,8 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
 .pair{display:flex; align-items:center; gap:8px}
 .pair span.sep{color:var(--muted); font-size:14px; flex:none}
 .hint{font-size:12px; color:var(--muted); margin:0}
+.datumsknoepfe{display:flex; flex-wrap:wrap; gap:6px; margin-top:2px}
+#f-datumsecho{color:var(--ink)}
 .formerror{
   margin:0; font-size:14px; color:var(--warn); font-weight:500;
 }
@@ -437,6 +441,8 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
       <h2>Passt heute</h2>
       <span class="count" id="count"></span>
     </div>
+    <p class="legende" id="legende" hidden>Der Balken unter jedem Namen zeigt die Passung
+      zu eurer Runde — je voller, desto besser. Ocker ist der Vorschlag ganz oben.</p>
     <div class="grid" id="results"></div>
   </section>
 
@@ -484,8 +490,16 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
               <span class="sep">bis</span>
               <input type="number" id="f-durmax" placeholder="60" min="1" max="600" inputmode="numeric" aria-label="Dauer bis">
             </div></div>
-          <label><span>Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span>
-            <input type="date" id="f-played"></label>
+          <div class="stack">
+            <label for="f-played"><span>Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span></label>
+            <input type="date" id="f-played">
+            <div class="datumsknoepfe">
+              <button class="linkbtn" type="button" id="f-heute">Heute</button>
+              <button class="linkbtn" type="button" id="f-gestern">Gestern</button>
+              <button class="linkbtn" type="button" id="f-leeren">Leeren</button>
+            </div>
+            <p class="hint" id="f-datumsecho">Noch nie gespielt.</p>
+          </div>
           <label class="check"><input type="checkbox" id="f-teach">
             <span>Muss noch erklärt werden</span></label>
           <fieldset class="stack field wide"><legend class="lbl">Anspruch</legend>
@@ -538,7 +552,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 1.1.0</p>
+    <p class="fassung">Fassung 1.2.0</p>
   </footer>
 </div>
 
@@ -1006,6 +1020,34 @@ function fromDateInput(text){
   return Number.isFinite(d.getTime()) ? d.getTime() : null;
 }
 
+// Das Datumsfeld zeigt je nach Systemsprache mm/dd/yyyy oder TT.MM.JJJJ - darauf
+// hat die Seite keinen Einfluss. Diese Zeile schreibt den gewaehlten Tag darum
+// noch einmal deutsch aus, samt Wochentag: dann ist jeder Zweifel ausgeraeumt.
+function datumAusgeschrieben(text){
+  if(!text) return "Noch nie gespielt.";
+  const ts = fromDateInput(text);
+  if(ts === null) return "Datum noch unvollständig.";
+  const lang = new Date(ts).toLocaleDateString("de-DE",
+    { weekday:"long", day:"2-digit", month:"2-digit", year:"numeric" });
+  const tage = Math.floor((Date.now() - ts) / 86400000);
+  const wann = tage < 0 ? " — das liegt in der Zukunft" :
+               tage === 0 ? " — heute" :
+               tage === 1 ? " — gestern" :
+               tage < 31 ? " — vor " + tage + " Tagen" : "";
+  return lang + wann;
+}
+
+function zeigeDatum(){
+  $("f-datumsecho").textContent = datumAusgeschrieben($("f-played").value);
+}
+
+function setzeDatum(tageZurueck){
+  const d = new Date();
+  d.setDate(d.getDate() - tageZurueck);
+  $("f-played").value = toDateInput(d.getTime());
+  zeigeDatum();
+}
+
 function fmtGespielt(g){
   if(!g.lastPlayed) return "noch nie";
   const t = Math.floor(tageSeither(g));
@@ -1171,6 +1213,8 @@ function renderResults(){
   if(!pick) state.picked = null;
   else hits.splice(hits.indexOf(pick), 1), hits.unshift(pick);
 
+  $("legende").hidden = hits.length === 0;
+
   $("results").innerHTML = hits.length
     ? hits.map((h,i) => {
         const gewuerfelt = state.picked === h.g.id;
@@ -1285,6 +1329,7 @@ function resetForm(){
   ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note","f-played"]
     .forEach(id => { $(id).value = ""; });
   $("f-teach").checked = false;
+  zeigeDatum();
   $("formtitle").textContent = "Spiel hinzufügen";
   $("f-submit").textContent = "Ins Regal stellen";
   $("f-cancel").hidden = true;
@@ -1302,6 +1347,7 @@ function startEdit(id){
   $("f-durmin").value = g.dur[0]; $("f-durmax").value = g.dur[1];
   $("f-note").value = g.note;
   $("f-played").value = toDateInput(g.lastPlayed);
+  zeigeDatum();
   $("f-teach").checked = !!g.teach;
   form.weight = bandOf(g).id;
   form.moods = new Set(g.moods);
@@ -1565,6 +1611,11 @@ function wuerfeln(){
   const el = document.querySelector(".result-head");
   if(el) el.scrollIntoView({ behavior:"smooth", block:"start" });
 }
+
+$("f-played").addEventListener("input", zeigeDatum);
+$("f-heute").addEventListener("click", () => setzeDatum(0));
+$("f-gestern").addEventListener("click", () => setzeDatum(1));
+$("f-leeren").addEventListener("click", () => { $("f-played").value = ""; zeigeDatum(); });
 
 $("dice").addEventListener("click", wuerfeln);
 

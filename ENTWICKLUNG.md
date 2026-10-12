@@ -203,6 +203,19 @@ Der Block „Runde beschreiben" klappt zu (`state.filtersOpen`, gemerkt in den
 Einstellungen). Zugeklappt steht nur noch die Zusammenfassung da, und der erste
 Treffer rückt von Pixel 1065 auf 489 — also auf den ersten Bildschirm.
 
+## Das Datumsfeld
+
+`<input type="date">` zeigt das Format der **Systemsprache**, nicht das der
+Seite. Ein `lang="de"` am Feld ändert nichts — nachgeprüft in Chromium, alle
+drei Varianten ergaben `mm/dd/yyyy`. Es gibt keinen Weg, das zu erzwingen,
+ohne den Kalender des Geräts aufzugeben; der ist auf dem Handy aber das
+Wertvollste am Feld.
+
+Deshalb steht der gewählte Tag darunter noch einmal ausgeschrieben
+(`datumAusgeschrieben()`), fest mit `toLocaleDateString("de-DE", …)` und mit
+Wochentag. Wer hier aufräumt und diese Zeile entfernt, holt sich das Problem
+zurück.
+
 ## Was absichtlich fehlt
 
 - **Keine automatischen Tests.** Geprüft wurde jeweils von Hand gegen den
