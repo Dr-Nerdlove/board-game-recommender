@@ -28,6 +28,14 @@ on:
 permissions:
   contents: write
 
+env:
+  # Der Fingerabdruck des Signaturschluessels. Kein Geheimnis - er steht in
+  # jeder veroeffentlichten APK und ist genau dafuer da, oeffentlich geprueft
+  # zu werden. Weicht ein Bau davon ab, wurde mit einem anderen Schluessel
+  # signiert und die App liesse sich nicht mehr aktualisieren: Dann bricht der
+  # Bau ab, bevor etwas veroeffentlicht wird.
+  ERWARTETE_SIGNATUR: "82:B8:A1:99:A0:D6:A3:0B:B8:2E:9B:87:E0:A2:C8:75:31:F6:66:0F:9B:8F:67:3C:D1:4C:C9:80:ED:97:9C:A9"
+
 jobs:
   bauen:
     runs-on: ubuntu-latest
@@ -186,19 +194,38 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
 
-      - name: APK benennen und Ausweis zeigen
+      - name: APK benennen und Signatur pruefen
         id: apk
+        # pipefail ist hier wesentlich: Ohne das zaehlt nur der Ausgang des
+        # letzten Glieds einer Rohrleitung. Ein gescheitertes keytool blieb so
+        # unbemerkt, weil das nachfolgende sed mit leerer Eingabe zufrieden war.
         run: |
-          set -eu
+          set -euo pipefail
           NAME="spieleabend-${{ steps.fassung.outputs.nummer }}.apk"
           cp android/app/build/outputs/apk/release/app-release.apk "$NAME"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           ls -la "$NAME"
-          # Dieser Fingerabdruck muss bei jedem Bau derselbe sein. Aendert er
-          # sich, laesst sich die App nicht mehr aktualisieren.
-          ABDRUCK="$(keytool -printcert -jarfile "$NAME" | grep -m1 'SHA256:' | sed 's/.*SHA256: *//')"
-          echo "abdruck=$ABDRUCK" >> "$GITHUB_OUTPUT"
+
+          # apksigner statt keytool: Letzteres liest nur die alte JAR-Signatur
+          # (v1), die ab minSdk 24 gar nicht mehr erzeugt wird.
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          APKSIGNER="$(ls -d "$SDK"/build-tools/*/apksigner | sort -V | tail -1)"
+          test -x "$APKSIGNER"
+
+          "$APKSIGNER" verify --verbose "$NAME"
+          ROH="$("$APKSIGNER" verify --print-certs "$NAME" | grep -m1 'SHA-256 digest' | sed 's/.*digest: *//')"
+          test -n "$ROH"
+          ABDRUCK="$(printf '%s' "$ROH" | tr 'a-f' 'A-F' | sed 's/../&:/g; s/:$//')"
           echo "Fingerabdruck der Signatur: $ABDRUCK"
+
+          if [ "$ABDRUCK" != "$ERWARTETE_SIGNATUR" ]; then
+            echo "::error::Mit einem anderen Schluessel signiert als erwartet."
+            echo "::error::erwartet: $ERWARTETE_SIGNATUR"
+            echo "::error::erhalten: $ABDRUCK"
+            echo "::error::So signiert liesse sich die App nicht aktualisieren."
+            exit 1
+          fi
+          echo "abdruck=$ABDRUCK" >> "$GITHUB_OUTPUT"
 
       - name: APK als Arbeitsergebnis anhaengen
         uses: actions/upload-artifact@v4

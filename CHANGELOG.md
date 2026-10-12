@@ -9,6 +9,24 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [1.2.2] – 2026-10-12
+
+An der App selbst ändert sich nichts; 1.2.1 war bereits richtig signiert. Was
+fehlte, war der Nachweis darüber.
+
+### Behoben
+
+- **Der Fingerabdruck der Signatur blieb leer.** Gelesen wurde er mit
+  `keytool`, das nur die alte JAR-Signatur (v1) versteht — ab `minSdk 24`
+  erzeugt Gradle die aber nicht mehr. Der Fehlschlag blieb unbemerkt, weil in
+  einer Rohrleitung nur der Ausgang des letzten Glieds zählt und das
+  nachfolgende `sed` mit leerer Eingabe zufrieden war. Jetzt liest `apksigner`
+  den Abdruck, und `set -o pipefail` lässt solche Fehler nicht mehr
+  durchrutschen.
+- **Der Bauplan prüft die Signatur gegen einen erwarteten Fingerabdruck** und
+  bricht ab, bevor etwas veröffentlicht wird, falls sie abweicht. Außerdem
+  verifiziert er die Signatur der fertigen APK.
+
 ## [1.2.1] – 2026-10-12
 
 ### Behoben
@@ -124,7 +142,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.2.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.2
 [1.2.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v1.1.0

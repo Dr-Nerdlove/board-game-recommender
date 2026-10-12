@@ -130,8 +130,16 @@ bricht der Bau gleich im zweiten Schritt mit einer verständlichen Meldung ab �
 lieber das als ein Paket, das sich später nicht aktualisieren lässt.
 
 Der Schlüssel heißt innen `spieleabend` (Alias, steht fest im Bauplan). Jeder
-Bau schreibt den Fingerabdruck der Signatur ins Protokoll und in den Text der
-Veröffentlichung. **Der muss über alle Fassungen hinweg gleich bleiben.**
+Bau liest den Fingerabdruck der fertigen APK und vergleicht ihn mit
+`ERWARTETE_SIGNATUR` im Bauplan; bei Abweichung bricht er ab, bevor etwas
+veröffentlicht wird. Der Abdruck ist kein Geheimnis — er steht in jeder APK und
+ist dazu da, geprüft zu werden.
+
+Gelesen wird er mit **`apksigner`**, nicht mit `keytool`: Letzteres versteht nur
+die alte JAR-Signatur (v1), die ab `minSdk 24` gar nicht mehr erzeugt wird.
+Dieser Fehler ist schon passiert und blieb unbemerkt, weil in einer Rohrleitung
+nur der Ausgang des letzten Glieds zählt — daher steht in dem Schritt
+`set -o pipefail`.
 
 Drei Dinge, die man wissen muss:
 
