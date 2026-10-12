@@ -663,7 +663,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 2.2.0</p>
+    <p class="fassung">Fassung 2.2.1</p>
   </footer>
 </div>
 
@@ -1653,18 +1653,73 @@ $("kopieren").addEventListener("click", async () => {
   }
 });
 
-$("herunterladen").addEventListener("click", () => {
+// In der Android-App gibt es fuer <a download> niemanden, der zustaendig
+// waere: Die WebView von Capacitor bekommt keinen DownloadListener gesetzt
+// (im Quelltext von @capacitor/android nachgesehen - es gibt dort keinen).
+// Der Klick verpuffte also wirkungslos, und die Meldung behauptete trotzdem
+// "Datei gespeichert". Darum schreibt die App die Datei jetzt selbst und
+// reicht sie an Androids Teilen-Blatt weiter. Dort steht neben Mail, Drive
+// und Chat auch "In Dateien speichern" - damit landet sie im Download-Ordner
+// oder wo sonst gewuenscht.
+//
+// Direkt in den Download-Ordner zu schreiben, geht nicht: Seit Android 11
+// kommt keine App mehr ohne Weiteres an die oeffentlichen Ordner, und der
+// Dateisystem-Baustein bietet dafuer nur Wege, die dort scheitern.
+let bruecke;                                   // einmal aufgebaut, dann gemerkt
+function appBruecke(){
+  if(bruecke !== undefined) return bruecke;
+  const K = window.Capacitor;
+  const da = name => (K && K.PluginHeaders || []).some(p => p.name === name);
+  bruecke = (K && K.isNativePlatform && K.isNativePlatform() && da("Filesystem") && da("Share"))
+    ? { datei:K.registerPlugin("Filesystem"), teilen:K.registerPlugin("Share") }
+    : null;
+  return bruecke;
+}
+
+$("herunterladen").addEventListener("click", async () => {
   const note = $("importnote");
+  const stand = new Date().toISOString().slice(0,10);
+  const name = "spieleabend-sammlung-" + stand + ".json";
+  const app = appBruecke();
+
+  if(app){
+    note.textContent = "Sicherung wird vorbereitet …";
+    try{
+      // Der Zwischenspeicher ist der einzige Ort, den die App ohne
+      // Berechtigung beschreiben darf und den das Teilen-Blatt lesen kann
+      // (file_paths.xml gibt genau ihn frei).
+      const { uri } = await app.datei.writeFile({
+        path:name, data:$("backup").value, directory:"CACHE", encoding:"utf8"
+      });
+      await app.teilen.share({
+        title:"Spieleabend-Sammlung",
+        files:[uri],
+        dialogTitle:"Sicherung ablegen oder verschicken"
+      });
+      note.textContent = "Erledigt. „In Dateien speichern“ legt sie dorthin, wo du sie ausgewaehlt hast.";
+    }catch(e){
+      const grund = String(e && e.message || e);
+      note.textContent = /cancel/i.test(grund)
+        ? "Abgebrochen — nichts gespeichert."
+        : "Hat nicht geklappt (" + grund + "). Nimm „Text kopieren“.";
+    }
+    return;
+  }
+
+  // Im Browser macht es der Browser.
   try{
-    const stand = new Date().toISOString().slice(0,10);
     const blob = new Blob([$("backup").value], { type:"application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "spieleabend-sammlung-" + stand + ".json";
+    a.download = name;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-    note.textContent = "Datei gespeichert. Passiert nichts, nimm „Text kopieren“.";
+    // In der App ohne die beiden Bausteine kommt hier nichts an - das sagen
+    // wir dann auch, statt eine Datei zu behaupten, die es nicht gibt.
+    note.textContent = (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())
+      ? "Das Speichern als Datei fehlt dieser Fassung — nimm „Text kopieren“."
+      : "Die Datei liegt dort, wo dein Browser Downloads ablegt. Passiert nichts, nimm „Text kopieren“.";
   }catch(e){
     note.textContent = "Herunterladen geht hier nicht — nimm „Text kopieren“.";
   }

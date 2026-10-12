@@ -1,6 +1,6 @@
 {
   "name": "spieleabend",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "private": true,
   "description": "Welches Brettspiel passt zur heutigen Runde? Android-App.",
   "devDependencies": {
@@ -8,7 +8,9 @@
     "@capacitor/assets": "^3.0.5"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
     "@capacitor/core": "^8.5.0",
-    "@capacitor/android": "^8.5.0"
+    "@capacitor/filesystem": "^8.1.4",
+    "@capacitor/share": "^8.0.3"
   }
 }

@@ -9,6 +9,18 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.2.1] – 2026-10-12
+
+### Behoben
+
+- **„Als Datei sichern" tat in der App nichts** — und meldete trotzdem „Datei
+  gespeichert". Der Grund: Das Fenster, in dem die App läuft, hat niemanden,
+  der einen Download entgegennimmt; der Klick verpuffte. Die App schreibt die
+  Datei jetzt selbst und reicht sie an Androids Teilen-Blatt weiter. Dort
+  wählst du, wohin — „In Dateien speichern" legt sie in den Download-Ordner,
+  genauso gehen Mail, Drive oder ein Chat. Bricht man ab, sagt die App das
+  auch. Im Browser bleibt alles wie es war.
+
 ## [2.2.0] – 2026-10-12
 
 ### Geändert
@@ -333,7 +345,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.1...HEAD
+[2.2.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.1
 [2.2.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.0
 [2.1.3]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.3
 [2.1.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.1.2

@@ -49,8 +49,10 @@ Speicher der App, auf diesem Handy.
 „Sicherung & Umzug":
 
 - **Text kopieren** — klappt immer. In eine Notiz oder E-Mail einfügen.
-- **Als Datei sichern** — legt eine `.json`-Datei ab, wo dein Handy Downloads
-  speichert. Falls nichts passiert: den Textweg nehmen.
+- **Als Datei sichern** — in der App öffnet sich Androids Teilen-Blatt: dort
+  wählst du, wohin die `.json`-Datei soll — „In Dateien speichern" legt sie
+  z. B. in den Download-Ordner, genauso gehen Mail, Drive oder ein Chat. Im
+  Browser landet sie direkt im Download-Ordner.
 - **Datei einlesen** — auf dem neuen Gerät die Sicherung auswählen, dann
   „Sammlung ersetzen".
 

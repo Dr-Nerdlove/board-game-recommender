@@ -118,6 +118,32 @@ Drei Dinge, die beim Bauen schiefgingen und wieder schiefgehen können:
   `npx capacitor-assets generate --android`, und in
   `android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml` nachsehen.
 
+### Die Sicherung als Datei
+
+In der App ist `<a download>` wirkungslos. Die WebView von Capacitor bekommt
+keinen `DownloadListener` gesetzt — im Quelltext von `@capacitor/android`
+nachgesehen, es gibt dort keinen. Der Klick verpuffte also, und die Meldung
+behauptete trotzdem „Datei gespeichert".
+
+Darum schreibt die App die Datei jetzt selbst (`@capacitor/filesystem`) und
+reicht sie an Androids Teilen-Blatt weiter (`@capacitor/share`). Geschrieben
+wird in den Zwischenspeicher: Er ist der einzige Ort, den die App ohne
+Berechtigung beschreiben darf und den das Teilen-Blatt lesen kann —
+`android/app/src/main/res/xml/file_paths.xml` gibt mit `<cache-path>` genau
+ihn frei.
+
+**Direkt in den Download-Ordner geht nicht.** Seit Android 11 kommt keine App
+mehr ohne Weiteres an die öffentlichen Ordner; die Verzeichnisse, die der
+Dateisystem-Baustein dafür anbietet (`DOCUMENTS`, `EXTERNAL_STORAGE`), laufen
+dort in die Berechtigung und scheitern. Über das Teilen-Blatt wählt der Benutzer
+den Ort selbst, und „In Dateien speichern" führt in den Download-Ordner.
+
+Die beiden Bausteine werden ohne Übersetzungsschritt angesprochen:
+`window.Capacitor.registerPlugin("Filesystem")` liefert zur Laufzeit einen
+Stellvertreter, sobald der Baustein nativ eingetragen ist. Welche eingetragen
+sind, steht in `window.Capacitor.PluginHeaders` — daran erkennt die Seite auch,
+ob sie in der App läuft oder im Browser.
+
 ### Signatur
 
 **Das Wichtigste am ganzen Bauplan.** Für Android ist die Signatur der Ausweis
