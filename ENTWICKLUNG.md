@@ -138,11 +138,24 @@ Dateisystem-Baustein dafür anbietet (`DOCUMENTS`, `EXTERNAL_STORAGE`), laufen
 dort in die Berechtigung und scheitern. Über das Teilen-Blatt wählt der Benutzer
 den Ort selbst, und „In Dateien speichern" führt in den Download-Ordner.
 
-Die beiden Bausteine werden ohne Übersetzungsschritt angesprochen:
-`window.Capacitor.registerPlugin("Filesystem")` liefert zur Laufzeit einen
-Stellvertreter, sobald der Baustein nativ eingetragen ist. Welche eingetragen
-sind, steht in `window.Capacitor.PluginHeaders` — daran erkennt die Seite auch,
-ob sie in der App läuft oder im Browser.
+**Die Bausteine werden nicht angemeldet, sie sind schon da.** Die native Seite
+schreibt beim Start für jeden eingetragenen Baustein ein fertiges Objekt nach
+`window.Capacitor.Plugins` — `JSExport.getPluginJS` im Quelltext von
+`@capacitor/android` erzeugt es Methode für Methode. Von dort wird es benutzt:
+`window.Capacitor.Plugins.Filesystem.writeFile({…})`.
+
+Ein `registerPlugin` gibt es dort **nicht**. Das steckt im Paket
+`@capacitor/core`, das in einem Projekt mit Übersetzungsschritt mitgebündelt
+wird — diese Seite lädt es bewusst nicht. Mein erster Versuch rief es trotzdem
+auf; der Knopf brach ab, bevor irgendetwas passierte, und zwar lautlos. Wer
+hier etwas ändert: `window.Capacitor` wird von drei Stellen zusammengesetzt
+(`JSExport.getGlobalJS`, `native-bridge.js`, `JSExport.getPluginJS`), und nur
+was dort steht, ist in der App vorhanden.
+
+Nachstellen lässt sich das im Browser: Die Datei `echt.mjs` in den Notizen baut
+genau diese drei Stellen nach — ausdrücklich ohne `registerPlugin` — und prüft
+alle vier Fälle (Browser, App, Abbruch, App ohne die Bausteine). Ein Test, der
+stattdessen die eigene Annahme nachbaut, geht durch und beweist nichts.
 
 ### Signatur
 

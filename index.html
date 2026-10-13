@@ -674,7 +674,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 2.2.3</p>
+    <p class="fassung">Fassung 2.2.4</p>
   </footer>
 </div>
 
@@ -1676,18 +1676,37 @@ $("kopieren").addEventListener("click", async () => {
 // Direkt in den Download-Ordner zu schreiben, geht nicht: Seit Android 11
 // kommt keine App mehr ohne Weiteres an die oeffentlichen Ordner, und der
 // Dateisystem-Baustein bietet dafuer nur Wege, die dort scheitern.
-let bruecke;                                   // einmal aufgebaut, dann gemerkt
+// Die Bausteine werden nicht angemeldet, sie sind schon da: Die native Seite
+// schreibt beim Start fuer jeden eingetragenen Baustein ein fertiges Objekt
+// nach window.Capacitor.Plugins (JSExport.getPluginJS im Quelltext von
+// @capacitor/android). Ein registerPlugin gibt es dort *nicht* - das steckt im
+// Baustein-Paket @capacitor/core, und das laedt diese Seite bewusst nicht.
+// Genau daran ist mein erster Versuch gescheitert: Der Aufruf brach ab, bevor
+// irgendetwas passieren konnte, und zwar lautlos.
+let bruecke;                                   // einmal nachgesehen, dann gemerkt
 function appBruecke(){
   if(bruecke !== undefined) return bruecke;
-  const K = window.Capacitor;
-  const da = name => (K && K.PluginHeaders || []).some(p => p.name === name);
-  bruecke = (K && K.isNativePlatform && K.isNativePlatform() && da("Filesystem") && da("Share"))
-    ? { datei:K.registerPlugin("Filesystem"), teilen:K.registerPlugin("Share") }
+  const bausteine = window.Capacitor && window.Capacitor.Plugins;
+  bruecke = (bausteine && bausteine.Filesystem && bausteine.Share)
+    ? { datei:bausteine.Filesystem, teilen:bausteine.Share }
     : null;
   return bruecke;
 }
 
+function inDerApp(){
+  const K = window.Capacitor;
+  return !!(K && K.isNativePlatform && K.isNativePlatform());
+}
+
 $("herunterladen").addEventListener("click", async () => {
+  // Alles in einem Netz: Faellt hier irgendwo etwas aus, soll es sichtbar
+  // sein. Beim ersten Versuch brach der Knopf lautlos ab, und der Benutzer
+  // suchte eine Datei, die es nie gab.
+  try{ await sichern(); }
+  catch(e){ $("importnote").textContent = "Fehler beim Speichern: " + String(e && e.message || e) + " — nimm „Text kopieren“."; }
+});
+
+async function sichern(){
   const note = $("importnote");
   const stand = new Date().toISOString().slice(0,10);
   const name = "spieleabend-sammlung-" + stand + ".json";
@@ -1728,13 +1747,13 @@ $("herunterladen").addEventListener("click", async () => {
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
     // In der App ohne die beiden Bausteine kommt hier nichts an - das sagen
     // wir dann auch, statt eine Datei zu behaupten, die es nicht gibt.
-    note.textContent = (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())
+    note.textContent = inDerApp()
       ? "Das Speichern als Datei fehlt dieser Fassung — nimm „Text kopieren“."
       : "Die Datei liegt dort, wo dein Browser Downloads ablegt. Passiert nichts, nimm „Text kopieren“.";
   }catch(e){
     note.textContent = "Herunterladen geht hier nicht — nimm „Text kopieren“.";
   }
-});
+}
 
 $("dateiwahl").addEventListener("change", ev => {
   const datei = ev.target.files && ev.target.files[0];

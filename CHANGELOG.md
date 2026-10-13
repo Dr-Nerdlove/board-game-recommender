@@ -9,6 +9,19 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.2.4] – 2026-10-13
+
+### Behoben
+
+- **„Als Datei sichern" tat in der App immer noch nichts.** Die Reparatur aus
+  2.2.1 hat den Knopf an der falschen Stelle angefasst: Sie meldete die beiden
+  Bausteine für Datei und Teilen erst an, statt die zu benutzen, die die App
+  beim Start selbst bereitstellt. Den dafür nötigen Befehl gibt es in der App
+  gar nicht, also brach der Knopf ab, bevor etwas passieren konnte — ohne
+  Meldung. Jetzt greift er auf das zu, was da ist.
+- **Der Knopf schweigt nicht mehr, wenn etwas schiefgeht.** Jeder Fehler landet
+  sichtbar in der Zeile darunter, statt lautlos zu verpuffen.
+
 ## [2.2.3] – 2026-10-12
 
 ### Geändert
@@ -365,7 +378,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.3...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.4...HEAD
+[2.2.4]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.4
 [2.2.3]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.3
 [2.2.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.2
 [2.2.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.1
