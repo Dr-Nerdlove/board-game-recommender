@@ -9,6 +9,21 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.2.5] – 2026-10-13
+
+### Behoben
+
+- **Eine eingelesene Sicherung konnte vor dem Einspielen still verschwinden.**
+  Das Feld unter „Sicherung & Umzug" zeigt sonst immer die aktuelle Sammlung
+  und schrieb sich bei jedem Neuzeichnen neu — ein Tipp auf einen Filter
+  genügte, und die gerade eingelesene Datei war weg. „Sammlung ersetzen"
+  ersetzte sie danach durch sich selbst, ohne ein Wort. Auf einem neuen Gerät
+  wäre die alte Sammlung so nie angekommen. Jetzt bleibt stehen, was du
+  eingelesen oder eingefügt hast, bis es eingespielt ist; den Abschnitt
+  zuzuklappen zeigt wieder die eigene Sammlung.
+- Einzahl und Mehrzahl beim Einspielen: „1 Spiel eingespielt" statt „1 Spiele",
+  „eines war schon da" statt „1 waren schon da".
+
 ## [2.2.4] – 2026-10-13
 
 ### Behoben
@@ -378,7 +393,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.4...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.5...HEAD
+[2.2.5]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.5
 [2.2.4]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.4
 [2.2.3]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.3
 [2.2.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.2

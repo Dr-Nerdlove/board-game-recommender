@@ -674,7 +674,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
     <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 2.2.4</p>
+    <p class="fassung">Fassung 2.2.5</p>
   </footer>
 </div>
 
@@ -1396,8 +1396,14 @@ function renderCollection(){
       "</li>";
   }).join("");
 
+  // Das Feld zeigt sonst immer die aktuelle Sammlung. Hat der Benutzer aber
+  // gerade eine Sicherung eingelesen oder eingefuegt, darf sie nicht beim
+  // naechsten Neuzeichnen verschwinden - und genau das geschah: Ein Tipp auf
+  // einen Filter-Chip reichte, und die Sicherung war still weg. "Sammlung
+  // ersetzen" ersetzte sie danach durch sich selbst, ohne ein Wort. Auf einem
+  // neuen Geraet waere die alte Sammlung so nie angekommen.
   const ta = $("backup");
-  if(document.activeElement !== ta){
+  if(document.activeElement !== ta && !sicherungFremd){
     ta.value = JSON.stringify(games.map(g => ({
       name:g.name, min:g.min, max:g.max, best:g.best, dur:g.dur, weight:g.weight,
       moods:g.moods, note:g.note, lastPlayed:g.lastPlayed, teach:g.teach
@@ -1618,6 +1624,10 @@ $("restore").addEventListener("click", () => {
   render();
 });
 
+// true, solange im Sicherungsfeld etwas steht, das nicht die aktuelle Sammlung
+// ist: eingelesen, eingefuegt oder von Hand getippt.
+let sicherungFremd = false;
+
 function parseBackup(){
   try{
     const parsed = JSON.parse($("backup").value);
@@ -1633,17 +1643,21 @@ function importGames(mode){
     note.textContent = "Darin steckt keine lesbare Sammlung — erwartet wird die Liste aus dem Feld darüber.";
     return;
   }
+  // Einzahl und Mehrzahl auseinanderhalten - der Rest der Seite tut es auch.
+  const stueck = n => n === 1 ? "1 Spiel" : n + " Spiele";
   if(mode === "replace"){
     games = list;
-    note.textContent = list.length + " Spiele eingespielt, alte Sammlung ersetzt.";
+    note.textContent = stueck(list.length) + " eingespielt, alte Sammlung ersetzt.";
   }else{
     const have = new Set(games.map(g => g.name.toLowerCase()));
     const neu = list.filter(g => !have.has(g.name.toLowerCase()));
     games = games.concat(neu);
     const doppelt = list.length - neu.length;
-    note.textContent = neu.length + " dazugekommen" +
-      (doppelt ? ", " + doppelt + " waren schon da" : "") + ".";
+    note.textContent =
+      (neu.length ? stueck(neu.length) + " dazugekommen" : "Nichts dazugekommen") +
+      (doppelt ? ", " + (doppelt === 1 ? "eines war" : doppelt + " waren") + " schon da" : "") + ".";
   }
+  sicherungFremd = false;                       // Feld zeigt wieder die Sammlung
   hideUndo();
   resetForm();
   persist();
@@ -1755,12 +1769,28 @@ async function sichern(){
   }
 }
 
+$("backup").addEventListener("input", () => {
+  sicherungFremd = $("backup").value.trim() !== "";
+});
+
+// Zugeklappt und wieder auf: Das Feld zeigt wieder die eigene Sammlung. Ohne
+// diesen Weg zurueck bliebe eine einmal eingelesene Sicherung dort stehen,
+// und "Text kopieren" wuerde sie statt der Sammlung kopieren.
+document.querySelector("details.backup").addEventListener("toggle", ev => {
+  if(!ev.target.open && sicherungFremd){
+    sicherungFremd = false;
+    renderCollection();
+    $("importnote").textContent = "";
+  }
+});
+
 $("dateiwahl").addEventListener("change", ev => {
   const datei = ev.target.files && ev.target.files[0];
   if(!datei) return;
   const leser = new FileReader();
   leser.onload = () => {
     $("backup").value = String(leser.result);
+    sicherungFremd = true;
     $("importnote").textContent = "Datei gelesen — jetzt „Dazu einspielen“ oder „Sammlung ersetzen“ wählen.";
   };
   leser.onerror = () => { $("importnote").textContent = "Die Datei liess sich nicht lesen."; };
