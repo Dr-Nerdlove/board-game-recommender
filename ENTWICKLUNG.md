@@ -157,6 +157,23 @@ genau diese drei Stellen nach — ausdrücklich ohne `registerPlugin` — und pr
 alle vier Fälle (Browser, App, Abbruch, App ohne die Bausteine). Ein Test, der
 stattdessen die eigene Annahme nachbaut, geht durch und beweist nichts.
 
+### Die Zurück-Taste
+
+Ohne Zutun beendet Androids Zurück-Taste die App sofort — gleich ob man im
+Formular steht, in der Sammlung blättert oder weit unten ist. Capacitor selbst
+behandelt sie gar nicht (im Quelltext von `@capacitor/android` gibt es dazu
+nichts). Erst `@capacitor/app` hängt sich ein, und zwar so: Gibt es **keinen**
+JS-Horcher, geht es im Verlauf der Seite zurück — bei einer Seite ohne Verlauf
+also nirgendwohin, und die App ließe sich mit Zurück gar nicht mehr verlassen.
+Wer den Baustein einbaut, muss den Horcher also anmelden und selbst entscheiden,
+wann beendet wird.
+
+`eineEbeneZurueck()` in `index.html` hält die Reihenfolge fest: Formular,
+Sicherungsabschnitt, Sammlung, Ausschussliste, nach oben scrollen — und erst
+dann hinaus. Der ganze Horcher liegt in einem `try`, und schlägt irgendetwas
+fehl, wird beendet. Das ist genau das Verhalten ohne den Zusatz; niemand soll
+in der App festsitzen, weil dieser Code einen Fehler hat.
+
 ### Signatur
 
 **Das Wichtigste am ganzen Bauplan.** Für Android ist die Signatur der Ausweis

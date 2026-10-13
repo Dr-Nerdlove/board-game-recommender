@@ -9,6 +9,34 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.3.0] – 2026-10-13
+
+### Hinzugefügt
+
+- **Die Zurück-Taste geht eine Ebene zurück, statt die App zu schließen.** Erst
+  das Formular, dann der Sicherungsabschnitt, dann die Sammlung, dann die Liste
+  der ausgeschiedenen Spiele, dann nach oben — und erst oben hinaus. Bisher war
+  jedes Antippen von Zurück ein sofortiges Ende, egal wo man war.
+
+### Geändert
+
+- **Alle Flächen zum Antippen sind jetzt mindestens 48 Punkte hoch** statt 44.
+  48 ist das Mindestmaß, das Android dafür nennt; 44 stammt von Apple.
+
+### Behoben
+
+- **Die beiden Hauptknöpfe waren im Hellmodus zu blass.** Helle Schrift auf dem
+  Ocker kam gemessen auf 4,11:1 und blieb damit unter den geforderten 4,5:1.
+  Sie haben jetzt einen eigenen, dunkleren Ton — 5,6:1. Der Ocker bleibt, wo er
+  nur schmückt.
+- **Bei vergrößerter Systemschrift lief die Seite seitlich aus dem Bild.** Die
+  Knopfzeile, das Kartenraster und die Kopfzeile einer Karte konnten nicht
+  umbrechen. Jetzt steht bis zur doppelten Schriftgröße nichts mehr über dem
+  Rand.
+- Die Farbe der Systemleisten folgt jetzt dem Hell- und Dunkelmodus statt immer
+  ocker zu sein.
+- Im Querformat waren die Zeilen der Sammlung nur 44 Punkte hoch.
+
 ## [2.2.5] – 2026-10-13
 
 ### Behoben
@@ -393,7 +421,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.2.5...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.3.0
 [2.2.5]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.5
 [2.2.4]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.4
 [2.2.3]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.3
