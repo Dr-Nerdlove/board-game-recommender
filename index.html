@@ -233,10 +233,14 @@ fieldset.field{border:0; margin:0; padding:0}
 .actions .reset{flex:0 0 auto}
 .dice{
   font:inherit; font-weight:700; font-size:15px; cursor:pointer;
-  background:var(--accent-knopf); color:#FFF8EC; border:1px solid var(--accent-knopf);
+  /* Frueher der einzige gefuellte Knopf der Startseite - und damit das
+     Auffaelligste, obwohl Wuerfeln das ist, was man am seltensten braucht.
+     Die Antwort steht in der Liste darunter. Jetzt umrandet statt gefuellt:
+     noch erkennbar der wichtigere der beiden, aber nicht mehr lauter als
+     das Ergebnis. */
+  background:transparent; color:var(--accent-ink); border:2px solid var(--accent-knopf);
   min-height:48px; padding:0 22px; border-radius:99px;
 }
-@media (prefers-color-scheme: dark){ .dice{color:#20180A} }
 .dice:hover{filter:brightness(1.06)}
 .reset{
   font:inherit; font-size:14px; cursor:pointer; background:transparent;
@@ -306,9 +310,12 @@ details.filters:not([open]) + .panel-foot{margin-top:0}
 .minirow:hover{border-color:var(--line-strong)}
 .minirow:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .minirow .mname{font-family:Fraunces, Georgia, serif; font-weight:600; font-size:17px; flex:1 1 150px}
+/* flex:none hielt die Angaben starr; mit dem ausgeschriebenen Anspruch statt
+   der drei Punkte wurde die Zeile bei grosser Schrift zu breit. Jetzt darf sie
+   umbrechen. */
 .minirow .mmeta{
   color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums;
-  display:flex; gap:10px; align-items:baseline; flex:none;
+  display:flex; flex-wrap:wrap; gap:2px 10px; align-items:baseline; flex:0 1 auto; min-width:0;
 }
 .minirow .mwhy{flex:1 1 100%; font-size:13px; color:var(--teal); margin-top:2px}
 
@@ -344,8 +351,6 @@ details.filters:not([open]) + .panel-foot{margin-top:0}
 .specs div{display:flex; gap:6px; align-items:baseline}
 .specs dt{font-size:11px; letter-spacing:.08em; text-transform:uppercase}
 .specs dd{margin:0; color:var(--ink); font-weight:500}
-.pips{letter-spacing:.12em; color:var(--teal)}
-.pips i{color:var(--line-strong); font-style:normal}
 .why{margin:0; font-size:14px; color:var(--teal); font-weight:500}
 .note{margin:0; font-size:14px; color:var(--muted)}
 /* Die Etiketten sahen aus wie Knoepfe, waren aber keine - zwei Reihen Pillen
@@ -428,6 +433,12 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
 .pair{display:flex; align-items:center; gap:8px}
 .pair span.sep{color:var(--muted); font-size:14px; flex:none}
 .hint{font-size:12px; color:var(--muted); margin:0}
+.sortlabel{
+  flex:1 1 100%;                       /* eigene Zeile, sonst landet sie neben dem Suchfeld */
+  margin:0; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--muted);
+}
+#colsort{flex:1 1 100%}
 .datumsknoepfe{display:flex; flex-wrap:wrap; gap:6px; margin-top:2px}
 #f-datumsecho{color:var(--ink)}
 .formerror{
@@ -486,7 +497,10 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
 }
 .linkbtn:hover{color:var(--ink); border-color:var(--ink)}
 a.linkbtn{text-decoration:none; white-space:nowrap}
-.linkbtn.danger:hover{color:var(--warn); border-color:var(--warn)}
+/* Die Warnfarbe gab es nur beim Ueberfahren mit der Maus - am Handy also
+   nie. Sie steht jetzt immer. */
+.linkbtn.danger{color:var(--warn); border-color:var(--warn)}
+.linkbtn.danger:hover{filter:brightness(1.15)}
 .linkbtn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .col-list li.editing{background:var(--accent-soft); border-radius:6px; padding-left:8px; padding-right:8px}
 
@@ -561,14 +575,14 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
           <div class="chips" id="times"></div>
         </fieldset>
         <fieldset class="field">
-          <legend>Regal</legend>
+          <legend>Zusätzlich</legend>
           <div class="chips" id="shelf"></div>
         </fieldset>
       </div>
     </details>
     <div class="panel-foot">
       <div class="actions">
-        <button class="reset" id="reset" type="button">Zurücksetzen</button>
+        <button class="reset" id="reset" type="button">Filter leeren</button>
         <button class="dice" id="dice" type="button">Würfel entscheiden</button>
       </div>
     </div>
@@ -590,7 +604,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   </details>
 
   <details class="panel" id="collection">
-    <summary>Sammlung bearbeiten <span class="count" id="colcount"></span></summary>
+    <summary>Sammlung bearbeiten</summary>
     <div class="col-body">
       <p class="storage-note" id="storagenote" data-mode="local">Sammlung wird gespeichert …</p>
 
@@ -616,7 +630,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
               <span class="sep">bis</span>
               <input type="number" id="f-max" placeholder="5" min="1" max="30" inputmode="numeric" aria-label="Spieler höchstens">
             </div></div>
-          <div class="stack"><span>Am besten zu <span class="hint">(optional)</span></span>
+          <div class="stack"><span>Glänzt bei <span class="hint">(optional, Spielerzahl)</span></span>
             <div class="pair">
               <input type="number" id="f-bestmin" placeholder="3" min="1" max="30" inputmode="numeric" aria-label="Glanzform von">
               <span class="sep">bis</span>
@@ -628,7 +642,11 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
               <span class="sep">bis</span>
               <input type="number" id="f-durmax" placeholder="60" min="1" max="600" inputmode="numeric" aria-label="Dauer bis">
             </div></div>
-          <div class="stack">
+          <!-- Nur beim Aendern sichtbar: Beim Hinzufuegen eines frisch gekauften
+               Spiels ist "zuletzt gespielt" so gut wie nie gemeint, kostete hier
+               aber vier Zeilen. Gespielt wird ueber "Heute gespielt" auf der
+               Karte vermerkt. -->
+          <div class="stack" id="f-datumsblock" hidden>
             <label for="f-played"><span>Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span></label>
             <input type="date" id="f-played">
             <div class="datumsknoepfe">
@@ -659,13 +677,15 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
       <div class="col-tools">
         <input type="search" id="colsearch" placeholder="Spiel suchen" autocomplete="off"
                aria-label="Sammlung durchsuchen">
-        <div class="chips" id="colsort" role="group" aria-label="Sortierung"></div>
+        <!-- Ohne sichtbare Beschriftung sehen diese Pillen aus wie die Filter
+             weiter oben und tun doch etwas anderes. -->
+        <p class="sortlabel" id="sortlabel">Sortieren nach</p>
+        <div class="chips" id="colsort" role="group" aria-labelledby="sortlabel"></div>
       </div>
       <p class="hint" id="colhits" hidden></p>
       <ul class="col-list" id="collist"></ul>
 
       <div class="col-foot">
-        <button class="linkbtn danger" type="button" id="restore">Auf Ausgangssammlung zurücksetzen</button>
         <details class="backup">
           <summary>Sicherung &amp; Umzug</summary>
           <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben, Ergänzen oder Ersetzen.
@@ -689,8 +709,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p>Neues Spiel gekauft? Oben ins Regal stellen. Verliehen und nie wiedergesehen? Entfernen.</p>
-    <p class="fassung">Fassung 2.3.0</p>
+    <p class="fassung">Fassung 2.4.0</p>
   </footer>
 </div>
 
@@ -1198,11 +1217,6 @@ function evaluate(g){
 
 /* ================= Ausgabe: Vorschläge ================= */
 
-function pips(g){
-  const filled = g.weight <= 1.5 ? 1 : g.weight <= 2.6 ? 2 : 3;
-  return "●".repeat(filled) + "<i>" + "●".repeat(3 - filled) + "</i>";
-}
-
 // Die gruene Begruendungszeile nennt bereits die Stimmungen, die gepasst haben.
 // Sie noch einmal grau darunter zu wiederholen, sagt nichts - also nur den Rest.
 // Bleibt nichts uebrig, entfaellt die Zeile ganz.
@@ -1227,7 +1241,7 @@ function card(g, res, gross, kennzeichen){
     '<dl class="specs">' +
       "<div><dt>Spieler</dt><dd>" + fmtPlayers(g).replace(" Spieler", "") + "</dd></div>" +
       "<div><dt>Dauer</dt><dd>" + fmtDur(g) + "</dd></div>" +
-      '<div><dt>Kopf</dt><dd class="pips">' + pips(g) + "</dd></div>" +
+      "<div><dt>Anspruch</dt><dd>" + bandOf(g).label + "</dd></div>" +
       (g.teach ? "<div><dt>Erklären</dt><dd>+" + erklaerZeit(g) + " Min</dd></div>" : "") +
       (g.lastPlayed ? "<div><dt>Zuletzt</dt><dd>" + fmtGespielt(g) + "</dd></div>" : "") +
     "</dl>" +
@@ -1251,7 +1265,7 @@ function miniCard(g, res){
     '<button class="minirow" type="button" data-expand="' + esc(g.id) + '" aria-expanded="false">' +
       '<span class="mname">' + esc(g.name) + "</span>" +
       '<span class="mmeta"><span>' + fmtPlayers(g) + "</span><span>" + fmtDur(g) +
-        '</span><span class="pips">' + pips(g) + "</span></span>" +
+        "</span><span>" + bandOf(g).label + "</span></span>" +
       (res.why ? '<span class="mwhy">' + esc(res.why) + "</span>" : "") +
     "</button></article>";
 }
@@ -1277,13 +1291,18 @@ function frischeKarte(g){
   }
 }
 
+// Nur nennen, was wirklich eingestellt ist. Vorher stand im Normalfall
+// "4 Personen · Stimmung egal · jeder Anspruch · Zeit egal" - drei von vier
+// Angaben sagten "nichts ausgewählt" und verstellten den Blick auf die eine,
+// die zaehlt.
 function summaryText(){
   const parts = [state.players + (state.players === 1 ? " Person" : " Personen")];
-  parts.push(state.moods.size ? [...state.moods].map(m => MOODS[m]).join(", ") : "Stimmung egal");
-  parts.push(state.weights.size ? [...state.weights].map(w => WEIGHT_BANDS.find(b => b.id === w).label).join(", ") : "jeder Anspruch");
-  parts.push(state.time ? "bis " + state.time + " Min" : "Zeit egal");
+  if(state.moods.size) parts.push([...state.moods].map(m => MOODS[m]).join(", "));
+  if(state.weights.size) parts.push([...state.weights].map(w => WEIGHT_BANDS.find(b => b.id === w).label).join(", "));
+  if(state.time) parts.push("bis " + state.time + " Min");
   if(state.neglected) parts.push("nur lange nicht Gespieltes");
-  return "<strong>Eure Runde:</strong> " + esc(parts.join(" · "));
+  const rest = parts.length === 1 ? " · sonst offen" : "";
+  return "<strong>Eure Runde:</strong> " + esc(parts.join(" · ")) + rest;
 }
 
 function renderFilters(){
@@ -1303,7 +1322,7 @@ function renderFilters(){
   ).join("");
   $("shelf").innerHTML =
     '<button type="button" class="chip" data-shelf="1" aria-pressed="' + state.neglected + '">' +
-    "Lange nicht gespielt</button>";
+    "Nur lange nicht Gespieltes</button>";
   $("summary").innerHTML = summaryText();
 }
 
@@ -1378,7 +1397,6 @@ function renderSortChips(){
 
 function renderCollection(){
   const anzahl = games.length === 1 ? "1 Spiel" : games.length + " Spiele";
-  $("colcount").textContent = anzahl;
   $("regalzahl").textContent = anzahl + " im Regal";
   renderSortChips();
 
@@ -1451,6 +1469,7 @@ function resetForm(){
   ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note","f-played"]
     .forEach(id => { $(id).value = ""; });
   $("f-teach").checked = false;
+  $("f-datumsblock").hidden = true;
   zeigeDatum();
   $("formtitle").textContent = "Spiel hinzufügen";
   $("f-submit").textContent = "Ins Regal stellen";
@@ -1469,6 +1488,7 @@ function startEdit(id){
   $("f-durmin").value = g.dur[0]; $("f-durmax").value = g.dur[1];
   $("f-note").value = g.note;
   $("f-played").value = toDateInput(g.lastPlayed);
+  $("f-datumsblock").hidden = false;
   zeigeDatum();
   $("f-teach").checked = !!g.teach;
   form.weight = bandOf(g).id;
@@ -1622,23 +1642,6 @@ $("f-name").addEventListener("input", () => {
 });
 $("gameform").addEventListener("submit", submitGame);
 $("f-cancel").addEventListener("click", () => { resetForm(); renderCollection(); });
-
-let restoreArmed = null;
-$("restore").addEventListener("click", () => {
-  const btn = $("restore");
-  if(!restoreArmed){
-    btn.textContent = "Wirklich? Eigene Änderungen gehen verloren";
-    restoreArmed = setTimeout(() => { restoreArmed = null; btn.textContent = "Auf Ausgangssammlung zurücksetzen"; }, 5000);
-    return;
-  }
-  clearTimeout(restoreArmed); restoreArmed = null;
-  btn.textContent = "Auf Ausgangssammlung zurücksetzen";
-  games = freshCollection();
-  hideUndo();
-  resetForm();
-  persist();
-  render();
-});
 
 // true, solange im Sicherungsfeld etwas steht, das nicht die aktuelle Sammlung
 // ist: eingelesen, eingefuegt oder von Hand getippt.

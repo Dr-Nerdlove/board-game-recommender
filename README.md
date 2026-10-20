@@ -87,8 +87,8 @@ Android beim Installieren trotzdem einen Hinweis.
   zurück. Ältere Termine trägst du unter „Sammlung bearbeiten" → „Ändern" von
   Hand nach. Lange Ungespieltes steigt danach in der Rangfolge, gerade Gespieltes
   fällt (unter zwei Tagen deutlich), verschwindet aber nie ganz: eine Revanche
-  soll auffindbar bleiben. Der Chip **„Lange nicht gespielt"** in der Filterreihe
-  „Regal" zeigt nur, was seit über 90 Tagen nicht dran war.
+  soll auffindbar bleiben. Der Chip **„Nur lange nicht Gespieltes"** unter
+  „Zusätzlich" zeigt nur, was seit über 90 Tagen nicht dran war.
 - Die letzte Einstellung wird im Browser gemerkt.
 
 ## Sammlung pflegen
@@ -96,19 +96,22 @@ Android beim Installieren trotzdem einen Hinweis.
 Unten auf der Seite: **Sammlung bearbeiten**.
 
 - **Hinzufügen** — Name, Spielerzahl, Dauer, Anspruch und mindestens eine
-  Stimmung; „Am besten zu" ist optional und meint die Spielerzahl, bei der das
+  Stimmung; „Glänzt bei" ist optional und meint die Spielerzahl, bei der das
   Spiel wirklich glänzt (davon hängt das Glanzform-Kennzeichen ab).
 - **Daten vorschlagen** — nur den Titel eintippen, den Rest füllt Claude aus
   (siehe unten).
 - **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel. Dort steht auch
   **„Zuletzt gespielt"** als Datumsfeld: nachtragen, korrigieren oder leeren
-  (leer heißt „noch nie"). Datumsangaben in der Zukunft weist das Formular ab.
+  (leer heißt „noch nie"). Es erscheint nur beim Ändern — ein frisch
+  hinzugefügtes Spiel gilt als noch nie gespielt. Datumsangaben in der Zukunft
+  weist das Formular ab.
   Daneben der Haken **„Muss noch erklärt werden"**; markierte Spiele tragen in
   der Liste den Vermerk „erklären".
 - **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
-- **Zurücksetzen** — holt die 21 Ausgangsspiele zurück (Sicherheitsklick).
 - **Suchen und Sortieren** — Suchfeld über der Liste, dazu Sortierung nach Name,
-  Spielerzahl, Dauer, Anspruch oder „Lange nicht gespielt".
+  Spielerzahl, Dauer, Anspruch oder „Lange nicht gespielt". Die Überschrift
+  „Sortieren nach" steht über der Reihe — sie sieht den Filtern ähnlich, tut
+  aber etwas anderes.
 - **Sicherung & Umzug** — die ganze Sammlung als Text zum Aufheben, Ergänzen
   („Dazu einspielen") oder Ersetzen; auch der Weg für BGG-Daten (siehe unten).
 
@@ -179,8 +182,8 @@ im Code arbeitet, kann sie dort weiterhin bearbeiten:
 - `moods` — Schlüssel aus dem Objekt `MOODS` darüber
 
 Achtung: Sobald über die Seite etwas geändert wurde, gilt die gespeicherte
-Sammlung. Änderungen an `DEFAULT_GAMES` schlagen dann erst nach
-„Auf Ausgangssammlung zurücksetzen" durch.
+Sammlung. Änderungen an `DEFAULT_GAMES` greifen dann nur noch über
+„Sicherung & Umzug" → „Sammlung ersetzen".
 
 ## Fassungen
 

@@ -9,6 +9,50 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.4.0] – 2026-10-20
+
+Eine Durchsicht des Aufbaus: Dopplungen raus, gleiche Dinge gleich darstellen,
+Überflüssiges weg.
+
+### Geändert
+
+- **Der Anspruch steht überall als Wort** — „Anspruch: Leicht" statt drei
+  Punkten. Die Punkte waren nirgends erklärt, in der kurzen Trefferzeile sogar
+  ohne jede Beschriftung, und für eine Vorlesefunktion bedeutungslos. In der
+  Sammlungsliste stand das Wort ohnehin schon.
+- **Die Zusammenfassung nennt nur noch, was eingestellt ist.** Vorher stand im
+  Normalfall „4 Personen · Stimmung egal · jeder Anspruch · Zeit egal" — drei
+  von vier Angaben sagten „nichts ausgewählt".
+- **„Zurücksetzen" im Filter heißt „Filter leeren".** Dasselbe Wort stand
+  vorher auch über dem Wegwerfen der ganzen Sammlung.
+- **Der Filter heißt „Nur lange nicht Gespieltes"** und ist damit von der
+  gleichnamigen Sortierung unterscheidbar; seine Überschrift „Regal" heißt
+  jetzt „Zusätzlich".
+- **Die Sortierung hat eine sichtbare Überschrift bekommen.** Ihre Pillen sahen
+  aus wie die Filter und taten etwas anderes.
+- **„Am besten zu" heißt „Glänzt bei (optional, Spielerzahl)".**
+- **„Würfel entscheiden" ist umrandet statt gefüllt.** Es war der auffälligste
+  Knopf der Startseite und tut das, was man am seltensten braucht; die Antwort
+  steht in der Liste darunter.
+- **Das Datumsfeld erscheint nur beim Ändern.** Beim Hinzufügen eines frisch
+  gekauften Spiels ist „zuletzt gespielt" so gut wie nie gemeint, kostete aber
+  vier Zeilen. Ein neu angelegtes Spiel gilt als noch nie gespielt.
+
+### Entfernt
+
+- **„Auf Ausgangssammlung zurücksetzen".** Der Knopf holte die 21 Beispielspiele
+  zurück und warf die eigenen weg — für eine gewachsene Sammlung nur ein Risiko.
+  Wer wirklich neu anfangen will, nimmt „Sicherung & Umzug" → „Sammlung
+  ersetzen".
+- Die Zahl der Spiele stand zweimal auf der Seite, oben im Kopf und an der
+  Sammlung. Jetzt nur noch oben.
+- Ein Satz im Fußtext, der wiederholte, was die Sammlung ohnehin anbietet.
+
+### Behoben
+
+- **Die Warnfarbe für gefährliche Knöpfe gab es nur beim Überfahren mit der
+  Maus** — am Handy also nie. „Sammlung ersetzen" ist jetzt immer rot.
+
 ## [2.3.0] – 2026-10-13
 
 ### Hinzugefügt
@@ -421,7 +465,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.3.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.4.0
 [2.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.3.0
 [2.2.5]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.5
 [2.2.4]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.4
