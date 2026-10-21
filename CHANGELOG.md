@@ -13,12 +13,15 @@ bei x.y.**Z** wird etwas repariert.
 
 ### Hinzugefügt
 
-- **Das Projekt steht jetzt unter der GNU General Public License, Version 3.**
-  Der vollständige Text liegt als `LICENSE` bei und wird in die App mit
-  eingepackt, wie es die Lizenz verlangt. Bisher war bewusst keine Lizenz
-  vergeben; damit war eine Weiterverwendung ohne Absprache nicht gestattet.
-  Die beiden mitgelieferten Schriften behalten ihre eigene Lizenz, die SIL
-  Open Font License 1.1.
+- **Das Projekt steht jetzt unter der GNU General Public License, Version 3
+  oder jeder späteren.** Der vollständige Text liegt als `LICENSE.txt` bei und
+  wird in die App mit eingepackt, wie es die Lizenz verlangt. Bisher war
+  bewusst keine Lizenz vergeben; damit war eine Weiterverwendung ohne Absprache
+  nicht gestattet. Die beiden mitgelieferten Schriften behalten ihre eigene
+  Lizenz, die SIL Open Font License 1.1.
+- **Unten auf der Seite steht jetzt, unter welcher Lizenz die App steht**, mit
+  Verweis auf den vollen Text. Ohne ihn läge er zwar in der App, bekäme ihn
+  aber nie jemand zu sehen.
 
 ## [2.5.1] – 2026-10-21
 

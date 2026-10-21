@@ -3,15 +3,16 @@
   Was spielen wir heute? - ein Vorschlag fuers Brettspielregal.
 
   Dieses Programm ist freie Software: Sie koennen es weitergeben und/oder
-  veraendern unter den Bedingungen der GNU General Public License, Version 3,
-  wie von der Free Software Foundation veroeffentlicht.
+  veraendern unter den Bedingungen der GNU General Public License, wie von der
+  Free Software Foundation veroeffentlicht - entweder Version 3 der Lizenz oder
+  (nach Ihrer Wahl) jede spaetere Version.
 
   Die Veroeffentlichung erfolgt in der Hoffnung, dass es nuetzlich ist, aber
   OHNE JEDE GEWAEHRLEISTUNG - sogar ohne die implizite Gewaehrleistung der
   MARKTGAENGIGKEIT oder EIGNUNG FUER EINEN BESTIMMTEN ZWECK. Naeheres in der
   GNU General Public License.
 
-  Der Lizenztext liegt als LICENSE bei; sonst siehe
+  Der Lizenztext liegt als LICENSE.txt bei; sonst siehe
   <https://www.gnu.org/licenses/>.
 
   Ausgenommen sind die beiden eingebetteten Schriften: Sie stehen unter der
@@ -561,6 +562,14 @@ details.backup .stack{margin-top:10px}
 footer{color:var(--muted); font-size:13px; border-top:1px solid var(--line); padding-top:16px}
 footer p{margin:0 0 4px}
 footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
+/* Der Lizenztext liegt der App bei - ohne diesen Verweis saehe ihn nie jemand.
+   Auch ein Verweis im Fuss ist eine Flaeche zum Antippen und haelt sich an die
+   48 Punkte; als blosse Textzeile waere er 14 hoch. */
+footer .fassung a{
+  color:inherit; text-underline-offset:3px;
+  display:inline-flex; align-items:center; min-height:48px;
+}
+footer .fassung a:hover{color:var(--ink)}
 @media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
 @media (max-width:520px){
   .wrap{padding:calc(20px + var(--sicher-oben)) calc(14px + var(--sicher-rechts))
@@ -764,7 +773,8 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung">Fassung 2.5.2</p>
+    <p class="fassung">Fassung 2.5.2 ·
+      <a href="LICENSE.txt">Freie Software unter der GPL v3 oder später</a></p>
   </footer>
 </div>
 

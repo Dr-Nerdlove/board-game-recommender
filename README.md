@@ -6,7 +6,8 @@ sortiert deine Sammlung danach durch und schlägt vor, was heute auf den Tisch
 kommt. Was nicht passt, verschwindet nicht kommentarlos, sondern steht unten mit
 Begründung.
 
-![Die Seite mit vier Personen und Party-Stimmung](screenshot.png)
+<img src="screenshot.png" width="320"
+     alt="Die Seite mit vier Personen und Party-Stimmung">
 
 Eine **Android-App**, und darunter eine einzelne HTML-Datei: ohne Baukasten,
 ohne Abhängigkeiten, ohne Konto und **ohne eine einzige Anfrage ans Internet** —
@@ -205,8 +206,9 @@ Nachweis in [`SCHRIFTEN.md`](SCHRIFTEN.md).
 
 ## Nutzungsrechte
 
-Dieses Projekt steht unter der **GNU General Public License, Version 3** —
-der vollständige Text liegt in [`LICENSE`](LICENSE).
+Dieses Projekt steht unter der **GNU General Public License, Version 3 oder
+jeder späteren Version** — der vollständige Text liegt in [`LICENSE.txt`](LICENSE.txt)
+und wird in die App mit eingepackt; dort ist er unten auf der Seite verlinkt.
 
 Kurz gesagt: Du darfst die Anwendung benutzen, weitergeben und verändern. Gibst
 du sie weiter — verändert oder nicht —, muss sie unter derselben Lizenz stehen
