@@ -9,6 +9,17 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.5.2] – 2026-10-21
+
+### Hinzugefügt
+
+- **Das Projekt steht jetzt unter der GNU General Public License, Version 3.**
+  Der vollständige Text liegt als `LICENSE` bei und wird in die App mit
+  eingepackt, wie es die Lizenz verlangt. Bisher war bewusst keine Lizenz
+  vergeben; damit war eine Weiterverwendung ohne Absprache nicht gestattet.
+  Die beiden mitgelieferten Schriften behalten ihre eigene Lizenz, die SIL
+  Open Font License 1.1.
+
 ## [2.5.1] – 2026-10-21
 
 ### Behoben
@@ -500,7 +511,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.5.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.5.2...HEAD
+[2.5.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.2
 [2.5.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.1
 [2.5.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.0
 [2.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.4.0

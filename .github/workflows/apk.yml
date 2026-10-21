@@ -127,6 +127,9 @@ jobs:
           mkdir -p www
           cp index.html manifest.webmanifest www/
           cp icon-32.png icon-180.png icon-192.png icon-512.png www/
+          # Die GPL verlangt, dass der Lizenztext die weitergegebene Fassung
+          # begleitet. In der APK steckt er damit mit drin, nicht nur im Repo.
+          cp LICENSE www/
           ls -la www
 
       - name: Symbol fuer die App vorbereiten

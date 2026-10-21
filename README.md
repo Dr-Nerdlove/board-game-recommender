@@ -205,6 +205,13 @@ Nachweis in [`SCHRIFTEN.md`](SCHRIFTEN.md).
 
 ## Nutzungsrechte
 
-Für dieses Projekt ist bewusst noch keine Lizenz vergeben. Damit gilt das
-normale Urheberrecht: Der Quelltext ist einsehbar, eine Weiterverwendung ist
-ohne Absprache aber nicht gestattet. Wenn du es verwenden möchtest, frag einfach.
+Dieses Projekt steht unter der **GNU General Public License, Version 3** —
+der vollständige Text liegt in [`LICENSE`](LICENSE).
+
+Kurz gesagt: Du darfst die Anwendung benutzen, weitergeben und verändern. Gibst
+du sie weiter — verändert oder nicht —, muss sie unter derselben Lizenz stehen
+und der Quelltext muss mitkommen. Eine Garantie gibt es nicht.
+
+Davon ausgenommen sind die **beiden mitgelieferten Schriften**: Sie behalten
+ihre eigene Lizenz, die SIL Open Font License 1.1 (siehe oben). Die GPL ändert
+daran nichts.
