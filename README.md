@@ -6,7 +6,7 @@ sortiert deine Sammlung danach durch und schlägt vor, was heute auf den Tisch
 kommt. Was nicht passt, verschwindet nicht kommentarlos, sondern steht unten mit
 Begründung.
 
-![Die Seite mit fünf Spielern und Party-Stimmung](screenshot.png)
+![Die Seite mit vier Personen und Party-Stimmung](screenshot.png)
 
 Eine **Android-App**, und darunter eine einzelne HTML-Datei: ohne Baukasten,
 ohne Abhängigkeiten, ohne Konto und **ohne eine einzige Anfrage ans Internet** —
