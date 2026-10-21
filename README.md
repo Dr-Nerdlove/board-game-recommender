@@ -207,8 +207,7 @@ Nachweis in [`SCHRIFTEN.md`](SCHRIFTEN.md).
 ## Nutzungsrechte
 
 Dieses Projekt steht unter der **GNU General Public License, Version 3 oder
-jeder späteren Version** — der vollständige Text liegt in [`LICENSE.txt`](LICENSE.txt)
-und wird in die App mit eingepackt; dort ist er unten auf der Seite verlinkt.
+jeder späteren Version** — der vollständige Text liegt in [`LICENSE`](LICENSE).
 
 Kurz gesagt: Du darfst die Anwendung benutzen, weitergeben und verändern. Gibst
 du sie weiter — verändert oder nicht —, muss sie unter derselben Lizenz stehen
