@@ -230,7 +230,10 @@ jobs:
       - name: APK als Arbeitsergebnis anhaengen
         # Nur bei Probelaeufen. Bei einer Veroeffentlichung haengt dieselbe
         # Datei ohnehin am Release und bleibt dort dauerhaft - der Anhang waere
-        # eine zweite Kopie, die nach 90 Tagen stillschweigend verschwindet.
+        # eine zweite Kopie, die dieses Projekt nach sieben Tagen wegraeumt
+        # (am Anhang eines Probelaufs nachgesehen: angelegt am 21.10., laeuft
+        # ab am 28.10.). Bei einem Probelauf ist er der einzige Weg an die
+        # gebaute Datei, dort bleibt er.
         if: steps.fassung.outputs.raus != 'ja'
         uses: actions/upload-artifact@v4
         with:
