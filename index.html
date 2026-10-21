@@ -251,8 +251,12 @@ fieldset.field{border:0; margin:0; padding:0}
 
 /* ---------- Runde beschreiben: klappt zu ---------- */
 details.filters{display:block}
+/* Die Zeile muss 48 Punkte hoch bleiben - sie ist die Flaeche zum Antippen.
+   Mit align-items:baseline fiel der ganze Rest aber *unter* den Text: 21 Punkte
+   Leere, und darunter kamen noch 20 Punkte Abstand zum ersten Feld. Zentriert
+   verteilt sich der Rest auf beide Seiten. */
 .filters-head{
-  cursor:pointer; display:flex; align-items:baseline; justify-content:space-between;
+  cursor:pointer; display:flex; align-items:center; justify-content:space-between;
   gap:12px; list-style:none; padding:6px 0; min-height:48px;
 }
 .filters-head::-webkit-details-marker{display:none}
@@ -263,7 +267,7 @@ details.filters{display:block}
 .filters-hint::after{content:" ▾"}
 details.filters[open] .filters-hint::after{content:" ▴"}
 .filters-head:hover .filters-hint{color:var(--ink)}
-.filter-body{display:flex; flex-direction:column; gap:var(--luft-weit); margin-top:var(--luft-weit)}
+.filter-body{display:flex; flex-direction:column; gap:var(--luft-weit); margin-top:var(--luft-mittel)}
 /* Solange der Filter offen ist, klebt die Knopfzeile am unteren Rand. Sonst
    beginnt "Wuerfel entscheiden" bei Pixel 882 von 915 - also unterhalb des
    Bildschirms, obwohl es der Hauptknopf der ganzen App ist. */
@@ -433,13 +437,29 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
 .pair{display:flex; align-items:center; gap:8px}
 .pair span.sep{color:var(--muted); font-size:14px; flex:none}
 .hint{font-size:12px; color:var(--muted); margin:0}
+/* Ueberschrift einer Knopfgruppe - dieselbe Schrift wie die Feldnamen. */
+.gruppe{
+  margin:14px 0 6px; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--muted);
+}
+.knopfreihe{display:grid; grid-template-columns:1fr; gap:8px}
+.knopfreihe.zwei{grid-template-columns:repeat(2, minmax(0,1fr))}
+.knopfreihe .linkbtn{width:100%}
+#importnote{margin:10px 0 0}
 .sortlabel{
   flex:1 1 100%;                       /* eigene Zeile, sonst landet sie neben dem Suchfeld */
   margin:0; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
   font-weight:700; color:var(--muted);
 }
 #colsort{flex:1 1 100%}
-.datumsknoepfe{display:flex; flex-wrap:wrap; gap:6px; margin-top:2px}
+/* Fuenf Pillen brechen frei umgebrochen ungleich um. Zwei gleich breite
+   Spalten geben der Reihe eine Kante; "Leeren" steht als Einziges allein,
+   was zu seiner Sonderrolle passt. */
+.datumsknoepfe{
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:6px; margin-top:2px;
+}
+.datumsknoepfe .linkbtn{width:100%; padding:0 8px}
 #f-datumsecho{color:var(--ink)}
 .formerror{
   margin:0; font-size:14px; color:var(--warn); font-weight:500;
@@ -649,9 +669,16 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
           <div class="stack" id="f-datumsblock" hidden>
             <label for="f-played"><span>Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span></label>
             <input type="date" id="f-played">
+            <!-- Die beiden groben Angaben sind fuer Spiele gedacht, die man
+                 laengst gespielt, hier aber nie eingetragen hat. Ohne Datum
+                 haelt die App ein Spiel fuer neu, gibt ihm einen Bonus und
+                 schreibt "noch nie gespielt" darauf. Ungefaehr richtig ist
+                 dafuer besser als gar nichts. -->
             <div class="datumsknoepfe">
               <button class="linkbtn" type="button" id="f-heute">Heute</button>
               <button class="linkbtn" type="button" id="f-gestern">Gestern</button>
+              <button class="linkbtn" type="button" id="f-monat">Vor einem Monat</button>
+              <button class="linkbtn" type="button" id="f-halbjahr">Vor einem halben Jahr</button>
               <button class="linkbtn" type="button" id="f-leeren">Leeren</button>
             </div>
             <p class="hint" id="f-datumsecho">Noch nie gespielt.</p>
@@ -691,17 +718,24 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
           <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben, Ergänzen oder Ersetzen.
             Für den Umzug auf ein neues Gerät: hier sichern, dort einlesen.</span>
             <textarea id="backup" rows="5" spellcheck="false"></textarea></label>
-          <div class="form-actions" style="margin-top:10px">
+          <!-- Vorher standen alle fuenf Knoepfe in zwei Reihen, die ungleich
+               umbrachen: zwei, einer, zwei. Jetzt nach Richtung getrennt und in
+               vollen Reihen - heraus aus der App, hinein in die App. -->
+          <p class="gruppe">Sichern</p>
+          <div class="knopfreihe zwei">
             <button class="linkbtn" type="button" id="kopieren">Text kopieren</button>
             <button class="linkbtn" type="button" id="herunterladen">Als Datei sichern</button>
+          </div>
+          <p class="gruppe">Einspielen</p>
+          <div class="knopfreihe">
             <label class="linkbtn" for="dateiwahl" style="cursor:pointer">Datei einlesen</label>
             <input type="file" id="dateiwahl" accept=".json,application/json" hidden>
           </div>
-          <div class="form-actions" style="margin-top:8px">
+          <div class="knopfreihe zwei">
             <button class="linkbtn" type="button" id="importadd">Dazu einspielen</button>
             <button class="linkbtn danger" type="button" id="import">Sammlung ersetzen</button>
-            <span class="hint" id="importnote"></span>
           </div>
+          <p class="hint" id="importnote"></p>
         </details>
       </div>
     </div>
@@ -709,7 +743,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung">Fassung 2.4.0</p>
+    <p class="fassung">Fassung 2.5.0</p>
   </footer>
 </div>
 
@@ -1127,12 +1161,7 @@ function datumAusgeschrieben(text){
   if(ts === null) return "Datum noch unvollständig.";
   const lang = new Date(ts).toLocaleDateString("de-DE",
     { weekday:"long", day:"2-digit", month:"2-digit", year:"numeric" });
-  const tage = Math.floor((Date.now() - ts) / 86400000);
-  const wann = tage < 0 ? " — das liegt in der Zukunft" :
-               tage === 0 ? " — heute" :
-               tage === 1 ? " — gestern" :
-               tage < 31 ? " — vor " + tage + " Tagen" : "";
-  return lang + wann;
+  return lang + " — " + vorWieLange(ts);
 }
 
 function zeigeDatum(){
@@ -1146,16 +1175,24 @@ function setzeDatum(tageZurueck){
   zeigeDatum();
 }
 
-function fmtGespielt(g){
-  if(!g.lastPlayed) return "noch nie";
-  const t = Math.floor(tageSeither(g));
-  if(t <= 0) return "heute";
+// Wie lange ist das her? Einmal formuliert und von allen benutzt: von der
+// Karte, der Sammlungsliste und dem Echo unter dem Datumsfeld. Das Echo hatte
+// vorher eine eigene, kuerzere Fassung, die bei 31 Tagen aufhoerte - gerade
+// dort, wo die groben Knoepfe ("vor einem halben Jahr") hinzielen.
+function vorWieLange(ts){
+  const t = Math.floor((Date.now() - ts) / 86400000);
+  if(t < 0) return "das liegt in der Zukunft";
+  if(t === 0) return "heute";
   if(t === 1) return "gestern";
   if(t < 14) return "vor " + t + " Tagen";
   if(t < 60) return "vor " + Math.round(t / 7) + " Wochen";
   if(t < 365) return "vor " + Math.round(t / 30) + " Monaten";
   const jahre = Math.floor(t / 365);
   return jahre === 1 ? "vor über einem Jahr" : "vor über " + jahre + " Jahren";
+}
+
+function fmtGespielt(g){
+  return g.lastPlayed ? vorWieLange(g.lastPlayed) : "noch nie";
 }
 
 const aufzaehlung = teile =>
@@ -1843,6 +1880,8 @@ function wuerfeln(){
 $("f-played").addEventListener("input", zeigeDatum);
 $("f-heute").addEventListener("click", () => setzeDatum(0));
 $("f-gestern").addEventListener("click", () => setzeDatum(1));
+$("f-monat").addEventListener("click", () => setzeDatum(30));
+$("f-halbjahr").addEventListener("click", () => setzeDatum(182));
 $("f-leeren").addEventListener("click", () => { $("f-played").value = ""; zeigeDatum(); });
 
 function setzeAnzahl(n){

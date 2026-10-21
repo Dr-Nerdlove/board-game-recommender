@@ -9,6 +9,32 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.5.0] – 2026-10-21
+
+### Hinzugefügt
+
+- **Zwei grobe Datumsknöpfe beim Ändern eines Spiels:** *Vor einem Monat* und
+  *Vor einem halben Jahr*, neben *Heute*, *Gestern* und *Leeren*. Gedacht für
+  Spiele, die man längst gespielt, hier aber nie eingetragen hat: Ohne Datum
+  hält die Seite ein Spiel für neu, gibt ihm einen Bonus in der Rangfolge und
+  schreibt „noch nie gespielt" darauf. Ungefähr richtig ist dafür besser als
+  gar nichts.
+
+### Geändert
+
+- **Weniger Luft unter „Eure Runde".** Die Zeile muss 48 Punkte hoch bleiben —
+  sie ist die Fläche zum Antippen —, der ganze Rest fiel aber unter den Text.
+  Jetzt sitzt er mittig: 26 statt 41 Punkte bis zur ersten Überschrift, bei
+  gleich großer Antippfläche.
+- **Die Knöpfe unter „Sicherung & Umzug" sind nach Richtung geordnet.** Vorher
+  standen fünf Knöpfe in zwei Reihen, die ungleich umbrachen. Jetzt
+  „Sichern" (Text kopieren, Als Datei sichern) und „Einspielen" (erst Datei
+  einlesen, dann dazu oder ersetzen), in vollen Reihen.
+- Die Zeile unter dem Datumsfeld sagt jetzt auch bei älteren Daten, wie lange
+  es her ist („vor 6 Monaten"). Sie hörte vorher bei 31 Tagen auf — gerade da,
+  wo die neuen Knöpfe hinzielen. Karte, Liste und Echo benutzen dafür nun
+  dieselbe Formulierung.
+
 ## [2.4.0] – 2026-10-20
 
 Eine Durchsicht des Aufbaus: Dopplungen raus, gleiche Dinge gleich darstellen,
@@ -465,7 +491,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.4.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.5.0...HEAD
+[2.5.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.0
 [2.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.4.0
 [2.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.3.0
 [2.2.5]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.2.5

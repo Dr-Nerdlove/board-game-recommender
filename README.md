@@ -103,8 +103,13 @@ Unten auf der Seite: **Sammlung bearbeiten**.
 - **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel. Dort steht auch
   **„Zuletzt gespielt"** als Datumsfeld: nachtragen, korrigieren oder leeren
   (leer heißt „noch nie"). Es erscheint nur beim Ändern — ein frisch
-  hinzugefügtes Spiel gilt als noch nie gespielt. Datumsangaben in der Zukunft
-  weist das Formular ab.
+  hinzugefügtes Spiel gilt als noch nie gespielt. Daneben fünf Knöpfe für die
+  häufigen Fälle: *Heute*, *Gestern*, *Vor einem Monat*, *Vor einem halben
+  Jahr*, *Leeren*. Die beiden groben sind für Spiele gedacht, die du längst
+  gespielt, hier aber nie eingetragen hast — ohne Datum hält die Seite ein
+  Spiel für neu, gibt ihm einen Bonus und schreibt „noch nie gespielt" darauf.
+  Die Zeile unter dem Feld sagt in Worten, was eingetragen ist. Datumsangaben
+  in der Zukunft weist das Formular ab.
   Daneben der Haken **„Muss noch erklärt werden"**; markierte Spiele tragen in
   der Liste den Vermerk „erklären".
 - **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
