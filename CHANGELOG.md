@@ -9,6 +9,15 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.5.1] – 2026-10-21
+
+### Behoben
+
+- **Unter „Einspielen" berührten sich zwei Knopfreihen.** „Datei einlesen" und
+  die Reihe darunter standen auf null Punkte aneinander, ihre Umrisse lagen
+  aufeinander. Der Abstand von 8 Punkten galt nur innerhalb einer Reihe, nicht
+  zwischen zweien.
+
 ## [2.5.0] – 2026-10-21
 
 ### Hinzugefügt
@@ -491,7 +500,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.5.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.5.1...HEAD
+[2.5.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.1
 [2.5.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.0
 [2.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.4.0
 [2.3.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.3.0

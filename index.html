@@ -443,6 +443,9 @@ input:focus-visible, textarea:focus-visible{outline:2px solid var(--accent); out
   font-weight:700; color:var(--muted);
 }
 .knopfreihe{display:grid; grid-template-columns:1fr; gap:8px}
+/* Das gap gilt nur innerhalb einer Reihe. Zwei Reihen untereinander stiessen
+   deshalb auf Null aneinander - ihre Umrisse beruehrten sich. */
+.knopfreihe + .knopfreihe{margin-top:8px}
 .knopfreihe.zwei{grid-template-columns:repeat(2, minmax(0,1fr))}
 .knopfreihe .linkbtn{width:100%}
 #importnote{margin:10px 0 0}
@@ -743,7 +746,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung">Fassung 2.5.0</p>
+    <p class="fassung">Fassung 2.5.1</p>
   </footer>
 </div>
 
