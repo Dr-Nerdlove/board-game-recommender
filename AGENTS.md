@@ -18,8 +18,14 @@ sich weiterhin einfach im Browser öffnen.
 
 ## Sprache
 
-**Alles auf Deutsch**: Oberfläche, Kommentare, Variablennamen in neuerem Code,
-Dokumentation und Commit-Meldungen. Bitte beibehalten.
+**Die Entwicklung läuft auf Deutsch**: Kommentare, Variablennamen in neuerem
+Code und Commit-Meldungen. Bitte beibehalten.
+
+**Die Oberfläche ist zweisprachig** und folgt der Systemsprache — ohne
+Einstellung. Wer Text in der App ändert, ändert ihn an *beiden* Stellen; wie
+das aufgebaut ist, steht in `ENTWICKLUNG.md` unter „Zwei Sprachen".
+
+**Das README ist englisch**, es ist die Außenseite des Projekts.
 
 Ausnahme: **Bauplan und Commit-Meldungen** sind reines ASCII, Umlaute
 umschrieben („moeglicherweise").
@@ -32,6 +38,7 @@ umschrieben („moeglicherweise").
 | `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen |
 | `icon-*.png`, `manifest.webmanifest` | Symbole fürs Handy |
 | `CHANGELOG.md` | Änderungshistorie, gepflegt bei jeder Fassung |
+| `README.md` | Anleitung für Benutzer, auf Englisch |
 | `SCHRIFTEN.md` | Lizenznachweis der eingebetteten Schriften |
 
 ## Vor dem Ändern von `index.html` lesen

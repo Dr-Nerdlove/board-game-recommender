@@ -68,8 +68,9 @@ jobs:
 
           if [ "$RAUS" = "ja" ]; then
             FEHLER=0
-            if ! grep -q "Fassung $PAKET" index.html; then
+            if ! grep -q "data-fassung=\"$PAKET\"" index.html; then
               echo "::error::index.html nennt im Fuss nicht die Fassung $PAKET."
+              echo "::error::Erwartet wird <p class=\"fassung\" id=\"fassung\" data-fassung=\"$PAKET\">."
               FEHLER=1
             fi
             if ! grep -q "^## \[$PAKET\]" CHANGELOG.md; then
@@ -220,6 +221,26 @@ jobs:
           }
           JAVA
           ls -la "$ORDNER"
+
+      - name: Deutschen Namen fuers App-Menue hinterlegen
+        # Der Name unter dem Symbol folgt derselben Regel wie die Seite: Auf
+        # einem deutschen Geraet "Spieleabend", sonst der englische Name aus
+        # capacitor.config.json. Android waehlt das anhand des Ordnernamens
+        # aus - values-de gilt fuer deutschsprachige Geraete, values fuer alle
+        # uebrigen. Ohne diesen Schritt stuende ueberall nur der englische.
+        run: |
+          set -eu
+          ZIEL=android/app/src/main/res/values-de
+          mkdir -p "$ZIEL"
+          cat > "$ZIEL/strings.xml" <<'XML'
+          <?xml version='1.0' encoding='utf-8'?>
+          <resources>
+              <string name="app_name">Spieleabend</string>
+              <string name="title_activity_main">Spieleabend</string>
+          </resources>
+          XML
+          echo "Deutscher Name hinterlegt:"
+          cat "$ZIEL/strings.xml"
 
       - name: Fassung ins Android-Projekt schreiben
         run: |

@@ -9,6 +9,32 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.7.0] – 2026-10-22
+
+### Hinzugefügt
+
+- **Die App gibt es jetzt auch auf Englisch** und folgt dabei der Systemsprache:
+  Ein deutsches Gerät bekommt Deutsch, jedes andere Englisch. Eine Einstellung
+  dafür gibt es bewusst nicht — das Gerät weiß die Antwort schon. Übersetzt sind
+  Beschriftungen, Begründungen, Meldungen, Fehlertexte, die Datumsangaben und
+  die Notizen der Ausgangssammlung.
+- Der Name unter dem Symbol folgt derselben Regel: „Spieleabend" auf deutschen
+  Geräten, sonst „Game Night".
+
+### Geändert
+
+- Die Fassungsnummer steht im Fuß als Angabe `data-fassung` am Element statt im
+  Text; das Skript schreibt daraus „Fassung 2.7.0" oder „Version 2.7.0". Die
+  Nummer bleibt damit eine einzige Stelle. Der Bauplan prüft entsprechend.
+- Das README ist jetzt englisch; die deutsche Fassung ist entfallen.
+
+### Unverändert — mit Absicht
+
+- Die Schlüssel der gespeicherten Daten (`party`, `gruebeln`, `leicht` …)
+  bleiben in jeder Sprache dieselben. Eine Sicherung aus der deutschen App lässt
+  sich in der englischen einlesen und umgekehrt; nachgemessen in beide
+  Richtungen. Selbst getippte Notizen bleiben so, wie sie getippt wurden.
+
 ## [2.6.1] – 2026-10-22
 
 ### Geändert
@@ -530,7 +556,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.6.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.7.0...HEAD
+[2.7.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.0
 [2.6.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.1
 [2.6.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.0
 [2.5.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.1

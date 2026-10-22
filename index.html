@@ -18,7 +18,7 @@
   Ausgenommen sind die beiden eingebetteten Schriften: Sie stehen unter der
   SIL Open Font License 1.1, Nachweis in SCHRIFTEN.md.
 -->
-<html lang="de">
+<html lang="de"><!-- wird beim Start auf die Systemsprache gesetzt -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -578,64 +578,64 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
     <div class="brand">
       <img class="logo" src="icon-192.png" alt="" width="88" height="88" onerror="this.remove()">
       <div>
-        <p class="eyebrow">Spieleabend · <span id="regalzahl">…</span></p>
-        <h1>Was spielen wir heute?</h1>
+        <p class="eyebrow"><span data-t="marke">Spieleabend</span> · <span id="regalzahl">…</span></p>
+        <h1 data-t="titel">Was spielen wir heute?</h1>
       </div>
     </div>
     <div class="kopfzeile">
-      <button class="kopflink" id="zursammlung" type="button">Sammlung bearbeiten ↓</button>
-      <p class="intro">Du sagst die Runde, das Regal schlägt vor.</p>
+      <button class="kopflink" id="zursammlung" type="button" data-t="zurSammlung">Sammlung bearbeiten ↓</button>
+      <p class="intro" data-t="intro">Du sagst die Runde, das Regal schlägt vor.</p>
     </div>
   </header>
 
-  <section class="panel" aria-label="Runde beschreiben">
+  <section class="panel" data-t-attr="aria-label:ariaRunde" aria-label="Runde beschreiben">
     <details class="filters" id="filters" open>
       <summary class="filters-head">
         <span class="summary-line" id="summary"></span>
-        <span class="filters-hint">ändern</span>
+        <span class="filters-hint" data-t="aendern">ändern</span>
       </summary>
       <div class="filter-body">
         <fieldset class="field">
-          <legend>Wie viele seid ihr?</legend>
+          <legend data-t="wieViele">Wie viele seid ihr?</legend>
           <div class="zaehler">
-            <button type="button" class="zbtn" id="weniger" aria-label="Eine Person weniger">&minus;</button>
+            <button type="button" class="zbtn" id="weniger" data-t-attr="aria-label:ariaWeniger" aria-label="Eine Person weniger">&minus;</button>
             <input type="number" id="anzahl" min="1" max="99" step="1" inputmode="numeric"
-                   aria-label="Anzahl Personen">
-            <button type="button" class="zbtn" id="mehr" aria-label="Eine Person mehr">+</button>
+                   data-t-attr="aria-label:ariaAnzahl" aria-label="Anzahl Personen">
+            <button type="button" class="zbtn" id="mehr" data-t-attr="aria-label:ariaMehr" aria-label="Eine Person mehr">+</button>
           </div>
         </fieldset>
         <fieldset class="field">
-          <legend>Worauf habt ihr Lust? <span class="mehrfach-hinweis">mehrere möglich</span></legend>
+          <legend data-t="woraufLust">Worauf habt ihr Lust? <span class="mehrfach-hinweis">mehrere möglich</span></legend>
           <div class="chips" id="moods"></div>
         </fieldset>
         <fieldset class="field">
-          <legend>Wie viel Kopf? <span class="mehrfach-hinweis">mehrere möglich</span></legend>
+          <legend data-t="wieVielKopf">Wie viel Kopf? <span class="mehrfach-hinweis">mehrere möglich</span></legend>
           <div class="chips" id="weights"></div>
         </fieldset>
         <fieldset class="field">
-          <legend>Wie viel Zeit? <span class="mehrfach-hinweis">höchstens</span></legend>
+          <legend data-t="wieVielZeit">Wie viel Zeit? <span class="mehrfach-hinweis">höchstens</span></legend>
           <div class="chips" id="times"></div>
         </fieldset>
         <fieldset class="field">
-          <legend>Zusätzlich</legend>
+          <legend data-t="zusaetzlich">Zusätzlich</legend>
           <div class="chips" id="shelf"></div>
         </fieldset>
       </div>
     </details>
     <div class="panel-foot">
       <div class="actions">
-        <button class="reset" id="reset" type="button">Filter leeren</button>
-        <button class="dice" id="dice" type="button">Würfel entscheiden</button>
+        <button class="reset" id="reset" type="button" data-t="filterLeeren">Filter leeren</button>
+        <button class="dice" id="dice" type="button" data-t="wuerfelEntscheiden">Würfel entscheiden</button>
       </div>
     </div>
   </section>
 
-  <section aria-label="Vorschläge" style="display:flex; flex-direction:column; gap:var(--luft-mittel)">
+  <section data-t-attr="aria-label:ariaVorschlaege" aria-label="Vorschläge" style="display:flex; flex-direction:column; gap:var(--luft-mittel)">
     <div class="result-head">
-      <h2>Passt heute</h2>
+      <h2 data-t="passtHeute">Passt heute</h2>
       <span class="count" id="count"></span>
     </div>
-    <p class="legende" id="legende" hidden>Der Balken zeigt die Passung zur Runde —
+    <p class="legende" id="legende" data-t="legende" hidden>Der Balken zeigt die Passung zur Runde —
       je voller, desto besser.</p>
     <div class="grid" id="results"></div>
   </section>
@@ -646,7 +646,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   </details>
 
   <details class="panel" id="collection">
-    <summary>Sammlung bearbeiten</summary>
+    <summary data-t="sammlungBearbeiten">Sammlung bearbeiten</summary>
     <div class="col-body">
       <p class="storage-note" id="storagenote" data-mode="local">Sammlung wird gespeichert …</p>
 
@@ -656,40 +656,40 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
         <p class="form-title" id="formtitle">Spiel hinzufügen</p>
         <div class="form-rows">
           <div class="stack wide">
-            <label for="f-name"><span>Name</span></label>
+            <label for="f-name"><span data-t="labelName">Name</span></label>
             <div class="lookup-row">
-              <input type="text" id="f-name" autocomplete="off" placeholder="z. B. Die Crew">
-              <button class="btn ghost" type="button" id="lookup" hidden>Daten vorschlagen</button>
-              <a class="linkbtn" id="bgglink" target="_blank" rel="noopener noreferrer"
+              <input type="text" id="f-name" autocomplete="off" data-t-attr="placeholder:phName" placeholder="z. B. Die Crew">
+              <button class="btn ghost" type="button" id="lookup" data-t="datenVorschlagen" hidden>Daten vorschlagen</button>
+              <a class="linkbtn" id="bgglink" data-t="bggLink" target="_blank" rel="noopener noreferrer"
                  href="https://boardgamegeek.com/geeksearch.php?action=search&amp;objecttype=boardgame&amp;q=">Auf BGG nachschlagen ↗</a>
             </div>
-            <p class="hint" id="lookuphint" hidden>Fragt Claude nach Spielerzahl, Dauer, Anspruch und Stimmung. Beim ersten Mal fragt die Seite um Erlaubnis; es zählt auf deine Claude-Nutzung.</p>
+            <p class="hint" id="lookuphint" data-t="lookupHinweis" hidden>Fragt Claude nach Spielerzahl, Dauer, Anspruch und Stimmung. Beim ersten Mal fragt die Seite um Erlaubnis; es zählt auf deine Claude-Nutzung.</p>
             <p class="lookup-status" id="lookupstatus" hidden></p>
           </div>
-          <div class="stack"><span>Spielerzahl</span>
+          <div class="stack"><span data-t="labelSpielerzahl">Spielerzahl</span>
             <div class="pair">
-              <input type="number" id="f-min" placeholder="2" min="1" max="30" inputmode="numeric" aria-label="Spieler mindestens">
-              <span class="sep">bis</span>
-              <input type="number" id="f-max" placeholder="5" min="1" max="30" inputmode="numeric" aria-label="Spieler höchstens">
+              <input type="number" id="f-min" placeholder="2" min="1" max="30" inputmode="numeric" data-t-attr="aria-label:ariaSpielerMin" aria-label="Spieler mindestens">
+              <span class="sep" data-t="bis">bis</span>
+              <input type="number" id="f-max" placeholder="5" min="1" max="30" inputmode="numeric" data-t-attr="aria-label:ariaSpielerMax" aria-label="Spieler höchstens">
             </div></div>
-          <div class="stack"><span>Glänzt bei <span class="hint">(optional, Spielerzahl)</span></span>
+          <div class="stack"><span data-t="glaenztBei">Glänzt bei <span class="hint">(optional, Spielerzahl)</span></span>
             <div class="pair">
-              <input type="number" id="f-bestmin" placeholder="3" min="1" max="30" inputmode="numeric" aria-label="Glanzform von">
-              <span class="sep">bis</span>
-              <input type="number" id="f-bestmax" placeholder="5" min="1" max="30" inputmode="numeric" aria-label="Glanzform bis">
+              <input type="number" id="f-bestmin" placeholder="3" min="1" max="30" inputmode="numeric" data-t-attr="aria-label:ariaGlanzVon" aria-label="Glanzform von">
+              <span class="sep" data-t="bis">bis</span>
+              <input type="number" id="f-bestmax" placeholder="5" min="1" max="30" inputmode="numeric" data-t-attr="aria-label:ariaGlanzBis" aria-label="Glanzform bis">
             </div></div>
-          <div class="stack"><span>Dauer in Minuten</span>
+          <div class="stack"><span data-t="labelDauer">Dauer in Minuten</span>
             <div class="pair">
-              <input type="number" id="f-durmin" placeholder="30" min="1" max="600" inputmode="numeric" aria-label="Dauer von">
-              <span class="sep">bis</span>
-              <input type="number" id="f-durmax" placeholder="60" min="1" max="600" inputmode="numeric" aria-label="Dauer bis">
+              <input type="number" id="f-durmin" placeholder="30" min="1" max="600" inputmode="numeric" data-t-attr="aria-label:ariaDauerVon" aria-label="Dauer von">
+              <span class="sep" data-t="bis">bis</span>
+              <input type="number" id="f-durmax" placeholder="60" min="1" max="600" inputmode="numeric" data-t-attr="aria-label:ariaDauerBis" aria-label="Dauer bis">
             </div></div>
           <!-- Nur beim Aendern sichtbar: Beim Hinzufuegen eines frisch gekauften
                Spiels ist "zuletzt gespielt" so gut wie nie gemeint, kostete hier
                aber vier Zeilen. Gespielt wird ueber "Heute gespielt" auf der
                Karte vermerkt. -->
           <div class="stack" id="f-datumsblock" hidden>
-            <label for="f-played"><span>Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span></label>
+            <label for="f-played"><span data-t="zuletztGespielt">Zuletzt gespielt <span class="hint">(leer = noch nie)</span></span></label>
             <input type="date" id="f-played">
             <!-- Die beiden groben Angaben sind fuer Spiele gedacht, die man
                  laengst gespielt, hier aber nie eingetragen hat. Ohne Datum
@@ -697,38 +697,38 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
                  schreibt "noch nie gespielt" darauf. Ungefaehr richtig ist
                  dafuer besser als gar nichts. -->
             <div class="datumsknoepfe">
-              <button class="linkbtn" type="button" id="f-heute">Heute</button>
-              <button class="linkbtn" type="button" id="f-gestern">Gestern</button>
-              <button class="linkbtn" type="button" id="f-monat">Vor einem Monat</button>
-              <button class="linkbtn" type="button" id="f-halbjahr">Vor einem halben Jahr</button>
-              <button class="linkbtn" type="button" id="f-leeren">Leeren</button>
+              <button class="linkbtn" type="button" id="f-heute" data-t="dHeute">Heute</button>
+              <button class="linkbtn" type="button" id="f-gestern" data-t="dGestern">Gestern</button>
+              <button class="linkbtn" type="button" id="f-monat" data-t="dMonat">Vor einem Monat</button>
+              <button class="linkbtn" type="button" id="f-halbjahr" data-t="dHalbjahr">Vor einem halben Jahr</button>
+              <button class="linkbtn" type="button" id="f-leeren" data-t="dLeeren">Leeren</button>
             </div>
             <p class="hint" id="f-datumsecho">Noch nie gespielt.</p>
           </div>
           <label class="check"><input type="checkbox" id="f-teach">
-            <span>Muss noch erklärt werden</span></label>
-          <fieldset class="stack field wide"><legend class="lbl">Anspruch</legend>
+            <span data-t="mussErklaert">Muss noch erklärt werden</span></label>
+          <fieldset class="stack field wide"><legend class="lbl" data-t="anspruch">Anspruch</legend>
             <div class="chips" id="f-weight"></div>
-            <p class="hint">Auf BGG steht das als <em>Weight</em> von 1 bis 5: bis 1,5 leicht ·
+            <p class="hint" data-t="weightHinweis">Auf BGG steht das als <em>Weight</em> von 1 bis 5: bis 1,5 leicht ·
               1,5 bis 2,6 mittel · ab 2,6 anspruchsvoll.</p></fieldset>
-          <fieldset class="stack field wide"><legend class="lbl">Stimmung</legend>
+          <fieldset class="stack field wide"><legend class="lbl" data-t="stimmung">Stimmung</legend>
             <div class="chips" id="f-moods"></div></fieldset>
-          <label class="wide"><span>Notiz (erscheint auf der Karte)</span>
-            <textarea id="f-note" placeholder="Ein Satz, der beim Erinnern hilft."></textarea></label>
+          <label class="wide"><span data-t="notizLabel">Notiz (erscheint auf der Karte)</span>
+            <textarea id="f-note" data-t-attr="placeholder:phNotiz" placeholder="Ein Satz, der beim Erinnern hilft."></textarea></label>
         </div>
         <p class="formerror" id="formerror" hidden></p>
         <div class="form-actions">
           <button class="btn" type="submit" id="f-submit">Ins Regal stellen</button>
-          <button class="btn ghost" type="button" id="f-cancel" hidden>Abbrechen</button>
+          <button class="btn ghost" type="button" id="f-cancel" data-t="abbrechen" hidden>Abbrechen</button>
         </div>
       </form>
 
       <div class="col-tools">
         <input type="search" id="colsearch" placeholder="Spiel suchen" autocomplete="off"
-               aria-label="Sammlung durchsuchen">
+               data-t-attr="placeholder:phSuche;aria-label:ariaSuche" aria-label="Sammlung durchsuchen">
         <!-- Ohne sichtbare Beschriftung sehen diese Pillen aus wie die Filter
              weiter oben und tun doch etwas anderes. -->
-        <p class="sortlabel" id="sortlabel">Sortieren nach</p>
+        <p class="sortlabel" id="sortlabel" data-t="sortierenNach">Sortieren nach</p>
         <div class="chips" id="colsort" role="group" aria-labelledby="sortlabel"></div>
       </div>
       <p class="hint" id="colhits" hidden></p>
@@ -736,26 +736,26 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
       <div class="col-foot">
         <details class="backup">
-          <summary>Sicherung &amp; Umzug</summary>
-          <label class="stack"><span>Die ganze Sammlung als Text — zum Aufheben, Ergänzen oder Ersetzen.
+          <summary data-t="sicherungUmzug">Sicherung &amp; Umzug</summary>
+          <label class="stack"><span data-t="sicherungText">Die ganze Sammlung als Text — zum Aufheben, Ergänzen oder Ersetzen.
             Für den Umzug auf ein neues Gerät: hier sichern, dort einlesen.</span>
             <textarea id="backup" rows="5" spellcheck="false"></textarea></label>
           <!-- Vorher standen alle fuenf Knoepfe in zwei Reihen, die ungleich
                umbrachen: zwei, einer, zwei. Jetzt nach Richtung getrennt und in
                vollen Reihen - heraus aus der App, hinein in die App. -->
-          <p class="gruppe">Sichern</p>
+          <p class="gruppe" data-t="gruppeSichern">Sichern</p>
           <div class="knopfreihe zwei">
-            <button class="linkbtn" type="button" id="kopieren">Text kopieren</button>
-            <button class="linkbtn" type="button" id="herunterladen">Als Datei sichern</button>
+            <button class="linkbtn" type="button" id="kopieren" data-t="textKopieren">Text kopieren</button>
+            <button class="linkbtn" type="button" id="herunterladen" data-t="alsDatei">Als Datei sichern</button>
           </div>
-          <p class="gruppe">Einspielen</p>
+          <p class="gruppe" data-t="gruppeEinspielen">Einspielen</p>
           <div class="knopfreihe">
-            <label class="linkbtn" for="dateiwahl" style="cursor:pointer">Datei einlesen</label>
+            <label class="linkbtn" for="dateiwahl" style="cursor:pointer" data-t="dateiEinlesen">Datei einlesen</label>
             <input type="file" id="dateiwahl" accept=".json,application/json" hidden>
           </div>
           <div class="knopfreihe zwei">
-            <button class="linkbtn" type="button" id="importadd">Dazu einspielen</button>
-            <button class="linkbtn danger" type="button" id="import">Sammlung ersetzen</button>
+            <button class="linkbtn" type="button" id="importadd" data-t="dazuEinspielen">Dazu einspielen</button>
+            <button class="linkbtn danger" type="button" id="import" data-t="sammlungErsetzen">Sammlung ersetzen</button>
           </div>
           <p class="hint" id="importnote"></p>
         </details>
@@ -764,110 +764,499 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   </details>
 
   <footer>
-    <p>Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung">Fassung 2.6.1</p>
+    <p data-t="fussHinweis">Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
+    <p class="fassung" id="fassung" data-fassung="2.7.0"></p>
   </footer>
 </div>
 
 <script>
 "use strict";
+/* ================= Sprache ================= */
+/* Die Seite spricht Deutsch und Englisch und folgt dabei der Systemsprache -
+   es gibt bewusst keine Einstellung dafuer. Wer sein Geraet auf Deutsch
+   stellt, bekommt Deutsch, alle anderen Englisch.
 
-const MOODS = {
-  party:     "Party & Krawall",
-  entspannt: "Entspannt & ruhig",
-  gruebeln:  "Grübeln & Strategie",
-  koop:      "Alle gegen das Spiel",
-  schnell:   "Schnell zwischendurch",
-  wissen:    "Raten & Wissen",
-  reden:     "Reden & Erklären",
-  thema:     "Thema & Geschichte"
+   Zwei Woerterbuecher, weil sie zwei verschiedene Aufgaben haben:
+
+   MARKUP_EN  uebersetzt die Beschriftungen, die fest im Markup stehen. Dort
+              ist Deutsch der Urtext - er bleibt im Markup stehen und wird nur
+              fuer andere Sprachen ersetzt. So bleibt die Seite lesbar und
+              zeigt auch ohne Skript etwas Sinnvolles.
+   TEXTE      haelt alles, was das Skript selbst zusammenbaut. Hier gibt es
+              keinen Urtext im Markup, also stehen beide Sprachen nebeneinander.
+
+   Die Schluessel der gespeicherten Daten (party, gruebeln, leicht, mittel,
+   schwer ...) sind davon ausgenommen und bleiben in jeder Sprache dieselben.
+   Sie stecken in Sicherungen und in der gespeicherten Sammlung: Wer sie
+   uebersetzt, macht jede vorhandene Sicherung unlesbar. */
+
+const SPRACHE = /^de\b/i.test(navigator.language || "") ? "de" : "en";
+const ORTSFORM = SPRACHE === "de" ? "de-DE" : "en-GB";
+
+const MARKUP_EN = {
+  marke:              "Game night",
+  titel:              "What shall we play tonight?",
+  zurSammlung:        "Edit collection ↓",
+  intro:              "You describe the group, the shelf suggests.",
+  ariaRunde:          "Describe the group",
+  aendern:            "change",
+  wieViele:           "How many of you are there?",
+  ariaWeniger:        "One person fewer",
+  ariaMehr:           "One person more",
+  ariaAnzahl:         "Number of people",
+  woraufLust:         'What are you in the mood for? <span class="mehrfach-hinweis">several possible</span>',
+  wieVielKopf:        'How much thinking? <span class="mehrfach-hinweis">several possible</span>',
+  wieVielZeit:        'How much time? <span class="mehrfach-hinweis">at most</span>',
+  zusaetzlich:        "Additionally",
+  filterLeeren:       "Clear filters",
+  wuerfelEntscheiden: "Let the dice decide",
+  ariaVorschlaege:    "Suggestions",
+  passtHeute:         "Fits tonight",
+  legende:            "The bar shows how well a game suits the group — the fuller, the better.",
+  sammlungBearbeiten: "Edit collection",
+  labelName:          "Name",
+  phName:             "e.g. The Crew",
+  bggLink:            "Look up on BGG ↗",
+  lookupHinweis:      "Asks Claude for player count, length, difficulty and mood. The first time, the page asks for permission; it counts towards your Claude usage.",
+  labelSpielerzahl:   "Players",
+  ariaSpielerMin:     "Players at least",
+  ariaSpielerMax:     "Players at most",
+  bis:                "to",
+  glaenztBei:         'Shines at <span class="hint">(optional, player count)</span>',
+  ariaGlanzVon:       "Sweet spot from",
+  ariaGlanzBis:       "Sweet spot to",
+  labelDauer:         "Length in minutes",
+  ariaDauerVon:       "Length from",
+  ariaDauerBis:       "Length to",
+  zuletztGespielt:    'Last played <span class="hint">(empty = never)</span>',
+  dHeute:             "Today",
+  dGestern:           "Yesterday",
+  dMonat:             "A month ago",
+  dHalbjahr:          "Six months ago",
+  dLeeren:            "Clear",
+  mussErklaert:       "Still needs explaining",
+  anspruch:           "Difficulty",
+  weightHinweis:      'BGG calls this <em>Weight</em>, from 1 to 5: up to 1.5 light · 1.5 to 2.6 medium · from 2.6 demanding.',
+  stimmung:           "Mood",
+  notizLabel:         "Note (appears on the card)",
+  phNotiz:            "One sentence that helps you remember.",
+  abbrechen:          "Cancel",
+  phSuche:            "Find a game",
+  ariaSuche:          "Search the collection",
+  sortierenNach:      "Sort by",
+  sicherungUmzug:     "Backup &amp; moving",
+  sicherungText:      "The whole collection as text — to keep, to add to or to replace. Moving to a new device: back up here, read it in there.",
+  gruppeSichern:      "Back up",
+  gruppeEinspielen:   "Read in",
+  textKopieren:       "Copy as text",
+  alsDatei:           "Save as file",
+  dateiEinlesen:      "Read a file",
+  dazuEinspielen:     "Merge in",
+  sammlungErsetzen:   "Replace collection",
+  fussHinweis:        "Player counts, length and difficulty are rules of thumb — correct them any time under “Edit collection”.",
+  datenVorschlagen:   "Suggest data"
 };
+
+const TEXTE = {
+  de: {
+    moods: {
+      party:     "Party & Krawall",
+      entspannt: "Entspannt & ruhig",
+      gruebeln:  "Grübeln & Strategie",
+      koop:      "Alle gegen das Spiel",
+      schnell:   "Schnell zwischendurch",
+      wissen:    "Raten & Wissen",
+      reden:     "Reden & Erklären",
+      thema:     "Thema & Geschichte"
+    },
+    baender: { leicht:["Leicht","leichter Brocken"], mittel:["Mittel","mittelschwerer Brocken"],
+               schwer:["Anspruchsvoll","anspruchsvoller Brocken"] },
+    sorts:   { name:"Name", spieler:"Spielerzahl", dauer:"Dauer", kopf:"Anspruch",
+               gespielt:"Lange nicht gespielt" },
+    zeitEgal: "Egal",
+    minute:   "Min",
+    datenVorschlagen: "Daten vorschlagen",
+    abbrechen:        "Abbrechen",
+
+    speicherKonto:  "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe.",
+    speicherGeraet: "Sammlung liegt auf diesem Gerät.",
+    speicherFehler: c => "Konnte nicht ins Konto speichern (" + c + ") — die Änderung liegt vorerst auf diesem Gerät.",
+    kontoWeg:       "Konto gerade nicht erreichbar — Änderungen bleiben auf diesem Gerät.",
+
+    lookupKeine:    n => "Zu „" + n + "“ gibt es keine verlässlichen Angaben — bitte selbst eintragen.",
+    lookupHalb:     "Die Antwort war unvollständig — bitte selbst eintragen.",
+    lookupErkannt:  n => "Erkannt als „" + n + "“. ",
+    lookupFertig:   ohneStimmung => "Vorschlag eingetragen — bitte prüfen" +
+                      (ohneStimmung ? " und eine Stimmung wählen" : "") + ", dann speichern.",
+    lookupErstName: "Erst den Namen eintippen.",
+    lookupSucht:    "Claude sucht die Eckdaten — das dauert ein paar Sekunden",
+    lookupGesperrt: "Ohne Freigabe kann die Seite Claude nicht fragen — die Angaben also bitte selbst eintragen.",
+    lookupZuViele:  "Gerade zu viele Anfragen. Gleich noch einmal probieren.",
+    lookupFehler:   c => "Hat nicht geklappt (" + c + ") — bitte selbst eintragen oder noch einmal versuchen.",
+    fehlerWort:     "Fehler",
+
+    spiele:    n => n === 1 ? "1 Spiel" : n + " Spiele",
+    imRegal:   n => (n === 1 ? "1 Spiel" : n + " Spiele") + " im Regal",
+    regalLeerKurz: "Regal ist leer",
+    nichtsPasstKurz: "nichts passt",
+    faelltRaus: n => n === 1 ? "1 Spiel fällt heute raus" : n + " Spiele fallen heute raus",
+    personen:  n => n + (n === 1 ? " Person" : " Personen"),
+    spielerEinheit: n => n + (n === 1 ? " Spieler" : " Spieler"),
+
+    abSpielern: n => "ab " + n + " Spielern",
+    nurBis:     n => "nur bis " + n,
+    dauertAb:   (m, erklaert) => (erklaert ? "mit Erklärung ab " : "dauert ab ") + m + " Min",
+    andereStimmung: "andere Stimmung",
+    vorKurzem:  "vor kurzem gespielt",
+    inDurch:    d => "in " + d + " durch",
+    mitErklDurch: m => "mit Erklärung in " + m + " Min durch",
+    nochNieGespielt: "noch nie gespielt",
+    seitMonaten: "seit Monaten nicht dran",
+    und: " und ",
+
+    derWuerfelSagt: "Der Würfel sagt",
+    topTreffer:     "Top-Treffer",
+    glanzform:      "Glanzform",
+    ariaPassung:    s => "Passung " + s + " von 99",
+    dtSpieler: "Spieler", dtDauer: "Dauer", dtAnspruch: "Anspruch",
+    dtErklaeren: "Erklären", dtZuletzt: "Zuletzt",
+    heuteGespielt: "Heute gespielt",
+    heuteGespieltAn: "Heute gespielt ✓",
+    nochmalWuerfeln: "Nochmal würfeln",
+    zuklappen: "Zuklappen",
+
+    eureRunde: "Eure Runde:",
+    bisMin:    m => "bis " + m + " Min",
+    nurLangeNichtKurz: "nur lange nicht Gespieltes",
+    sonstOffen: " · sonst offen",
+    nurLangeNichtChip: "Nur lange nicht Gespieltes",
+
+    nichtsPasst: "Für diese Kombination gibt es nichts. Nimm eine Stimmung raus oder gib der Runde mehr Zeit.",
+    regalLeer:   "Im Regal steht noch nichts — unten Spiele hinzufügen.",
+
+    trefferVon: (a, b) => a + " von " + b + " Spielen",
+    keinSpielMit: q => "Kein Spiel mit „" + q + "“ im Namen.",
+    erklaeren: "erklären",
+    gespieltVor: w => " · gespielt " + w,
+    nochNie: "noch nie",
+    aendernKnopf: "Ändern",
+    entfernenKnopf: "Entfernen",
+
+    istRaus: n => "„" + n + "“ ist raus. ",
+    rueckgaengig: "Rückgängig",
+    spielHinzufuegen: "Spiel hinzufügen",
+    insRegal: "Ins Regal stellen",
+    spielAendern: "Spiel ändern",
+    aenderungSpeichern: "Änderung speichern",
+    fehlerName: "Wie heißt das Spiel?",
+    fehlerDoppelt: n => "„" + n + "“ steht schon im Regal — dort auf „Ändern“ tippen.",
+    fehlerSpielerzahl: "Spielerzahl: von klein nach groß, höchstens 30 — zum Beispiel 2 bis 5.",
+    fehlerDauer: "Dauer: von klein nach groß in Minuten — zum Beispiel 30 bis 60.",
+    fehlerGlanzform: (a, b) => "„Am besten zu“ muss innerhalb der Spielerzahl liegen (" + a + " bis " + b + ").",
+    fehlerStimmung: "Wähl mindestens eine Stimmung — sonst taucht das Spiel bei keiner Stimmungsauswahl auf.",
+    fehlerDatumHalb: "Das Datum unter „Zuletzt gespielt“ ist unvollständig.",
+    fehlerDatumZukunft: "„Zuletzt gespielt“ liegt in der Zukunft — bitte ein Datum von heute oder früher.",
+
+    nieGespieltSatz: "Noch nie gespielt.",
+    datumHalb: "Datum noch unvollständig.",
+    inZukunft: "das liegt in der Zukunft",
+    heute: "heute",
+    gestern: "gestern",
+    vorTagen: n => "vor " + n + " Tagen",
+    vorWochen: n => "vor " + n + " Wochen",
+    vorMonaten: n => "vor " + n + " Monaten",
+    vorUeberJahren: n => n === 1 ? "vor über einem Jahr" : "vor über " + n + " Jahren",
+
+    keineSammlung: "Darin steckt keine lesbare Sammlung — erwartet wird die Liste aus dem Feld darüber.",
+    ersetzt: n => (n === 1 ? "1 Spiel" : n + " Spiele") + " eingespielt, alte Sammlung ersetzt.",
+    dazu: (neu, doppelt) =>
+      (neu ? (neu === 1 ? "1 Spiel" : neu + " Spiele") + " dazugekommen" : "Nichts dazugekommen") +
+      (doppelt ? ", " + (doppelt === 1 ? "eines war" : doppelt + " waren") + " schon da" : "") + ".",
+    kopiert: "In die Zwischenablage kopiert — jetzt in eine Notiz oder E-Mail einfügen.",
+    markiert: "Text ist markiert — mit Strg+C (am Handy: Antippen und „Kopieren“) sichern.",
+    speichernFehler: m => "Fehler beim Speichern: " + m + " — nimm „Text kopieren“.",
+    wirdVorbereitet: "Sicherung wird vorbereitet …",
+    teilenTitel: "Spieleabend-Sammlung",
+    teilenDialog: "Sicherung ablegen oder verschicken",
+    teilenFertig: "Erledigt. „In Dateien speichern“ legt sie dorthin, wo du sie ausgewählt hast.",
+    teilenAbbruch: "Abgebrochen — nichts gespeichert.",
+    teilenFehler: g => "Hat nicht geklappt (" + g + "). Nimm „Text kopieren“.",
+    fehltFassung: "Das Speichern als Datei fehlt dieser Fassung — nimm „Text kopieren“.",
+    browserAblage: "Die Datei liegt dort, wo dein Browser Downloads ablegt. Passiert nichts, nimm „Text kopieren“.",
+    downloadNein: "Herunterladen geht hier nicht — nimm „Text kopieren“.",
+    dateiGelesen: "Datei gelesen — jetzt „Dazu einspielen“ oder „Sammlung ersetzen“ wählen.",
+    dateiUnlesbar: "Die Datei ließ sich nicht lesen.",
+    fassung: n => "Fassung " + n
+  },
+
+  en: {
+    moods: {
+      party:     "Party & mayhem",
+      entspannt: "Relaxed & quiet",
+      gruebeln:  "Pondering & strategy",
+      koop:      "All against the game",
+      schnell:   "Quick in between",
+      wissen:    "Guessing & knowledge",
+      reden:     "Talking & explaining",
+      thema:     "Theme & story"
+    },
+    baender: { leicht:["Light","a light one"], mittel:["Medium","a medium one"],
+               schwer:["Demanding","a demanding one"] },
+    sorts:   { name:"Name", spieler:"Players", dauer:"Length", kopf:"Difficulty",
+               gespielt:"Long unplayed" },
+    zeitEgal: "Any",
+    minute:   "min",
+    datenVorschlagen: "Suggest data",
+    abbrechen:        "Cancel",
+
+    speicherKonto:  "Your collection lives in your account — the same on every device.",
+    speicherGeraet: "Your collection lives on this device.",
+    speicherFehler: c => "Could not save to the account (" + c + ") — the change stays on this device for now.",
+    kontoWeg:       "The account is not reachable right now — changes stay on this device.",
+
+    lookupKeine:    n => "There is nothing reliable on “" + n + "” — please fill it in yourself.",
+    lookupHalb:     "The answer was incomplete — please fill it in yourself.",
+    lookupErkannt:  n => "Recognised as “" + n + "”. ",
+    lookupFertig:   ohneStimmung => "Suggestion filled in — please check it" +
+                      (ohneStimmung ? " and pick a mood" : "") + ", then save.",
+    lookupErstName: "Type the name first.",
+    lookupSucht:    "Claude is looking up the details — this takes a few seconds",
+    lookupGesperrt: "Without permission the page cannot ask Claude — so please fill the details in yourself.",
+    lookupZuViele:  "Too many requests right now. Try again in a moment.",
+    lookupFehler:   c => "That did not work (" + c + ") — fill it in yourself or try again.",
+    fehlerWort:     "error",
+
+    spiele:    n => n === 1 ? "1 game" : n + " games",
+    imRegal:   n => (n === 1 ? "1 game" : n + " games") + " on the shelf",
+    regalLeerKurz: "shelf is empty",
+    nichtsPasstKurz: "nothing fits",
+    faelltRaus: n => n === 1 ? "1 game is out tonight" : n + " games are out tonight",
+    personen:  n => n + (n === 1 ? " person" : " people"),
+    spielerEinheit: n => n + (n === 1 ? " player" : " players"),
+
+    abSpielern: n => n + " players or more",
+    nurBis:     n => "up to " + n + " only",
+    dauertAb:   (m, erklaert) => (erklaert ? "with the explanation, " : "") + "takes " + m + " min or more",
+    andereStimmung: "a different mood",
+    vorKurzem:  "played recently",
+    inDurch:    d => "done in " + d,
+    mitErklDurch: m => "done in " + m + " min including the explanation",
+    nochNieGespielt: "never played",
+    seitMonaten: "not played for months",
+    und: " and ",
+
+    derWuerfelSagt: "The dice say",
+    topTreffer:     "Best match",
+    glanzform:      "Sweet spot",
+    ariaPassung:    s => "Fit " + s + " out of 99",
+    dtSpieler: "Players", dtDauer: "Length", dtAnspruch: "Difficulty",
+    dtErklaeren: "Teaching", dtZuletzt: "Last played",
+    heuteGespielt: "Played today",
+    heuteGespieltAn: "Played today ✓",
+    nochmalWuerfeln: "Roll again",
+    zuklappen: "Collapse",
+
+    eureRunde: "Your group:",
+    bisMin:    m => "up to " + m + " min",
+    nurLangeNichtKurz: "only long-unplayed",
+    sonstOffen: " · otherwise open",
+    nurLangeNichtChip: "Only long-unplayed",
+
+    nichtsPasst: "There is nothing for this combination. Drop a mood or give the group more time.",
+    regalLeer:   "Nothing on the shelf yet — add games below.",
+
+    trefferVon: (a, b) => a + " of " + b + " games",
+    keinSpielMit: q => "No game with “" + q + "” in its name.",
+    erklaeren: "to teach",
+    gespieltVor: w => " · played " + w,
+    nochNie: "never",
+    aendernKnopf: "Change",
+    entfernenKnopf: "Remove",
+
+    istRaus: n => "“" + n + "” is gone. ",
+    rueckgaengig: "Undo",
+    spielHinzufuegen: "Add a game",
+    insRegal: "Put on the shelf",
+    spielAendern: "Change game",
+    aenderungSpeichern: "Save change",
+    fehlerName: "What is the game called?",
+    fehlerDoppelt: n => "“" + n + "” is already on the shelf — tap “Change” there.",
+    fehlerSpielerzahl: "Players: small to large, at most 30 — for example 2 to 5.",
+    fehlerDauer: "Length: small to large, in minutes — for example 30 to 60.",
+    fehlerGlanzform: (a, b) => "“Shines at” has to sit inside the player count (" + a + " to " + b + ").",
+    fehlerStimmung: "Pick at least one mood — otherwise the game never shows up for any mood.",
+    fehlerDatumHalb: "The date under “Last played” is incomplete.",
+    fehlerDatumZukunft: "“Last played” is in the future — please pick today or earlier.",
+
+    nieGespieltSatz: "Never played.",
+    datumHalb: "Date not complete yet.",
+    inZukunft: "that is in the future",
+    heute: "today",
+    gestern: "yesterday",
+    vorTagen: n => n + " days ago",
+    vorWochen: n => n + " weeks ago",
+    vorMonaten: n => n + " months ago",
+    vorUeberJahren: n => n === 1 ? "over a year ago" : "over " + n + " years ago",
+
+    keineSammlung: "There is no readable collection in there — the list from the field above is what is expected.",
+    ersetzt: n => (n === 1 ? "1 game" : n + " games") + " read in, old collection replaced.",
+    dazu: (neu, doppelt) =>
+      (neu ? (neu === 1 ? "1 game" : neu + " games") + " added" : "Nothing added") +
+      (doppelt ? ", " + (doppelt === 1 ? "one was" : doppelt + " were") + " already there" : "") + ".",
+    kopiert: "Copied to the clipboard — now paste it into a note or an e-mail.",
+    markiert: "The text is selected — save it with Ctrl+C (on a phone: tap and “Copy”).",
+    speichernFehler: m => "Error while saving: " + m + " — use “Copy as text”.",
+    wirdVorbereitet: "Preparing the backup …",
+    teilenTitel: "Game night collection",
+    teilenDialog: "Store or send the backup",
+    teilenFertig: "Done. “Save to files” puts it wherever you chose.",
+    teilenAbbruch: "Cancelled — nothing saved.",
+    teilenFehler: g => "That did not work (" + g + "). Use “Copy as text”.",
+    fehltFassung: "Saving as a file is missing from this version — use “Copy as text”.",
+    browserAblage: "The file is wherever your browser puts downloads. If nothing happens, use “Copy as text”.",
+    downloadNein: "Downloading does not work here — use “Copy as text”.",
+    dateiGelesen: "File read — now choose “Merge in” or “Replace collection”.",
+    dateiUnlesbar: "The file could not be read.",
+    fassung: n => "Version " + n
+  }
+};
+
+const W = TEXTE[SPRACHE];
+const t = (k, ...a) => { const v = W[k]; return typeof v === "function" ? v(...a) : v; };
+
+// Setzt die uebersetzten Beschriftungen ins Markup. Fuer Deutsch gibt es
+// nichts zu tun: Dort steht der Urtext schon da.
+function spracheAnwenden(){
+  document.documentElement.lang = SPRACHE;
+  const nummer = $("fassung").dataset.fassung;
+  $("fassung").textContent = t("fassung", nummer);
+  if(SPRACHE === "de") return;
+  document.title = MARKUP_EN.titel;
+  document.querySelectorAll("[data-t]").forEach(el => {
+    const neu = MARKUP_EN[el.dataset.t];
+    if(neu != null) el.innerHTML = neu;
+  });
+  document.querySelectorAll("[data-t-attr]").forEach(el => {
+    el.dataset.tAttr.split(";").forEach(paar => {
+      const [attr, schluessel] = paar.split(":");
+      const neu = MARKUP_EN[schluessel];
+      if(neu != null) el.setAttribute(attr, neu);
+    });
+  });
+}
+
+// Die Schluessel (party, gruebeln ...) stecken in gespeicherten Sammlungen und
+// bleiben darum in jeder Sprache dieselben; nur die Beschriftung wechselt.
+const MOODS = W.moods;
 
 // weight: 1 = Absacker, 5 = Kennerstück. best: [von, bis] Glanzform.
 const DEFAULT_GAMES = [
   { name:"5-Minute Dungeon", min:2, max:5, best:[4,5], dur:[15,30], weight:1.3,
     moods:["party","koop","schnell"],
-    note:"Echtzeit-Koop: fünf Minuten lang brüllen alle gleichzeitig Karten auf den Tisch." },
+    note:"Echtzeit-Koop: fünf Minuten lang brüllen alle gleichzeitig Karten auf den Tisch.",
+    noteEn:"Real-time co-op: for five minutes everyone yells cards onto the table at once." },
   { name:"Between Two Castles", min:2, max:7, best:[5,6], dur:[45,90], weight:2.5,
     moods:["gruebeln","reden"],
-    note:"Karten draften und mit beiden Nachbarn je ein Schloss bauen — beide Hälften wollen dich." },
+    note:"Karten draften und mit beiden Nachbarn je ein Schloss bauen — beide Hälften wollen dich.",
+    noteEn:"Draft cards and build one castle with each neighbour — both halves want you." },
   { name:"Captain Sonar", min:2, max:8, best:[8,8], dur:[45,75], weight:2.5,
     moods:["party","thema","koop"],
-    note:"Zwei U-Boot-Crews in Echtzeit gegeneinander. Laut, hektisch, herrlich." },
+    note:"Zwei U-Boot-Crews in Echtzeit gegeneinander. Laut, hektisch, herrlich.",
+    noteEn:"Two submarine crews against each other in real time. Loud, frantic, glorious." },
   { name:"Codenames", min:2, max:8, best:[4,8], dur:[15,25], weight:1.3,
     moods:["party","reden","schnell","wissen"],
-    note:"Ein Wort als Hinweis, zwei Teams, ein Attentäter. Läuft immer." },
+    note:"Ein Wort als Hinweis, zwei Teams, ein Attentäter. Läuft immer.",
+    noteEn:"One word as a clue, two teams, one assassin. Always works." },
   { name:"Dorfromantik: Sakura", min:1, max:6, best:[2,4], dur:[30,60], weight:1.8,
     moods:["entspannt","koop","gruebeln"],
-    note:"Plättchen legen, Landschaft wachsen lassen, gemeinsam den Rekord jagen. Null Aggression." },
+    note:"Plättchen legen, Landschaft wachsen lassen, gemeinsam den Rekord jagen. Null Aggression.",
+    noteEn:"Lay tiles, let the landscape grow, chase the record together. Zero aggression." },
   { name:"Dune: Imperium", min:1, max:4, best:[3,4], dur:[60,120], weight:3.5,
     moods:["gruebeln","thema"],
-    note:"Deckbau trifft Arbeitereinsatz auf Arrakis. Der Abend gehört diesem Spiel." },
+    note:"Deckbau trifft Arbeitereinsatz auf Arrakis. Der Abend gehört diesem Spiel.",
+    noteEn:"Deck-building meets worker placement on Arrakis. The evening belongs to this game." },
   { name:"Finspan", min:1, max:5, best:[2,4], dur:[40,70], weight:2.6,
     moods:["entspannt","gruebeln"],
-    note:"Die Flügelschlag-Maschine unter Wasser: ruhig Motor bauen, am Ende zählt das Aquarium." },
+    note:"Die Flügelschlag-Maschine unter Wasser: ruhig Motor bauen, am Ende zählt das Aquarium.",
+    noteEn:"The Wingspan machine underwater: build the engine quietly, the aquarium counts at the end." },
   { name:"Flip 7", min:3, max:18, best:[4,8], dur:[15,25], weight:1.0,
     moods:["party","schnell"],
-    note:"Karte umdrehen oder aufhören? Push your luck in Reinform, für beliebig viele Leute." },
+    note:"Karte umdrehen oder aufhören? Push your luck in Reinform, für beliebig viele Leute.",
+    noteEn:"Flip another card or stop? Push-your-luck in its purest form, for any number of people." },
   { name:"Herdentier", min:3, max:8, best:[4,7], dur:[20,35], weight:1.0,
     moods:["party","reden","wissen"],
-    note:"Bloß nicht originell sein: Punkte gibt es nur, wenn du dasselbe schreibst wie die Herde." },
+    note:"Bloß nicht originell sein: Punkte gibt es nur, wenn du dasselbe schreibst wie die Herde.",
+    noteEn:"Do not be original: you only score when you write what the herd writes." },
   { name:"Hitster: Movies & TV Soundtracks", min:2, max:10, best:[4,8], dur:[20,35], weight:1.0,
     moods:["party","wissen","schnell"],
-    note:"Soundtracks erkennen und in die Zeitleiste einsortieren. Braucht ein Handy mit Musik-App." },
+    note:"Soundtracks erkennen und in die Zeitleiste einsortieren. Braucht ein Handy mit Musik-App.",
+    noteEn:"Recognise soundtracks and slot them into the timeline. Needs a phone with a music app." },
   { name:"Hive Pocket", min:2, max:2, best:[2,2], dur:[15,25], weight:2.7,
     moods:["gruebeln"],
-    note:"Abstraktes Duell mit Insektensteinen — Schach ohne Brett, passt in die Jackentasche." },
+    note:"Abstraktes Duell mit Insektensteinen — Schach ohne Brett, passt in die Jackentasche.",
+    noteEn:"An abstract duel with insect tiles — chess without a board, fits in a coat pocket." },
   { name:"Marvel: Remix", min:2, max:6, best:[3,5], dur:[20,30], weight:1.8,
     moods:["schnell","gruebeln","thema"],
-    note:"Handkarten kombinieren, bis das Team zusammenpasst. Kurz, knackig, überraschend taktisch." },
+    note:"Handkarten kombinieren, bis das Team zusammenpasst. Kurz, knackig, überraschend taktisch.",
+    noteEn:"Combine cards in hand until the team fits together. Short, snappy, surprisingly tactical." },
   { name:"MicroMacro: Crime City", min:1, max:4, best:[2,4], dur:[15,45], weight:1.4,
     moods:["koop","entspannt","wissen"],
-    note:"Wimmelbild-Krimi: Nasen an den Stadtplan, Fall für Fall lösen. Jederzeit unterbrechbar." },
+    note:"Wimmelbild-Krimi: Nasen an den Stadtplan, Fall für Fall lösen. Jederzeit unterbrechbar.",
+    noteEn:"A hidden-object crime story: noses on the city map, one case after another. Interruptible any time." },
   { name:"MicroMacro: Crime City – Full House", min:1, max:4, best:[2,4], dur:[15,45], weight:1.4,
     moods:["koop","entspannt","wissen"],
-    note:"Zweiter Stadtplan, neue Fälle — gleiche Suchtwirkung wie beim ersten." },
+    note:"Zweiter Stadtplan, neue Fälle — gleiche Suchtwirkung wie beim ersten.",
+    noteEn:"A second city map, new cases — just as addictive as the first." },
   { name:"QuizWiz: Die kooperative Länder-Challenge", min:1, max:4, best:[2,4], dur:[25,45], weight:1.2,
     moods:["wissen","koop","entspannt"],
-    note:"Länderwissen gemeinsam statt gegeneinander — mitraten dürfen am Tisch ruhig mehr." },
+    note:"Länderwissen gemeinsam statt gegeneinander — mitraten dürfen am Tisch ruhig mehr.",
+    noteEn:"Country knowledge together instead of against each other — more people may happily join in." },
   { name:"Scout", min:2, max:5, best:[3,5], dur:[15,25], weight:1.6,
     moods:["schnell","gruebeln"],
-    note:"Kartenhand, die du nicht sortieren darfst. Kleine Regel, große Entscheidungen." },
+    note:"Kartenhand, die du nicht sortieren darfst. Kleine Regel, große Entscheidungen.",
+    noteEn:"A hand of cards you are not allowed to sort. Small rule, big decisions." },
   { name:"Sky Team", min:2, max:2, best:[2,2], dur:[15,25], weight:2.2,
     moods:["koop","gruebeln","thema"],
-    note:"Zu zweit ein Flugzeug landen, ohne über die entscheidenden Würfel zu reden. Konzentriert und dicht." },
+    note:"Zu zweit ein Flugzeug landen, ohne über die entscheidenden Würfel zu reden. Konzentriert und dicht.",
+    noteEn:"Land a plane as a pair without talking about the dice that matter. Focused and tense." },
   { name:"Smart10", min:2, max:8, best:[3,6], dur:[30,45], weight:1.2,
     moods:["wissen","party"],
-    note:"Zehn Antworten pro Frage, du sagst, wie weit du dich traust. Quiz ohne Nerd-Vorsprung." },
+    note:"Zehn Antworten pro Frage, du sagst, wie weit du dich traust. Quiz ohne Nerd-Vorsprung.",
+    noteEn:"Ten answers per question, and you say how far you dare. A quiz without the nerd advantage." },
   { name:"Star Wars: The Clone Wars", min:1, max:5, best:[3,4], dur:[45,75], weight:2.8,
     moods:["koop","thema","gruebeln"],
-    note:"Pandemie-Motor im Star-Wars-Gewand: gemeinsam Krisen löschen, jeder Held kann etwas anderes." },
+    note:"Pandemie-Motor im Star-Wars-Gewand: gemeinsam Krisen löschen, jeder Held kann etwas anderes.",
+    noteEn:"The Pandemic engine in Star Wars clothing: put out crises together, every hero does something different." },
   { name:"Time's Up! Party", min:4, max:12, best:[6,10], dur:[30,60], weight:1.0,
     moods:["party","reden","schnell"],
-    note:"Dieselben Begriffe in drei Runden: erklären, ein Wort, pantomimisch. Garantiert laut." },
+    note:"Dieselben Begriffe in drei Runden: erklären, ein Wort, pantomimisch. Garantiert laut.",
+    noteEn:"The same words in three rounds: describe, one word, mime. Guaranteed loud." },
   { name:"Top Ten", min:4, max:9, best:[5,7], dur:[25,40], weight:1.0,
     moods:["party","reden","koop"],
-    note:"Von 1 bis 10 auf eine schräge Frage antworten und die Reihenfolge treffen. Kooperativer Blödsinn." }
+    note:"Von 1 bis 10 auf eine schräge Frage antworten und die Reihenfolge treffen. Kooperativer Blödsinn.",
+    noteEn:"Answer an odd question from 1 to 10 and get the order right. Cooperative nonsense." }
 ];
 
+// label: wie der Anspruch heisst. aus: wie er in der Begruendung auftaucht,
+// wenn ein Spiel genau daran scheitert.
 const WEIGHT_BANDS = [
-  { id:"leicht",  label:"Leicht",        test:w => w <= 1.5, adj:"leichter" },
-  { id:"mittel",  label:"Mittel",        test:w => w > 1.5 && w <= 2.6, adj:"mittelschwerer" },
-  { id:"schwer",  label:"Anspruchsvoll", test:w => w > 2.6, adj:"anspruchsvoller" }
+  { id:"leicht", label:W.baender.leicht[0], aus:W.baender.leicht[1], test:w => w <= 1.5 },
+  { id:"mittel", label:W.baender.mittel[0], aus:W.baender.mittel[1], test:w => w > 1.5 && w <= 2.6 },
+  { id:"schwer", label:W.baender.schwer[0], aus:W.baender.schwer[1], test:w => w > 2.6 }
 ];
 const SORTS = [
-  { id:"name",     label:"Name",                cmp:(a,b) => 0 },
-  { id:"spieler",  label:"Spielerzahl",         cmp:(a,b) => a.min - b.min || a.max - b.max },
-  { id:"dauer",    label:"Dauer",               cmp:(a,b) => a.dur[0] - b.dur[0] || a.dur[1] - b.dur[1] },
-  { id:"kopf",     label:"Anspruch",            cmp:(a,b) => a.weight - b.weight },
-  { id:"gespielt", label:"Lange nicht gespielt", cmp:(a,b) => (a.lastPlayed || 0) - (b.lastPlayed || 0) }
+  { id:"name",     label:W.sorts.name,     cmp:(a,b) => 0 },
+  { id:"spieler",  label:W.sorts.spieler,  cmp:(a,b) => a.min - b.min || a.max - b.max },
+  { id:"dauer",    label:W.sorts.dauer,    cmp:(a,b) => a.dur[0] - b.dur[0] || a.dur[1] - b.dur[1] },
+  { id:"kopf",     label:W.sorts.kopf,     cmp:(a,b) => a.weight - b.weight },
+  { id:"gespielt", label:W.sorts.gespielt, cmp:(a,b) => (a.lastPlayed || 0) - (b.lastPlayed || 0) }
 ];
 
 const TIMES = [
-  { id:0,  label:"Egal" },
-  { id:30, label:"30 Min" },
-  { id:60, label:"60 Min" },
-  { id:90, label:"90 Min" }
+  { id:0,  label:W.zeitEgal },
+  { id:30, label:"30 " + W.minute },
+  { id:60, label:"60 " + W.minute },
+  { id:90, label:"90 " + W.minute }
 ];
 
 const state = {
@@ -890,7 +1279,7 @@ const playedUndo = new Map();
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
-const byName = (a,b) => a.name.localeCompare(b.name, "de");
+const byName = (a,b) => a.name.localeCompare(b.name, ORTSFORM);
 
 /* ================= Sammlung: Daten und Speicher ================= */
 
@@ -933,7 +1322,11 @@ function normalize(raw, i){
   };
 }
 
-const freshCollection = () => DEFAULT_GAMES.map(normalize).filter(Boolean);
+// note/noteEn stehen beide in DEFAULT_GAMES; gespeichert wird nur die, die zur
+// Sprache passt - normalize() kennt nur das Feld note.
+const freshCollection = () => DEFAULT_GAMES
+  .map((g, i) => normalize(Object.assign({}, g, { note: SPRACHE === "de" ? g.note : g.noteEn }), i))
+  .filter(Boolean);
 let games = freshCollection();
 let lastRemoved = null;
 let localTouched = false;
@@ -944,9 +1337,7 @@ let dbDoc = null;
 function updateStorageNote(msg){
   const el = $("storagenote");
   el.dataset.mode = storageMode === "local" ? "local" : "geteilt";
-  el.textContent = msg || (
-    storageMode === "db" ? "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe."
-                         : "Sammlung liegt auf diesem Gerät.");
+  el.textContent = msg || t(storageMode === "db" ? "speicherKonto" : "speicherGeraet");
 }
 
 function persist(){
@@ -955,7 +1346,7 @@ function persist(){
   if(dbDoc){
     dbDoc.set({ games, updatedAt:Date.now() }).then(
       () => updateStorageNote(),
-      e => updateStorageNote("Konnte nicht ins Konto speichern (" + (e && e.code ? e.code : "Fehler") + ") — die Änderung liegt vorerst auf diesem Gerät.")
+      e => updateStorageNote(t("speicherFehler", e && e.code ? e.code : t("fehlerWort")))
     );
   }
 }
@@ -993,7 +1384,7 @@ async function connectDb(){
     updateStorageNote();
   }, () => {
     storageMode = "local";
-    updateStorageNote("Konto gerade nicht erreichbar — Änderungen bleiben auf diesem Gerät.");
+    updateStorageNote(t("kontoWeg"));
   });
   updateStorageNote();
 }
@@ -1021,25 +1412,29 @@ function lookupStatus(msg, tone){
   el.dataset.tone = tone || "busy";
 }
 
+// Die Frage selbst steht auf Englisch - sie geht an ein Sprachmodell, nicht an
+// den Benutzer. Nur der zurueckgelieferte Notizsatz soll in dessen Sprache
+// stehen, darum wird sie hier ausdruecklich verlangt.
 function lookupPrompt(name){
+  const satzsprache = SPRACHE === "de" ? "German" : "English";
   return [
-    'Du bist ein Nachschlagewerk für Brett- und Kartenspiele. Gib die Eckdaten zum Spiel "' + name + '" zurück.',
+    'You are a reference work for board and card games. Return the key facts for the game "' + name + '".',
     "",
-    "Antworte nur mit einem JSON-Objekt in genau dieser Form:",
-    '{"found":true,"title":"offizieller Titel","min":2,"max":5,"bestMin":3,"bestMax":4,' +
+    "Answer with nothing but a JSON object in exactly this shape:",
+    '{"found":true,"title":"official title","min":2,"max":5,"bestMin":3,"bestMax":4,' +
       '"durMin":30,"durMax":60,"weight":"mittel","moods":["party","schnell"],' +
-      '"note":"ein deutscher Satz, höchstens 140 Zeichen"}',
+      '"note":"one sentence in ' + satzsprache + ', at most 140 characters"}',
     "",
-    "Regeln:",
-    '- "found": false, wenn du das Spiel nicht sicher kennst. Dann alle anderen Felder weglassen. Rate keine Zahlen.',
-    "- min/max: Spielerzahl laut Schachtel. bestMin/bestMax: die Spielerzahl, bei der es am besten läuft.",
-    "- durMin/durMax: übliche Dauer einer Partie in Minuten.",
-    '- "weight": "leicht" (Absacker, in zwei Minuten erklärt), "mittel" (Familien- oder leichtes Kennerspiel) ' +
-      'oder "anspruchsvoll" (Kennerspiel mit langer Erklärung).',
-    '- "moods": ein bis drei Schlüssel aus genau dieser Liste: party (laut, gesellig), entspannt (ruhig, ohne Hektik), ' +
-      "gruebeln (Strategie, Denkarbeit), koop (alle gegen das Spiel), schnell (kurzer Absacker), wissen (Quiz, Raten), " +
-      "reden (erklären, Wortwitz), thema (starkes Thema oder Geschichte).",
-    '- "note": ein Satz darüber, was das Spiel am Tisch ausmacht. Keine Werbesprache.'
+    "Rules:",
+    '- "found": false if you do not know the game for certain. Then leave out every other field. Do not guess numbers.',
+    "- min/max: player count as printed on the box. bestMin/bestMax: the player count it plays best at.",
+    "- durMin/durMax: usual length of one game in minutes.",
+    '- "weight": one of these three keys exactly: "leicht" (filler, explained in two minutes), ' +
+      '"mittel" (family game or light hobby game) or "anspruchsvoll" (hobby game with a long explanation).',
+    '- "moods": one to three keys from exactly this list: party (loud, sociable), entspannt (calm, unhurried), ' +
+      "gruebeln (strategy, thinking), koop (everyone against the game), schnell (short filler), wissen (quiz, guessing), " +
+      "reden (explaining, wordplay), thema (strong theme or story).",
+    '- "note": one sentence in ' + satzsprache + ' about what makes the game at the table. No marketing language.'
   ].join("\n");
 }
 
@@ -1049,14 +1444,14 @@ const LOOKUP_BANDS = { leicht:"leicht", mittel:"mittel", anspruchsvoll:"schwer",
 
 function applyLookup(typed, data){
   if(!data || typeof data !== "object" || Array.isArray(data) || data.found === false)
-    return lookupStatus("Zu „" + typed + "“ gibt es keine verlässlichen Angaben — bitte selbst eintragen.", "warn");
+    return lookupStatus(t("lookupKeine", typed), "warn");
 
   const min = clampInt(data.min, 1, 30, 0);
   const max = clampInt(data.max, Math.max(min, 1), 30, 0);
   const d0  = clampInt(data.durMin, 1, 600, 0);
   const d1  = clampInt(data.durMax, Math.max(d0, 1), 600, d0);
   if(!min || !max || !d0)
-    return lookupStatus("Die Antwort war unvollständig — bitte selbst eintragen.", "warn");
+    return lookupStatus(t("lookupHalb"), "warn");
 
   const title = typeof data.title === "string" && data.title.trim() ? data.title.trim().slice(0,80) : typed;
   const moods = Array.isArray(data.moods)
@@ -1075,22 +1470,18 @@ function applyLookup(typed, data){
   renderFormChips();
 
   const renamed = title.toLowerCase() !== typed.toLowerCase();
-  lookupStatus(
-    (renamed ? "Erkannt als „" + title + "“. " : "") +
-    "Vorschlag eingetragen — bitte prüfen" + (moods.length ? "" : " und eine Stimmung wählen") + ", dann speichern.",
-    "ok"
-  );
+  lookupStatus((renamed ? t("lookupErkannt", title) : "") + t("lookupFertig", !moods.length), "ok");
 }
 
 async function lookupGame(){
   if(lookupAbort){ lookupAbort.abort(); return; }        // zweiter Klick bricht ab
   const name = $("f-name").value.trim();
-  if(!name){ lookupStatus("Erst den Namen eintippen.", "warn"); $("f-name").focus(); return; }
+  if(!name){ lookupStatus(t("lookupErstName"), "warn"); $("f-name").focus(); return; }
 
   const btn = $("lookup");
   lookupAbort = new AbortController();
-  btn.textContent = "Abbrechen";
-  lookupStatus("Claude sucht die Eckdaten — das dauert ein paar Sekunden", "busy");
+  btn.textContent = t("abbrechen");
+  lookupStatus(t("lookupSucht"), "busy");
 
   try{
     const data = await sampler.json(lookupPrompt(name), { modelTier:"quick", signal:lookupAbort.signal });
@@ -1100,13 +1491,13 @@ async function lookupGame(){
     if(code === "cancelled") lookupStatus("", "");
     else if(code === "not_granted" || code === "sampling_disabled" || code === "capability_removed"){
       btn.hidden = true; $("lookuphint").hidden = true;
-      lookupStatus("Ohne Freigabe kann die Seite Claude nicht fragen — die Angaben also bitte selbst eintragen.", "warn");
+      lookupStatus(t("lookupGesperrt"), "warn");
     }
-    else if(code === "rate_limited") lookupStatus("Gerade zu viele Anfragen. Gleich noch einmal probieren.", "warn");
-    else lookupStatus("Hat nicht geklappt (" + (code || "Fehler") + ") — bitte selbst eintragen oder noch einmal versuchen.", "warn");
+    else if(code === "rate_limited") lookupStatus(t("lookupZuViele"), "warn");
+    else lookupStatus(t("lookupFehler", code || t("fehlerWort")), "warn");
   }finally{
     lookupAbort = null;
-    btn.textContent = "Daten vorschlagen";
+    btn.textContent = t("datenVorschlagen");
   }
 }
 
@@ -1140,8 +1531,11 @@ function loadSettings(){
 
 const bandOf = g => WEIGHT_BANDS.find(b => b.test(g.weight)) || WEIGHT_BANDS[1];
 const isBest = g => state.players >= g.best[0] && state.players <= g.best[1];
-const fmtDur = g => g.dur[0] === g.dur[1] ? g.dur[0] + " Min" : g.dur[0] + "–" + g.dur[1] + " Min";
-const fmtPlayers = g => g.min === g.max ? g.min + " Spieler" : g.min + "–" + g.max + " Spieler";
+const fmtDur = g => (g.dur[0] === g.dur[1] ? String(g.dur[0]) : g.dur[0] + "–" + g.dur[1]) + " " + W.minute;
+// Nackte Spanne fuer die Karte, die den Wert unter einer eigenen Ueberschrift
+// zeigt; fmtPlayers haengt die Einheit an, wo sie allein steht.
+const spannePlayers = g => g.min === g.max ? String(g.min) : g.min + "–" + g.max;
+const fmtPlayers = g => g.min === g.max ? t("spielerEinheit", g.min) : g.min + "–" + t("spielerEinheit", g.max);
 
 // Wie lange das Erklären dauert, hängt am Anspruch: ein Absacker ist schnell
 // gesagt, ein Kennerspiel kostet eine Viertelstunde vor der ersten Runde.
@@ -1178,10 +1572,10 @@ function fromDateInput(text){
 // hat die Seite keinen Einfluss. Diese Zeile schreibt den gewaehlten Tag darum
 // noch einmal deutsch aus, samt Wochentag: dann ist jeder Zweifel ausgeraeumt.
 function datumAusgeschrieben(text){
-  if(!text) return "Noch nie gespielt.";
+  if(!text) return t("nieGespieltSatz");
   const ts = fromDateInput(text);
-  if(ts === null) return "Datum noch unvollständig.";
-  const lang = new Date(ts).toLocaleDateString("de-DE",
+  if(ts === null) return t("datumHalb");
+  const lang = new Date(ts).toLocaleDateString(ORTSFORM,
     { weekday:"long", day:"2-digit", month:"2-digit", year:"numeric" });
   return lang + " — " + vorWieLange(ts);
 }
@@ -1202,40 +1596,39 @@ function setzeDatum(tageZurueck){
 // vorher eine eigene, kuerzere Fassung, die bei 31 Tagen aufhoerte - gerade
 // dort, wo die groben Knoepfe ("vor einem halben Jahr") hinzielen.
 function vorWieLange(ts){
-  const t = Math.floor((Date.now() - ts) / 86400000);
-  if(t < 0) return "das liegt in der Zukunft";
-  if(t === 0) return "heute";
-  if(t === 1) return "gestern";
-  if(t < 14) return "vor " + t + " Tagen";
-  if(t < 60) return "vor " + Math.round(t / 7) + " Wochen";
-  if(t < 365) return "vor " + Math.round(t / 30) + " Monaten";
-  const jahre = Math.floor(t / 365);
-  return jahre === 1 ? "vor über einem Jahr" : "vor über " + jahre + " Jahren";
+  const tage = Math.floor((Date.now() - ts) / 86400000);
+  if(tage < 0) return t("inZukunft");
+  if(tage === 0) return t("heute");
+  if(tage === 1) return t("gestern");
+  if(tage < 14) return t("vorTagen", tage);
+  if(tage < 60) return t("vorWochen", Math.round(tage / 7));
+  if(tage < 365) return t("vorMonaten", Math.round(tage / 30));
+  return t("vorUeberJahren", Math.floor(tage / 365));
 }
 
 function fmtGespielt(g){
-  return g.lastPlayed ? vorWieLange(g.lastPlayed) : "noch nie";
+  return g.lastPlayed ? vorWieLange(g.lastPlayed) : t("nochNie");
 }
 
 const aufzaehlung = teile =>
   teile.length < 2 ? (teile[0] || "")
-                   : teile.slice(0, -1).join(", ") + " und " + teile[teile.length - 1];
+                   : teile.slice(0, -1).join(", ") + W.und + teile[teile.length - 1];
 
 function evaluate(g){
-  if(state.players < g.min) return { ok:false, why:"ab " + g.min + " Spielern" };
-  if(state.players > g.max) return { ok:false, why:"nur bis " + g.max };
+  if(state.players < g.min) return { ok:false, why:t("abSpielern", g.min) };
+  if(state.players > g.max) return { ok:false, why:t("nurBis", g.max) };
   const gesamt = dauerMitErklaeren(g);
   if(state.time && gesamt[0] > state.time)
-    return { ok:false, why:(erklaerZeit(g) ? "mit Erklärung ab " : "dauert ab ") + gesamt[0] + " Min" };
+    return { ok:false, why:t("dauertAb", gesamt[0], !!erklaerZeit(g)) };
 
   const band = bandOf(g);
-  if(state.weights.size && !state.weights.has(band.id)) return { ok:false, why:band.adj + " Brocken" };
+  if(state.weights.size && !state.weights.has(band.id)) return { ok:false, why:band.aus };
 
   const hits = g.moods.filter(m => state.moods.has(m));
-  if(state.moods.size && !hits.length) return { ok:false, why:"andere Stimmung" };
+  if(state.moods.size && !hits.length) return { ok:false, why:t("andereStimmung") };
 
   const tage = tageSeither(g);
-  if(state.neglected && tage < 90) return { ok:false, why:"vor kurzem gespielt" };
+  if(state.neglected && tage < 90) return { ok:false, why:t("vorKurzem") };
 
   let score = 52;
   const reasons = [];
@@ -1251,9 +1644,7 @@ function evaluate(g){
   if(state.time){
     if(gesamt[1] <= state.time){
       score += 8;
-      reasons.push(erklaerZeit(g)
-        ? "mit Erklärung in " + gesamt[1] + " Min durch"
-        : "in " + fmtDur(g) + " durch");
+      reasons.push(erklaerZeit(g) ? t("mitErklDurch", gesamt[1]) : t("inDurch", fmtDur(g)));
     }
     else score += 3;
   }else if(gesamt[1] <= 30) score += 4;
@@ -1262,8 +1653,8 @@ function evaluate(g){
 
   // Regalhüter nach oben, gerade Gespieltes nach unten — aber nie ausschließen:
   // wer eine Revanche will, soll das Spiel trotzdem finden.
-  if(!g.lastPlayed){ score += 8; if(historieVorhanden()) reasons.push("noch nie gespielt"); }
-  else if(tage > 180){ score += 10; reasons.push("seit Monaten nicht dran"); }
+  if(!g.lastPlayed){ score += 8; if(historieVorhanden()) reasons.push(t("nochNieGespielt")); }
+  else if(tage > 180){ score += 10; reasons.push(t("seitMonaten")); }
   else if(tage > 30){ score += 5; }
   else if(tage > 14){ /* neutral */ }
   else if(tage > 2){ score -= 12; }
@@ -1289,30 +1680,30 @@ function uebrigeTags(g, res){
 // kennzeichen: "wuerfel" | "top" | "" - was oben rechts auf der Karte steht.
 function card(g, res, gross, kennzeichen){
   const gewuerfelt = kennzeichen === "wuerfel";
-  const flagge = gewuerfelt ? "Der Würfel sagt" :
-                 kennzeichen === "top" ? "Top-Treffer" :
-                 isBest(g) ? "Glanzform" : "";
+  const flagge = gewuerfelt ? t("derWuerfelSagt") :
+                 kennzeichen === "top" ? t("topTreffer") :
+                 isBest(g) ? t("glanzform") : "";
   return '<article class="game' + (gross ? " top" : "") + (gewuerfelt ? " picked" : "") + '">' +
     '<div class="game-head"><h3>' + esc(g.name) + "</h3>" +
       (flagge ? '<span class="flag">' + flagge + "</span>" : "") +
     "</div>" +
-    '<div class="meter" role="img" aria-label="Passung ' + res.score + ' von 99"><span style="width:' + res.score + '%"></span></div>' +
+    '<div class="meter" role="img" aria-label="' + esc(t("ariaPassung", res.score)) + '"><span style="width:' + res.score + '%"></span></div>' +
     '<dl class="specs">' +
-      "<div><dt>Spieler</dt><dd>" + fmtPlayers(g).replace(" Spieler", "") + "</dd></div>" +
-      "<div><dt>Dauer</dt><dd>" + fmtDur(g) + "</dd></div>" +
-      "<div><dt>Anspruch</dt><dd>" + bandOf(g).label + "</dd></div>" +
-      (g.teach ? "<div><dt>Erklären</dt><dd>+" + erklaerZeit(g) + " Min</dd></div>" : "") +
-      (g.lastPlayed ? "<div><dt>Zuletzt</dt><dd>" + fmtGespielt(g) + "</dd></div>" : "") +
+      "<div><dt>" + t("dtSpieler") + "</dt><dd>" + spannePlayers(g) + "</dd></div>" +
+      "<div><dt>" + t("dtDauer") + "</dt><dd>" + fmtDur(g) + "</dd></div>" +
+      "<div><dt>" + t("dtAnspruch") + "</dt><dd>" + bandOf(g).label + "</dd></div>" +
+      (g.teach ? "<div><dt>" + t("dtErklaeren") + "</dt><dd>+" + erklaerZeit(g) + " " + W.minute + "</dd></div>" : "") +
+      (g.lastPlayed ? "<div><dt>" + t("dtZuletzt") + "</dt><dd>" + fmtGespielt(g) + "</dd></div>" : "") +
     "</dl>" +
     (res.why ? '<p class="why">' + esc(res.why) + "</p>" : "") +
     (g.note ? '<p class="note">' + esc(g.note) + "</p>" : "") +
     uebrigeTags(g, res) +
     '<div class="cardfoot">' +
       '<button class="linkbtn played' + (istHeute(g.lastPlayed) ? " on" : "") + '" type="button" data-played="' +
-        esc(g.id) + '">' + (istHeute(g.lastPlayed) ? "Heute gespielt ✓" : "Heute gespielt") + "</button>" +
-      (gewuerfelt ? '<button class="linkbtn" type="button" data-reroll="1">Nochmal würfeln</button>' : "") +
+        esc(g.id) + '">' + t(istHeute(g.lastPlayed) ? "heuteGespieltAn" : "heuteGespielt") + "</button>" +
+      (gewuerfelt ? '<button class="linkbtn" type="button" data-reroll="1">' + t("nochmalWuerfeln") + "</button>" : "") +
       (state.expanded.has(g.id) ? '<button class="linkbtn" type="button" data-collapse="' +
-        esc(g.id) + '">Zuklappen</button>' : "") +
+        esc(g.id) + '">' + t("zuklappen") + "</button>" : "") +
     "</div>" +
   "</article>";
 }
@@ -1341,12 +1732,12 @@ function frischeKarte(g){
   if(res.ok){
     const flagge = karte.querySelector(".flag");
     const kennzeichen = karte.classList.contains("picked") ? "wuerfel"
-      : (flagge && flagge.textContent === "Top-Treffer") ? "top" : "";
+      : (flagge && flagge.textContent === t("topTreffer")) ? "top" : "";
     karte.outerHTML = card(g, res, karte.classList.contains("top"), kennzeichen);
   }else{
     const heute = istHeute(g.lastPlayed);
     knopf.classList.toggle("on", heute);
-    knopf.textContent = heute ? "Heute gespielt ✓" : "Heute gespielt";
+    knopf.textContent = t(heute ? "heuteGespieltAn" : "heuteGespielt");
   }
 }
 
@@ -1355,13 +1746,13 @@ function frischeKarte(g){
 // Angaben sagten "nichts ausgewählt" und verstellten den Blick auf die eine,
 // die zaehlt.
 function summaryText(){
-  const parts = [state.players + (state.players === 1 ? " Person" : " Personen")];
+  const parts = [t("personen", state.players)];
   if(state.moods.size) parts.push([...state.moods].map(m => MOODS[m]).join(", "));
   if(state.weights.size) parts.push([...state.weights].map(w => WEIGHT_BANDS.find(b => b.id === w).label).join(", "));
-  if(state.time) parts.push("bis " + state.time + " Min");
-  if(state.neglected) parts.push("nur lange nicht Gespieltes");
-  const rest = parts.length === 1 ? " · sonst offen" : "";
-  return "<strong>Eure Runde:</strong> " + esc(parts.join(" · ")) + rest;
+  if(state.time) parts.push(t("bisMin", state.time));
+  if(state.neglected) parts.push(t("nurLangeNichtKurz"));
+  const rest = parts.length === 1 ? t("sonstOffen") : "";
+  return "<strong>" + t("eureRunde") + "</strong> " + esc(parts.join(" · ")) + rest;
 }
 
 function renderFilters(){
@@ -1381,7 +1772,7 @@ function renderFilters(){
   ).join("");
   $("shelf").innerHTML =
     '<button type="button" class="chip" data-shelf="1" aria-pressed="' + state.neglected + '">' +
-    "Nur lange nicht Gespieltes</button>";
+    t("nurLangeNichtChip") + "</button>";
   $("summary").innerHTML = summaryText();
 }
 
@@ -1393,9 +1784,8 @@ function renderResults(){
   });
   hits.sort((a,b) => b.res.score - a.res.score || byName(a.g, b.g));
 
-  $("count").textContent = games.length === 0 ? "Regal ist leer" :
-    hits.length === 0 ? "nichts passt" :
-    hits.length === 1 ? "1 Spiel" : hits.length + " Spiele";
+  $("count").textContent = games.length === 0 ? t("regalLeerKurz") :
+    hits.length === 0 ? t("nichtsPasstKurz") : t("spiele", hits.length);
 
   // Der beste Treffer steht fest, bevor umsortiert wird - sonst ginge die
   // Auskunft "das waere die Rangfolge" beim Wuerfeln verloren.
@@ -1417,12 +1807,10 @@ function renderResults(){
         return card(h.g, h.res, i === 0,
                     gewuerfelt ? "wuerfel" : (h.g.id === bestId ? "top" : ""));
       }).join("")
-    : '<p class="empty">' + (games.length
-        ? "Für diese Kombination gibt es nichts. Nimm eine Stimmung raus oder gib der Runde mehr Zeit."
-        : "Im Regal steht noch nichts — unten Spiele hinzufügen.") + "</p>";
+    : '<p class="empty">' + esc(t(games.length ? "nichtsPasst" : "regalLeer")) + "</p>";
 
   outs.sort((a,b) => byName(a.g, b.g));
-  $("outcount").textContent = outs.length === 1 ? "1 Spiel fällt heute raus" : outs.length + " Spiele fallen heute raus";
+  $("outcount").textContent = t("faelltRaus", outs.length);
   $("outlist").innerHTML = outs.map(o =>
     "<li><b>" + esc(o.g.name) + "</b><span>" + esc(o.res.why) + "</span></li>"
   ).join("");
@@ -1455,8 +1843,7 @@ function renderSortChips(){
 }
 
 function renderCollection(){
-  const anzahl = games.length === 1 ? "1 Spiel" : games.length + " Spiele";
-  $("regalzahl").textContent = anzahl + " im Regal";
+  $("regalzahl").textContent = t("imRegal", games.length);
   renderSortChips();
 
   const suche = state.colQuery.trim().toLowerCase();
@@ -1467,8 +1854,8 @@ function renderCollection(){
   const hits = $("colhits");
   hits.hidden = !suche;
   if(suche) hits.textContent = treffer.length
-    ? treffer.length + " von " + games.length + " Spielen"
-    : "Kein Spiel mit „" + suche + "“ im Namen.";
+    ? t("trefferVon", treffer.length, games.length)
+    : t("keinSpielMit", suche);
 
   // "Ändern | Entfernen" unter jedem der 21 Einträge sagt nichts und kostet die
   // halbe Zeilenhoehe. Die Knoepfe erscheinen an der Zeile, die man antippt.
@@ -1478,13 +1865,13 @@ function renderCollection(){
       '<button class="crow" type="button" data-colrow="' + esc(g.id) + '" aria-expanded="' + offen + '">' +
         '<span class="cname">' + esc(g.name) + "</span>" +
         '<span class="cmeta">' + fmtPlayers(g) + " · " + fmtDur(g) + " · " + bandOf(g).label +
-          (g.teach ? " · erklären" : "") +
-          (g.lastPlayed ? " · gespielt " + fmtGespielt(g)
-                        : (historieVorhanden() ? " · noch nie" : "")) + "</span>" +
+          (g.teach ? " · " + t("erklaeren") : "") +
+          (g.lastPlayed ? t("gespieltVor", fmtGespielt(g))
+                        : (historieVorhanden() ? " · " + t("nochNie") : "")) + "</span>" +
       "</button>" +
       (offen ? '<span class="rowbtns">' +
-        '<button class="linkbtn" type="button" data-edit="' + esc(g.id) + '">Ändern</button>' +
-        '<button class="linkbtn danger" type="button" data-remove="' + esc(g.id) + '">Entfernen</button>' +
+        '<button class="linkbtn" type="button" data-edit="' + esc(g.id) + '">' + t("aendernKnopf") + "</button>" +
+        '<button class="linkbtn danger" type="button" data-remove="' + esc(g.id) + '">' + t("entfernenKnopf") + "</button>" +
       "</span>" : "") +
       "</li>";
   }).join("");
@@ -1516,8 +1903,8 @@ function render(){
 function showUndo(name){
   const el = $("undo");
   el.hidden = false;
-  el.innerHTML = "„" + esc(name) + "“ ist raus. " +
-    '<button class="linkbtn" type="button" id="undobtn">Rückgängig</button>';
+  el.innerHTML = esc(t("istRaus", name)) +
+    '<button class="linkbtn" type="button" id="undobtn">' + t("rueckgaengig") + "</button>";
 }
 function hideUndo(){ $("undo").hidden = true; lastRemoved = null; }
 
@@ -1530,8 +1917,8 @@ function resetForm(){
   $("f-teach").checked = false;
   $("f-datumsblock").hidden = true;
   zeigeDatum();
-  $("formtitle").textContent = "Spiel hinzufügen";
-  $("f-submit").textContent = "Ins Regal stellen";
+  $("formtitle").textContent = t("spielHinzufuegen");
+  $("f-submit").textContent = t("insRegal");
   $("f-cancel").hidden = true;
   $("formerror").hidden = true;
   renderFormChips();
@@ -1552,8 +1939,8 @@ function startEdit(id){
   $("f-teach").checked = !!g.teach;
   form.weight = bandOf(g).id;
   form.moods = new Set(g.moods);
-  $("formtitle").textContent = "Spiel ändern";
-  $("f-submit").textContent = "Änderung speichern";
+  $("formtitle").textContent = t("spielAendern");
+  $("f-submit").textContent = t("aenderungSpeichern");
   $("f-cancel").hidden = false;
   $("formerror").hidden = true;
   renderFormChips();
@@ -1573,31 +1960,31 @@ function submitGame(ev){
   ev.preventDefault();
   const val = id => $(id).value.trim();
   const name = val("f-name");
-  if(!name) return fail("Wie heißt das Spiel?");
+  if(!name) return fail(t("fehlerName"));
   if(games.some(g => g.name.toLowerCase() === name.toLowerCase() && g.id !== state.editing))
-    return fail("„" + name + "“ steht schon im Regal — dort auf „Ändern“ tippen.");
+    return fail(t("fehlerDoppelt", name));
 
   const min = Number(val("f-min")), max = Number(val("f-max"));
   if(!(min >= 1 && max >= min && max <= 30))
-    return fail("Spielerzahl: von klein nach groß, höchstens 30 — zum Beispiel 2 bis 5.");
+    return fail(t("fehlerSpielerzahl"));
 
   const d0 = Number(val("f-durmin")), d1 = Number(val("f-durmax"));
   if(!(d0 >= 1 && d1 >= d0 && d1 <= 600))
-    return fail("Dauer: von klein nach groß in Minuten — zum Beispiel 30 bis 60.");
+    return fail(t("fehlerDauer"));
 
   const b0 = val("f-bestmin") === "" ? min : Number(val("f-bestmin"));
   const b1 = val("f-bestmax") === "" ? max : Number(val("f-bestmax"));
   if(!(b0 >= min && b1 <= max && b1 >= b0))
-    return fail("„Am besten zu“ muss innerhalb der Spielerzahl liegen (" + min + " bis " + max + ").");
+    return fail(t("fehlerGlanzform", min, max));
 
   if(!form.moods.size)
-    return fail("Wähl mindestens eine Stimmung — sonst taucht das Spiel bei keiner Stimmungsauswahl auf.");
+    return fail(t("fehlerStimmung"));
 
   const gespielt = val("f-played") === "" ? 0 : fromDateInput(val("f-played"));
   if(gespielt === null)
-    return fail("Das Datum unter „Zuletzt gespielt“ ist unvollständig.");
+    return fail(t("fehlerDatumHalb"));
   if(gespielt > Date.now())
-    return fail("„Zuletzt gespielt“ liegt in der Zukunft — bitte ein Datum von heute oder früher.");
+    return fail(t("fehlerDatumZukunft"));
 
   const existing = state.editing ? games.find(g => g.id === state.editing) : null;
   const keepsBand = existing && bandOf(existing).id === form.weight;
@@ -1622,13 +2009,13 @@ function submitGame(ev){
 /* ================= Bedienung ================= */
 
 document.addEventListener("click", ev => {
-  const t = ev.target.closest("button");
-  if(!t) return;
-  const d = t.dataset;
+  const knopf = ev.target.closest("button");
+  if(!knopf) return;
+  const d = knopf.dataset;
 
   if(d.mood){ state.moods.has(d.mood) ? state.moods.delete(d.mood) : state.moods.add(d.mood); state.picked = null; state.expanded.clear(); render(); return; }
   if(d.weight){ state.weights.has(d.weight) ? state.weights.delete(d.weight) : state.weights.add(d.weight); state.picked = null; state.expanded.clear(); render(); return; }
-  if(d.time !== undefined && t.classList.contains("chip")){ state.time = Number(d.time); state.picked = null; state.expanded.clear(); render(); return; }
+  if(d.time !== undefined && knopf.classList.contains("chip")){ state.time = Number(d.time); state.picked = null; state.expanded.clear(); render(); return; }
   if(d.shelf){ state.neglected = !state.neglected; state.picked = null; state.expanded.clear(); render(); return; }
 
   if(d.played){
@@ -1678,7 +2065,7 @@ document.addEventListener("click", ev => {
     render();
     return;
   }
-  if(t.id === "undobtn"){
+  if(knopf.id === "undobtn"){
     if(lastRemoved){
       games.splice(Math.min(lastRemoved.index, games.length), 0, lastRemoved.game);
       persist();
@@ -1718,22 +2105,17 @@ function importGames(mode){
   const note = $("importnote");
   const list = parseBackup();
   if(!list.length){
-    note.textContent = "Darin steckt keine lesbare Sammlung — erwartet wird die Liste aus dem Feld darüber.";
+    note.textContent = t("keineSammlung");
     return;
   }
-  // Einzahl und Mehrzahl auseinanderhalten - der Rest der Seite tut es auch.
-  const stueck = n => n === 1 ? "1 Spiel" : n + " Spiele";
   if(mode === "replace"){
     games = list;
-    note.textContent = stueck(list.length) + " eingespielt, alte Sammlung ersetzt.";
+    note.textContent = t("ersetzt", list.length);
   }else{
     const have = new Set(games.map(g => g.name.toLowerCase()));
     const neu = list.filter(g => !have.has(g.name.toLowerCase()));
     games = games.concat(neu);
-    const doppelt = list.length - neu.length;
-    note.textContent =
-      (neu.length ? stueck(neu.length) + " dazugekommen" : "Nichts dazugekommen") +
-      (doppelt ? ", " + (doppelt === 1 ? "eines war" : doppelt + " waren") + " schon da" : "") + ".";
+    note.textContent = t("dazu", neu.length, list.length - neu.length);
   }
   sicherungFremd = false;                       // Feld zeigt wieder die Sammlung
   hideUndo();
@@ -1749,10 +2131,10 @@ $("kopieren").addEventListener("click", async () => {
   const text = $("backup").value;
   try{
     await navigator.clipboard.writeText(text);
-    note.textContent = "In die Zwischenablage kopiert — jetzt in eine Notiz oder E-Mail einfügen.";
+    note.textContent = t("kopiert");
   }catch(e){
     $("backup").select();                       // Rückfall: markieren, Nutzer drückt Strg+C
-    note.textContent = "Text ist markiert — mit Strg+C (am Handy: Antippen und „Kopieren“) sichern.";
+    note.textContent = t("markiert");
   }
 });
 
@@ -1795,7 +2177,7 @@ $("herunterladen").addEventListener("click", async () => {
   // sein. Beim ersten Versuch brach der Knopf lautlos ab, und der Benutzer
   // suchte eine Datei, die es nie gab.
   try{ await sichern(); }
-  catch(e){ $("importnote").textContent = "Fehler beim Speichern: " + String(e && e.message || e) + " — nimm „Text kopieren“."; }
+  catch(e){ $("importnote").textContent = t("speichernFehler", String(e && e.message || e)); }
 });
 
 async function sichern(){
@@ -1805,7 +2187,7 @@ async function sichern(){
   const app = appBruecke();
 
   if(app){
-    note.textContent = "Sicherung wird vorbereitet …";
+    note.textContent = t("wirdVorbereitet");
     try{
       // Der Zwischenspeicher ist der einzige Ort, den die App ohne
       // Berechtigung beschreiben darf und den das Teilen-Blatt lesen kann
@@ -1814,16 +2196,14 @@ async function sichern(){
         path:name, data:$("backup").value, directory:"CACHE", encoding:"utf8"
       });
       await app.teilen.share({
-        title:"Spieleabend-Sammlung",
+        title:t("teilenTitel"),
         files:[uri],
-        dialogTitle:"Sicherung ablegen oder verschicken"
+        dialogTitle:t("teilenDialog")
       });
-      note.textContent = "Erledigt. „In Dateien speichern“ legt sie dorthin, wo du sie ausgewaehlt hast.";
+      note.textContent = t("teilenFertig");
     }catch(e){
       const grund = String(e && e.message || e);
-      note.textContent = /cancel/i.test(grund)
-        ? "Abgebrochen — nichts gespeichert."
-        : "Hat nicht geklappt (" + grund + "). Nimm „Text kopieren“.";
+      note.textContent = /cancel/i.test(grund) ? t("teilenAbbruch") : t("teilenFehler", grund);
     }
     return;
   }
@@ -1839,11 +2219,9 @@ async function sichern(){
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
     // In der App ohne die beiden Bausteine kommt hier nichts an - das sagen
     // wir dann auch, statt eine Datei zu behaupten, die es nicht gibt.
-    note.textContent = inDerApp()
-      ? "Das Speichern als Datei fehlt dieser Fassung — nimm „Text kopieren“."
-      : "Die Datei liegt dort, wo dein Browser Downloads ablegt. Passiert nichts, nimm „Text kopieren“.";
+    note.textContent = t(inDerApp() ? "fehltFassung" : "browserAblage");
   }catch(e){
-    note.textContent = "Herunterladen geht hier nicht — nimm „Text kopieren“.";
+    note.textContent = t("downloadNein");
   }
 }
 
@@ -1869,9 +2247,9 @@ $("dateiwahl").addEventListener("change", ev => {
   leser.onload = () => {
     $("backup").value = String(leser.result);
     sicherungFremd = true;
-    $("importnote").textContent = "Datei gelesen — jetzt „Dazu einspielen“ oder „Sammlung ersetzen“ wählen.";
+    $("importnote").textContent = t("dateiGelesen");
   };
-  leser.onerror = () => { $("importnote").textContent = "Die Datei liess sich nicht lesen."; };
+  leser.onerror = () => { $("importnote").textContent = t("dateiUnlesbar"); };
   leser.readAsText(datei);
   ev.target.value = "";                         // dieselbe Datei soll erneut wählbar sein
 });
@@ -2092,6 +2470,7 @@ function eineEbeneZurueck(){
 
 /* ================= Start ================= */
 
+spracheAnwenden();                         // bevor irgendetwas gezeichnet wird
 loadSettings();
 $("filters").open = state.filtersOpen;     // einmal beim Start, danach fuehrt
                                            // das Element selbst Buch

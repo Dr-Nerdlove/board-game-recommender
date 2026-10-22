@@ -1,224 +1,237 @@
 <p align="center">
   <img src="logo.png" width="160"
-       alt="Das Symbol der App: Würfel, Lupe, Spielfigur und Waben auf einer grün-ockerfarbenen Scheibe">
+       alt="The app icon: a die, a magnifying glass, a meeple and hexes on a green-and-ochre disc">
 </p>
 
-# Was spielen wir heute?
+# What shall we play tonight?
 
-*[English](README.en.md)*
+**Which board game fits tonight's group?** You say how many of you there are,
+what you are in the mood for, how much thinking you are up for and how much
+time you have — the page sorts your collection by that and suggests what to put
+on the table. Whatever does not fit is not dropped silently: it is listed below
+with the reason.
 
-**Welches Brettspiel passt zur heutigen Runde?** Du sagst, wie viele ihr seid,
-worauf ihr Lust habt, wie viel Kopf ihr habt und wie viel Zeit — die Seite
-sortiert deine Sammlung danach durch und schlägt vor, was heute auf den Tisch
-kommt. Was nicht passt, verschwindet nicht kommentarlos, sondern steht unten mit
-Begründung.
+An **Android app**, and underneath it a single HTML file: no build system, no
+dependencies, no account and **not a single request to the internet** — even the
+fonts are baked in. The same file opens in a browser by double-clicking it.
 
-Eine **Android-App**, und darunter eine einzelne HTML-Datei: ohne Baukasten,
-ohne Abhängigkeiten, ohne Konto und **ohne eine einzige Anfrage ans Internet** —
-selbst die Schriften stecken mit drin. Dieselbe Datei lässt sich auch einfach im
-Browser öffnen, per Doppelklick.
+The starting collection is 21 games from my shelf. It is only a starting point:
+games can be added, changed and removed on the page itself.
 
-Die Ausgangssammlung sind 21 Spiele aus meinem Regal. Sie ist nur der
-Startpunkt: Spiele lassen sich auf der Seite selbst hinzufügen, ändern und
-entfernen.
+**On your phone:** [download the latest Android app](../../releases/latest).
 
-**Aufs Handy:** [neueste Android-App herunterladen](../../releases/latest).
-
-**Nur kurz ansehen:** [`index.html`](index.html) herunterladen und im Browser
-öffnen — dieselbe Anwendung, ohne Installation.
+**Just a quick look:** download [`index.html`](index.html) and open it in a
+browser — the same application, no installation.
 
 ---
 
-## Als App auf dem Handy (Android)
+## As an app on your phone (Android)
 
-1. Am Handy die [neueste Veröffentlichung](../../releases/latest) öffnen und
-   die Datei `spieleabend-1.2.3.apk` herunterladen (die Nummer ist die Fassung).
-2. Die heruntergeladene Datei antippen. Android fragt beim ersten Mal, ob Apps
-   aus dieser Quelle installiert werden dürfen — einmalig bestätigen.
-3. Fertig. Die App liegt im App-Menü, mit eigenem Symbol.
+1. On the phone, open the [latest release](../../releases/latest) and download
+   the file `spieleabend-1.2.3.apk` (the number is the version).
+2. Tap the downloaded file. The first time, Android asks whether apps from this
+   source may be installed — confirm once.
+3. Done. The app sits in the app drawer with its own icon.
 
-Eine neuere Fassung installiert sich über die alte, die Sammlung bleibt dabei
-erhalten. **Ausnahme:** Wer noch eine Fassung bis 1.2.0 installiert hat, muss
-einmalig deinstallieren — vorher die Sammlung sichern, Deinstallieren löscht sie
-mit. Der Grund steht in der [Änderungshistorie](CHANGELOG.md) unter 1.2.1.
+A newer version installs over the old one and the collection survives.
+**Exception:** anyone still on a version up to 1.2.0 has to uninstall once —
+back up the collection first, uninstalling deletes it. The reason is in the
+[changelog](CHANGELOG.md) under 1.2.1.
 
-Jede Fassung bekommt eine eigene Veröffentlichung, die danach unverändert
-bleibt. Was sich geändert hat, steht dort und in der
-[Änderungshistorie](CHANGELOG.md). Welche Fassung bei dir läuft, steht ganz
-unten auf der Seite.
+Every version gets its own release, which stays unchanged afterwards. What
+changed is written there and in the [changelog](CHANGELOG.md). Which version you
+are running is at the very bottom of the page.
 
-Die App enthält alles und braucht **kein Netz**. Deine Sammlung liegt im
-Speicher der App, auf diesem Handy.
+The app contains everything and needs **no network**. Your collection lives in
+the app's storage, on this phone.
 
-**Sicherung — wichtig vor einem Handy-Wechsel.** Unter „Sammlung bearbeiten" →
-„Sicherung & Umzug":
+**Backup — important before switching phones.** Under **Edit collection** →
+**Backup & moving**:
 
-- **Text kopieren** — klappt immer. In eine Notiz oder E-Mail einfügen.
-- **Als Datei sichern** — in der App öffnet sich Androids Teilen-Blatt: dort
-  wählst du, wohin die `.json`-Datei soll — „In Dateien speichern" legt sie
-  z. B. in den Download-Ordner, genauso gehen Mail, Drive oder ein Chat. Im
-  Browser landet sie direkt im Download-Ordner.
-- **Datei einlesen** — auf dem neuen Gerät die Sicherung auswählen, dann
-  „Sammlung ersetzen".
+- **Copy as text** — always works. Paste it into a note or an e-mail.
+- **Save as file** — in the app, Android's share sheet opens and you choose
+  where the `.json` file goes. "Save to files" puts it in the Downloads folder,
+  for example; mail, Drive or a chat work just as well. In a browser it lands in
+  the Downloads folder directly.
+- **Read a file** — on the new device, pick the backup, then **Replace
+  collection**.
 
-**Neue Fassung bauen:** Im Reiter *Actions* → *Android-App bauen* →
-*Run workflow*, mit Haken bei „veröffentlichen". Nach ein paar Minuten steht
-die neue Veröffentlichung samt APK da. Ohne Haken entsteht nur ein Probelauf.
-Dasselbe passiert, wenn eine Marke `v1.2.3` gepusht wird. Von allein baut
-nichts — eine Änderung an `index.html` löst keinen Bau aus.
+**Building a new version:** the *Actions* tab → *Android-App bauen* →
+*Run workflow*, with the "veroeffentlichen" (publish) box ticked. A few minutes
+later the new release is there with its APK. Without the tick it is only a trial
+build. Pushing a tag `v1.2.3` does the same thing. Nothing builds on its own — a
+change to `index.html` does not trigger a build.
 
-Die App ist mit einem festen eigenen Schlüssel signiert; der Fingerabdruck steht
-bei jeder Veröffentlichung. Weil sie nicht aus dem Play Store kommt, zeigt
-Android beim Installieren trotzdem einen Hinweis.
+The app is signed with a fixed key of its own; the fingerprint is given with
+every release. Because it does not come from the Play Store, Android still shows
+a warning when installing.
 
 ---
 
-## Was die Seite macht
+## What the page does
 
-- **Harte Filter**: Spielerzahl, Zeitbudget, Anspruch, Stimmung. Was rausfällt,
-  steht unten mit Begründung („nur bis 4", „dauert ab 60 Min").
-- **Erklärzeit**: Spiele, die noch niemand kann, lassen sich im Formular als
-  „Muss noch erklärt werden" markieren. Das Zeitbudget rechnet den Aufschlag
-  dann mit — abgeleitet aus dem Anspruch: leicht +5, mittel +10,
-  anspruchsvoll +20 Minuten. Ein 45-Minuten-Kennerspiel braucht damit
-  65 Minuten und fällt aus einer Stunde heraus, mit Begründung
-  („mit Erklärung ab 65 Min"). Ist das Spiel eingeführt, Haken raus.
-- **Rangfolge**: Treffer werden nach Passung sortiert. Der beste Vorschlag steht
-  oben groß, die Balken zeigen, wie gut ein Spiel zur Runde passt.
-- **Glanzform**: Ein Spiel, das bei genau dieser Spielerzahl am besten läuft,
-  bekommt ein eigenes Kennzeichen.
-- **Würfel entscheiden**: Wenn die Diskussion zu lange dauert, zieht der Knopf
-  zufällig aus der oberen Hälfte der Treffer.
-- **Zuletzt gespielt**: Auf jeder Karte sitzt unten „Heute gespielt". Einmal
-  antippen, und die Seite merkt sich das Datum — nochmal antippen nimmt es
-  zurück. Ältere Termine trägst du unter „Sammlung bearbeiten" → „Ändern" von
-  Hand nach. Lange Ungespieltes steigt danach in der Rangfolge, gerade Gespieltes
-  fällt (unter zwei Tagen deutlich), verschwindet aber nie ganz: eine Revanche
-  soll auffindbar bleiben. Der Chip **„Nur lange nicht Gespieltes"** unter
-  „Zusätzlich" zeigt nur, was seit über 90 Tagen nicht dran war.
-- Die letzte Einstellung wird im Browser gemerkt.
+- **Hard filters**: player count, time budget, difficulty, mood. Whatever drops
+  out is listed below with the reason ("up to 4 only", "takes 60 min or more").
+- **Teaching time**: games nobody knows yet can be marked **Still needs
+  explaining** in the form. The time budget then adds the surcharge, derived
+  from the difficulty: light +5, medium +10, demanding +20 minutes. A 45-minute
+  medium-weight game therefore needs 65 minutes and falls out of a one-hour
+  budget, with the reason given ("with the explanation, takes 65 min or more").
+  Once the game has been taught, untick it.
+- **Ranking**: matches are sorted by fit. The best suggestion sits at the top in
+  large type, and the bars show how well a game suits the group.
+- **Sweet spot**: a game that plays best at exactly this player count gets a
+  badge of its own.
+- **Let the dice decide**: when the discussion drags on, the button picks at
+  random from the better half of the matches.
+- **Last played**: every card has **Played today** at the bottom. Tap it once
+  and the page remembers the date — tap again to undo. Older dates are entered
+  by hand under **Edit collection** → **Change**. Games unplayed for a long time
+  then rise in the ranking and recently played ones fall (sharply under two
+  days), but they never disappear entirely: a rematch should stay findable. The
+  chip **Only long-unplayed** under **Additionally** shows only what has not
+  been touched for over 90 days.
+- The last settings are remembered in the browser.
 
-## Sammlung pflegen
+## Keeping the collection up to date
 
-Unten auf der Seite: **Sammlung bearbeiten**.
+At the bottom of the page: **Edit collection**.
 
-- **Hinzufügen** — Name, Spielerzahl, Dauer, Anspruch und mindestens eine
-  Stimmung; „Glänzt bei" ist optional und meint die Spielerzahl, bei der das
-  Spiel wirklich glänzt (davon hängt das Glanzform-Kennzeichen ab).
-- **Daten vorschlagen** — nur den Titel eintippen, den Rest füllt Claude aus
-  (siehe unten).
-- **Ändern** — füllt dasselbe Formular mit dem vorhandenen Spiel. Dort steht auch
-  **„Zuletzt gespielt"** als Datumsfeld: nachtragen, korrigieren oder leeren
-  (leer heißt „noch nie"). Es erscheint nur beim Ändern — ein frisch
-  hinzugefügtes Spiel gilt als noch nie gespielt. Daneben fünf Knöpfe für die
-  häufigen Fälle: *Heute*, *Gestern*, *Vor einem Monat*, *Vor einem halben
-  Jahr*, *Leeren*. Die beiden groben sind für Spiele gedacht, die du längst
-  gespielt, hier aber nie eingetragen hast — ohne Datum hält die Seite ein
-  Spiel für neu, gibt ihm einen Bonus und schreibt „noch nie gespielt" darauf.
-  Die Zeile unter dem Feld sagt in Worten, was eingetragen ist. Datumsangaben
-  in der Zukunft weist das Formular ab.
-  Daneben der Haken **„Muss noch erklärt werden"**; markierte Spiele tragen in
-  der Liste den Vermerk „erklären".
-- **Entfernen** — sofort, mit „Rückgängig" direkt daneben.
-- **Suchen und Sortieren** — Suchfeld über der Liste, dazu Sortierung nach Name,
-  Spielerzahl, Dauer, Anspruch oder „Lange nicht gespielt". Die Überschrift
-  „Sortieren nach" steht über der Reihe — sie sieht den Filtern ähnlich, tut
-  aber etwas anderes.
-- **Sicherung & Umzug** — die ganze Sammlung als Text zum Aufheben, Ergänzen
-  („Dazu einspielen") oder Ersetzen; auch der Weg für BGG-Daten (siehe unten).
+- **Add** — name, player count, length, difficulty and at least one mood;
+  **Shines at** is optional and means the player count at which the game really
+  shines (the sweet-spot badge depends on it).
+- **Suggest data** — type in just the title and Claude fills in the rest (see
+  below).
+- **Change** — fills the same form with the existing game. It also holds **Last
+  played** as a date field: fill it in, correct it or clear it (empty means
+  "never"). It only appears when changing — a freshly added game counts as never
+  played. Next to it are five buttons for the common cases: *Today*,
+  *Yesterday*, *A month ago*, *Six months ago*, *Clear*. The two coarse ones are
+  meant for games you played long ago but never entered here — without a date
+  the page takes a game to be new, gives it a bonus and labels it "never
+  played". The line under the field says in words what is entered. Dates in the
+  future are rejected by the form.
+  Beside it is the **Still needs explaining** tickbox; games marked that way
+  carry the note "to teach" in the list.
+- **Remove** — immediate, with **Undo** right next to it.
+- **Searching and sorting** — a search field above the list, plus sorting by
+  name, players, length, difficulty or **Long unplayed**. The heading **Sort by**
+  sits above the row — it looks like the filters but does something else.
+- **Backup & moving** — the whole collection as text, to keep, to add to
+  (**Merge in**) or to replace; also the way in for BGG data (see below).
 
-### Nur den Titel eintippen
+### Typing in just the title
 
-Neben dem Namensfeld steht in der veröffentlichten Seite ein Knopf
-**„Daten vorschlagen"**. Er fragt Claude nach Spielerzahl, bester Besetzung,
-Dauer, Anspruch, Stimmung und einem Notizsatz und trägt alles ins Formular
-ein — gespeichert wird nichts, bis du auf „Ins Regal stellen" tippst. Der
-Vorschlag steht also immer zur Korrektur, und genau so ist er gemeint:
+Next to the name field, the published page has a **Suggest data** button. It
+asks Claude for player count, best player count, length, difficulty, mood and a
+sentence of notes, and puts it all into the form — nothing is saved until you
+tap **Put on the shelf**. So the suggestion is always open to correction, and
+that is exactly how it is meant:
 
-- Claude kennt viele Spiele, aber nicht alle, und Auflagen unterscheiden sich.
-  Kennt es das Spiel nicht sicher, sagt es das, statt Zahlen zu erfinden.
-  Trotzdem: **die Werte vor dem Speichern kurz ansehen.**
-- Der Titel wird auf die offizielle Schreibweise gesetzt, wenn sie abweicht —
-  die Zeile unter dem Feld sagt es dann.
-- Die Abfrage läuft über deine Claude-Nutzung; beim ersten Mal fragt die Seite
-  um Erlaubnis. Ein zweiter Klick auf den Knopf bricht eine laufende Abfrage ab.
+- Claude knows many games, but not all of them, and editions differ. If it does
+  not know a game for certain, it says so instead of inventing numbers. Even so:
+  **give the values a quick look before saving.**
+- The title is set to the official spelling if it differs — the line under the
+  field says so when that happens.
+- The query runs on your Claude usage; the first time, the page asks for
+  permission. A second click on the button cancels a running query.
 
-Der Knopf erscheint nur in der veröffentlichten Seite. Die lokal geöffnete
-`index.html` hat keinen Zugang zu Claude und blendet ihn aus.
+The button only appears in the published page. A locally opened `index.html` has
+no access to Claude and hides it.
 
-### Ein einzelnes Spiel von BGG übernehmen (ohne Terminal)
+### Taking a single game from BGG (no terminal needed)
 
-Für ein einzelnes Spiel braucht es kein Skript:
+For a single game you do not need a script:
 
-1. Unter „Sammlung bearbeiten" den Titel ins Namensfeld tippen.
-2. **„Auf BGG nachschlagen ↗"** öffnet die BGG-Suche zu diesem Titel in einem
-   neuen Tab. Dort das Spiel anklicken.
-3. Auf der BGG-Seite stehen oben rechts alle nötigen Zahlen: *Players*,
-   *Playing Time*, *Weight* — und im Kasten *Community* unter „Best" die
-   Spielerzahl, bei der es am besten läuft.
-4. Zahlen ins Formular übertragen. Das *Weight* (1–5) wird zum Anspruch:
-   bis 1,5 leicht, 1,5–2,6 mittel, ab 2,6 anspruchsvoll — die Umrechnung steht
-   auch unter den Anspruch-Knöpfen.
-5. Stimmung wählen, Notiz schreiben, „Ins Regal stellen".
+1. Under **Edit collection**, type the title into the name field.
+2. **Look up on BGG ↗** opens the BGG search for that title in a new tab. Click
+   the game there.
+3. The BGG page has all the numbers you need at the top right: *Players*,
+   *Playing Time*, *Weight* — and in the *Community* box, under "Best", the
+   player count it plays best at.
+4. Transfer the numbers into the form. The *Weight* (1–5) becomes the
+   difficulty: up to 1.5 easy, 1.5–2.6 medium, from 2.6 demanding — the
+   conversion is also written under the difficulty buttons.
+5. Pick a mood, write a note, **Put on the shelf**.
 
-Die Seite kann BGG nicht selbst abfragen: veröffentlichte Artifact-Seiten dürfen
-keine fremden Server ansprechen, und die BGG-XML-API erlaubt Browser-Zugriffe von
-fremden Seiten ohnehin nicht. Darum der Weg über den Link und das Formular.
+The page cannot query BGG itself: published Artifact pages may not talk to
+foreign servers, and the BGG XML API does not allow browser access from other
+sites anyway. Hence the detour via the link and the form.
 
-### Wo die Sammlung liegt
+### Where the collection lives
 
-Die Zeile über dem Formular sagt es:
+The line above the form says it:
 
-- **In der App und im Browser** auf dem jeweiligen Gerät. Umzug auf ein anderes
-  Gerät: über „Sicherung & Umzug".
-- **Als veröffentlichte Claude-Seite** zusätzlich im Konto — dann sehen Handy
-  und Laptop dieselbe Sammlung.
+- **In the app and in the browser**, on that particular device. Moving to
+  another device: via **Backup & moving**.
+- **As a published Claude page**, additionally in the account — then phone and
+  laptop see the same collection.
 
-Auf das Gerät wird in beiden Fällen geschrieben, damit auch offline etwas da
-ist.
+In both cases it is written to the device as well, so that something is there
+offline too.
 
-Ist beim ersten Öffnen noch nichts gespeichert, gilt die Ausgangssammlung aus
-`DEFAULT_GAMES` in `index.html`. Diese Liste ist nur der Startpunkt — wer lieber
-im Code arbeitet, kann sie dort weiterhin bearbeiten:
+If nothing is stored yet on first opening, the starting collection from
+`DEFAULT_GAMES` in `index.html` applies. That list is only a starting point —
+anyone who prefers working in the code can keep editing it there:
 
 ```js
 { name:"Scout", min:2, max:5, best:[3,5], dur:[15,25], weight:1.6,
   moods:["schnell","gruebeln"],
-  note:"Kartenhand, die du nicht sortieren darfst. …" },
+  note:"Kartenhand, die du nicht sortieren darfst. …",
+  noteEn:"A hand of cards you are not allowed to sort. …" },
 ```
 
-- `min`/`max` — Spielerzahl laut Schachtel
-- `best` — die Spanne, in der es wirklich glänzt
-- `dur` — Dauer von/bis in Minuten
-- `weight` — 1 (Absacker) bis 5 (Kennerstück); daraus ergeben sich die drei Pips
-- `moods` — Schlüssel aus dem Objekt `MOODS` darüber
+- `min`/`max` — player count as printed on the box
+- `best` — the range in which it really shines
+- `dur` — length from/to, in minutes
+- `weight` — 1 (filler) to 5 (heavy); the three pips follow from this
+- `moods` — keys from the `MOODS` object above it. These keys stay German in
+  every language (`schnell`, `gruebeln`, …): they are stored in the collection
+  and in every backup, so translating them would make existing backups
+  unreadable. Only the labels on screen change.
+- `note`/`noteEn` — the sentence on the card, German and English. Only the one
+  matching the language is ever stored.
 
-Achtung: Sobald über die Seite etwas geändert wurde, gilt die gespeicherte
-Sammlung. Änderungen an `DEFAULT_GAMES` greifen dann nur noch über
-„Sicherung & Umzug" → „Sammlung ersetzen".
+Careful: as soon as anything has been changed through the page, the stored
+collection applies. Changes to `DEFAULT_GAMES` then only take effect via
+**Backup & moving** → **Replace collection**.
 
-## Fassungen
+## Language
 
-Die Nummerierung folgt [Semantic Versioning](https://semver.org/lang/de/): bei
-**X**.y.z ändert sich etwas Grundlegendes, bei x.**Y**.z kommt etwas dazu, bei
-x.y.**Z** wird etwas repariert. Was in welcher Fassung passiert ist, steht in
-der [Änderungshistorie](CHANGELOG.md); jede Fassung hat außerdem eine eigene
-[Veröffentlichung](../../releases) mit der passenden APK.
+The app speaks English and German and follows the system language — a German
+device gets German, everything else gets English. There is deliberately **no
+language setting**: one fewer thing to get wrong, and the phone already knows
+the answer.
 
-## Schriften
+What the language switch does *not* touch is your data. Mood and difficulty
+keys are the same in both languages, so a backup written on a German phone
+reads perfectly on an English one and the other way round. Notes you have typed
+yourself stay exactly as you typed them; only the starting collection picks its
+notes by language, and only the first time the app opens.
 
-Die beiden mitgelieferten Schriften stehen unter der SIL Open Font License 1.1;
-Nachweis in [`SCHRIFTEN.md`](SCHRIFTEN.md).
+The name under the app icon follows the same rule.
 
-## Nutzungsrechte
+## Versions
 
-Dieses Projekt steht unter der **GNU General Public License, Version 3 oder
-jeder späteren Version** — der vollständige Text liegt in [`LICENSE`](LICENSE).
+Numbering follows [Semantic Versioning](https://semver.org/): in **X**.y.z
+something fundamental changes, in x.**Y**.z something is added, in x.y.**Z**
+something is fixed. What happened in which version is in the
+[changelog](CHANGELOG.md); every version also has its own
+[release](../../releases) with the matching APK.
 
-Kurz gesagt: Du darfst die Anwendung benutzen, weitergeben und verändern. Gibst
-du sie weiter — verändert oder nicht —, muss sie unter derselben Lizenz stehen
-und der Quelltext muss mitkommen. Eine Garantie gibt es nicht.
+## Fonts
 
-Davon ausgenommen sind die **beiden mitgelieferten Schriften**: Sie behalten
-ihre eigene Lizenz, die SIL Open Font License 1.1 (siehe oben). Die GPL ändert
-daran nichts.
+The two bundled fonts are under the SIL Open Font License 1.1; attribution is in
+[`SCHRIFTEN.md`](SCHRIFTEN.md).
+
+## Licence
+
+This project is under the **GNU General Public License, version 3 or any later
+version** — the full text is in [`LICENSE`](LICENSE).
+
+In short: you may use, pass on and change the application. If you pass it on —
+changed or not — it must stay under the same licence and the source has to come
+with it. There is no warranty.
+
+Excepted are the **two bundled fonts**: they keep their own licence, the SIL
+Open Font License 1.1 (see above). The GPL does not change that.

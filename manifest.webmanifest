@@ -1,13 +1,13 @@
 {
-  "name": "Was spielen wir heute?",
-  "short_name": "Spieleabend",
-  "description": "Welches Spiel aus dem Regal passt zur heutigen Runde?",
+  "name": "What shall we play tonight?",
+  "short_name": "Game Night",
+  "description": "Which game from the shelf fits tonight's group?",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
   "background_color": "#EDEFEA",
   "theme_color": "#A96C12",
-  "lang": "de",
+  "lang": "en",
   "icons": [
     {
       "src": "icon-192.png",

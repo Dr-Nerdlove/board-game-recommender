@@ -402,6 +402,53 @@ nächste Schritt `WebSettingsCompat.setAlgorithmicDarkeningAllowed(true)` in
 `MainActivity` — das müsste der Bauplan nach `npx cap add android`
 hineinschreiben, weil der Ordner `android/` bei jedem Bau neu entsteht.
 
+## Zwei Sprachen
+
+Die Oberfläche spricht Deutsch und Englisch und folgt dabei `navigator.language`
+— ein deutsches Gerät bekommt Deutsch, alle anderen Englisch. **Eine Einstellung
+dafür gibt es bewusst nicht:** Das Gerät weiß die Antwort schon, und ein
+Umschalter wäre eine weitere Stelle, an der etwas klemmen kann.
+
+Zwei Wörterbücher, weil sie zwei verschiedene Aufgaben haben:
+
+| | wo der Urtext steht | wofür |
+| --- | --- | --- |
+| `MARKUP_EN` | im Markup (deutsch) | feste Beschriftungen; nur für Englisch ersetzt |
+| `TEXTE` | im Wörterbuch (beide Sprachen) | alles, was das Skript selbst baut |
+
+Das Markup behält also seinen deutschen Urtext. Das ist Absicht: Die Datei
+bleibt beim Lesen verständlich, und wenn das Skript ausfällt, steht immer noch
+etwas Sinnvolles da. `spracheAnwenden()` ersetzt die Beschriftungen beim Start
+anhand von `data-t` (Inhalt) und `data-t-attr` (Attribute wie `placeholder`
+oder `aria-label`).
+
+**Was nicht übersetzt wird, und warum.** Die Schlüssel der gespeicherten Daten
+bleiben in jeder Sprache dieselben: `party`, `gruebeln`, `leicht`, `mittel`,
+`schwer` und die übrigen. Sie stecken in der gespeicherten Sammlung und in jeder
+Sicherung. Wer sie übersetzt, macht jede vorhandene Sicherung unlesbar und
+trennt die beiden Sprachfassungen voneinander. Nachgemessen: Eine Sicherung aus
+der deutschen App spielt sich in der englischen ein und umgekehrt, Stimmungen
+und Anspruch kommen richtig an.
+
+Die Notizen der Ausgangssammlung gibt es zweimal (`note` und `noteEn`);
+`freshCollection()` nimmt die passende, gespeichert wird nur eine. Selbst
+getippte Notizen rührt die Sprachwahl nicht an — es sind Daten des Benutzers,
+keine Beschriftung.
+
+**Die Fassungsnummer** steht im Fuß nicht mehr als Text, sondern als
+`data-fassung` am Element; das Skript setzt daraus „Fassung 2.7.0" oder
+„Version 2.7.0". So bleibt die Nummer eine einzige Stelle, und der Bauplan
+prüft sie weiterhin — er sucht jetzt nach `data-fassung="…"`.
+
+**Der Name im App-Menü** folgt derselben Regel, aber über Android:
+`capacitor.config.json` liefert den englischen Namen, der Bauplan legt
+zusätzlich `values-de/strings.xml` mit „Spieleabend" an. Android wählt anhand
+der Systemsprache aus.
+
+**Die Frage an Claude** („Daten vorschlagen") steht auf Englisch — sie geht an
+ein Sprachmodell, nicht an den Benutzer. Nur der zurückgelieferte Notizsatz
+wird ausdrücklich in der Sprache des Benutzers verlangt.
+
 ## Das Datumsfeld
 
 `<input type="date">` zeigt das Format der **Systemsprache**, nicht das der
@@ -421,7 +468,8 @@ zurück.
   Browser im Kopflos-Modus, der die Oberfläche bedient und anschließend misst.
   Für eine Datei dieser Größe ist ein eingechecktes Testgerüst mehr Wartung als
   Nutzen — bei weiterem Wachstum kippt das.
-- **Keine Übersetzung.** Alles ist deutsch, auch die Commits.
+- **Keine dritte Sprache.** Deutsch und Englisch reichen; jede weitere
+  verdoppelt die Pflege, ohne dass jemand danach gefragt hätte.
 - **Keine Schachtelbilder.** Jede vergleichbare App lebt davon. Hier bräuchte es
   dafür entweder Netz oder viel Speicher, und die Rechtelage bei Verlagsbildern
   ist unklar. Der Gewinn wiegt den Verlust der Offline-Eigenschaft nicht auf.

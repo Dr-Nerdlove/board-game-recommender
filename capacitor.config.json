@@ -1,6 +1,6 @@
 {
   "appId": "de.drnerdlove.spieleabend",
-  "appName": "Spieleabend",
+  "appName": "Game Night",
   "webDir": "www",
   "android": {
     "allowMixedContent": false
