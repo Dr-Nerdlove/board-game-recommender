@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" width="96"
+  <img src="logo.png" width="160"
        alt="Das Symbol der App: Würfel, Lupe, Spielfigur und Waben auf einer grün-ockerfarbenen Scheibe">
 </p>
 
@@ -10,9 +10,6 @@ worauf ihr Lust habt, wie viel Kopf ihr habt und wie viel Zeit — die Seite
 sortiert deine Sammlung danach durch und schlägt vor, was heute auf den Tisch
 kommt. Was nicht passt, verschwindet nicht kommentarlos, sondern steht unten mit
 Begründung.
-
-<img src="screenshot.png" width="320"
-     alt="Die Seite mit vier Personen und Party-Stimmung">
 
 Eine **Android-App**, und darunter eine einzelne HTML-Datei: ohne Baukasten,
 ohne Abhängigkeiten, ohne Konto und **ohne eine einzige Anfrage ans Internet** —
