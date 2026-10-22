@@ -1,5 +1,7 @@
-<img src="logo.png" width="96"
-     alt="Das Symbol der App: Würfel, Lupe, Spielfigur und Waben auf einer grün-ockerfarbenen Scheibe">
+<p align="center">
+  <img src="logo.png" width="96"
+       alt="Das Symbol der App: Würfel, Lupe, Spielfigur und Waben auf einer grün-ockerfarbenen Scheibe">
+</p>
 
 # Was spielen wir heute?
 
