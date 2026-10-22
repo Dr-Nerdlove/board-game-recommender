@@ -9,6 +9,8 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.6.0] – 2026-10-22
+
 ### Hinzugefügt
 
 - **Die App folgt auf Android 12 und neuer den Material-You-Farben.** Android
@@ -521,7 +523,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.5.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.6.0...HEAD
+[2.6.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.0
 [2.5.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.1
 [2.5.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.0
 [2.4.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.4.0
