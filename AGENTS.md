@@ -2,7 +2,8 @@
 
 Kurzorientierung für eine neue Sitzung an diesem Projekt — egal mit welchem
 Werkzeug. Ausführlicher und mit Begründungen: `ENTWICKLUNG.md`. Für Benutzer:
-`README.md`.
+`README.md`, englisch `README.en.md` — wer das eine ändert, ändert das
+andere mit.
 
 ## Was das ist
 

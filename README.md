@@ -5,6 +5,8 @@
 
 # Was spielen wir heute?
 
+*[English](README.en.md)*
+
 **Welches Brettspiel passt zur heutigen Runde?** Du sagst, wie viele ihr seid,
 worauf ihr Lust habt, wie viel Kopf ihr habt und wie viel Zeit — die Seite
 sortiert deine Sammlung danach durch und schlägt vor, was heute auf den Tisch
@@ -59,9 +61,11 @@ Speicher der App, auf diesem Handy.
 - **Datei einlesen** — auf dem neuen Gerät die Sicherung auswählen, dann
   „Sammlung ersetzen".
 
-**Neue Fassung bauen:** Im Reiter *Actions* → *APK bauen* → *Run workflow*.
-Nach ein paar Minuten hängt die neue Datei an derselben Veröffentlichung. Das
-passiert auch automatisch, sobald sich `index.html` ändert.
+**Neue Fassung bauen:** Im Reiter *Actions* → *Android-App bauen* →
+*Run workflow*, mit Haken bei „veröffentlichen". Nach ein paar Minuten steht
+die neue Veröffentlichung samt APK da. Ohne Haken entsteht nur ein Probelauf.
+Dasselbe passiert, wenn eine Marke `v1.2.3` gepusht wird. Von allein baut
+nichts — eine Änderung an `index.html` löst keinen Bau aus.
 
 Die App ist mit einem festen eigenen Schlüssel signiert; der Fingerabdruck steht
 bei jeder Veröffentlichung. Weil sie nicht aus dem Play Store kommt, zeigt
