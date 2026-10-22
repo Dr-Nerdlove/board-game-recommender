@@ -9,6 +9,13 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.6.1] – 2026-10-22
+
+### Geändert
+
+- Der Fuß der App nennt nur noch die Fassung. Der Hinweis auf die Lizenz ist
+  dort weg — die Lizenz steht im Repo (`LICENSE`), und das genügt.
+
 ## [2.6.0] – 2026-10-22
 
 ### Hinzugefügt
@@ -523,7 +530,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.6.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.6.1...HEAD
+[2.6.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.1
 [2.6.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.0
 [2.5.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.1
 [2.5.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.5.0
