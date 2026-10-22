@@ -1,3 +1,6 @@
+<img src="logo.png" width="128" align="right"
+     alt="Das Symbol der App: Würfel, Lupe, Spielfigur und Waben auf einer grün-ockerfarbenen Scheibe">
+
 # Was spielen wir heute?
 
 **Welches Brettspiel passt zur heutigen Runde?** Du sagst, wie viele ihr seid,
