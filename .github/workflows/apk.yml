@@ -204,19 +204,84 @@ jobs:
               }
           }
           JAVA
+          cat > "$ORDNER/SprachePlugin.java" <<'JAVA'
+          package de.drnerdlove.spieleabend;
+
+          import android.content.res.Configuration;
+          import android.os.Build;
+          import java.util.Locale;
+          import com.getcapacitor.JSObject;
+          import com.getcapacitor.Plugin;
+          import com.getcapacitor.PluginCall;
+          import com.getcapacitor.PluginMethod;
+          import com.getcapacitor.annotation.CapacitorPlugin;
+
+          // Android laesst ab Version 13 die Sprache einzelner Apps einstellen.
+          // Die WebView bekommt davon nichts mit: navigator.language nennt dort
+          // weiter die Sprache des Systems, und das ist so vorgesehen. Dieser
+          // Baustein liest die Sprache der Activity - die folgt der Einstellung -
+          // und reicht sie an die Seite weiter.
+          @CapacitorPlugin(name = "Sprache")
+          public class SprachePlugin extends Plugin {
+
+              static Locale jetzigeSprache(android.content.Context ctx) {
+                  Configuration conf = ctx.getResources().getConfiguration();
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                      android.os.LocaleList liste = conf.getLocales();
+                      if (!liste.isEmpty()) return liste.get(0);
+                  }
+                  return Locale.getDefault();
+              }
+
+              @PluginMethod
+              public void lesen(PluginCall call) {
+                  // Die Activity, nicht der Anwendungszusammenhang: Nur ihre
+                  // Einstellungen tragen die App-Sprache.
+                  android.content.Context ctx = getActivity() != null ? getActivity() : getContext();
+                  Locale ort = jetzigeSprache(ctx);
+                  JSObject antwort = new JSObject();
+                  antwort.put("sprache", ort.getLanguage());
+                  antwort.put("voll", ort.toString());
+                  call.resolve(antwort);
+              }
+          }
+          JAVA
           cat > "$ORDNER/MainActivity.java" <<'JAVA'
           package de.drnerdlove.spieleabend;
 
+          import android.content.res.Configuration;
           import android.os.Bundle;
           import com.getcapacitor.BridgeActivity;
 
           public class MainActivity extends BridgeActivity {
+
+              private String letzteSprache;
+
               @Override
               protected void onCreate(Bundle savedInstanceState) {
                   // Muss vor super.onCreate stehen: Dort wird die Bruecke gebaut,
                   // danach angemeldete Bausteine kommen zu spaet.
                   registerPlugin(SystemfarbenPlugin.class);
+                  registerPlugin(SprachePlugin.class);
                   super.onCreate(savedInstanceState);
+                  letzteSprache = SprachePlugin.jetzigeSprache(this).getLanguage();
+              }
+
+              // Im Manifest steht "locale" unter configChanges - Android baut die
+              // Activity bei einem Sprachwechsel also nicht neu auf, und die Seite
+              // bliebe in der alten Sprache stehen, bis jemand die App beendet.
+              // Darum hier selbst nachsehen und die Seite neu laden. Die Sammlung
+              // liegt im Speicher der Seite, es geht dabei nichts verloren.
+              @Override
+              public void onConfigurationChanged(Configuration newConfig) {
+                  super.onConfigurationChanged(newConfig);
+                  String jetzt = SprachePlugin.jetzigeSprache(this).getLanguage();
+                  if (letzteSprache != null && !letzteSprache.equals(jetzt)) {
+                      letzteSprache = jetzt;
+                      if (getBridge() != null && getBridge().getWebView() != null) {
+                          getBridge().getWebView().reload();
+                      }
+                  }
               }
           }
           JAVA
@@ -241,6 +306,31 @@ jobs:
           XML
           echo "Deutscher Name hinterlegt:"
           cat "$ZIEL/strings.xml"
+
+      - name: Sprachen der App bei Android anmelden
+        # Ab Android 13 steht unter Einstellungen -> Apps -> Spieleabend ein
+        # Punkt "Sprache" - aber nur, wenn die App sagt, welche Sprachen sie
+        # kann. Genau das ist locales_config.xml; ohne den Verweis im Manifest
+        # erscheint der Punkt gar nicht erst.
+        run: |
+          set -eu
+          mkdir -p android/app/src/main/res/xml
+          cat > android/app/src/main/res/xml/locales_config.xml <<'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+              <locale android:name="en" />
+              <locale android:name="de" />
+          </locale-config>
+          XML
+          MANIFEST=android/app/src/main/AndroidManifest.xml
+          grep -q 'android:localeConfig' "$MANIFEST" ||
+            sed -i 's|<application$|<application\n        android:localeConfig="@xml/locales_config"|' "$MANIFEST"
+          grep -q 'android:localeConfig' "$MANIFEST" || {
+            echo "::error::localeConfig liess sich nicht ins Manifest eintragen."
+            exit 1
+          }
+          echo "Sprachliste angemeldet:"
+          sed -n '1,8p' "$MANIFEST"
 
       - name: Fassung ins Android-Projekt schreiben
         run: |

@@ -404,10 +404,48 @@ hineinschreiben, weil der Ordner `android/` bei jedem Bau neu entsteht.
 
 ## Zwei Sprachen
 
-Die Oberfläche spricht Deutsch und Englisch und folgt dabei `navigator.language`
-— ein deutsches Gerät bekommt Deutsch, alle anderen Englisch. **Eine Einstellung
-dafür gibt es bewusst nicht:** Das Gerät weiß die Antwort schon, und ein
-Umschalter wäre eine weitere Stelle, an der etwas klemmen kann.
+Die Oberfläche spricht Deutsch und Englisch. **Einen eigenen Umschalter gibt es
+bewusst nicht** — Android hat selbst einen, unter Einstellungen → Apps →
+Spieleabend → Sprache, und der gilt systemweit für alle Apps gleich.
+
+### Woher die Sprache kommt
+
+Das ist die Stelle, an der es nicht so einfach ist, wie es aussieht.
+
+`navigator.language` nennt in der WebView **immer die Sprache des Systems** —
+auch dann, wenn für die App eine andere eingestellt ist. Das ist kein Fehler der
+Seite: Die WebView bekommt die App-Sprache schlicht nicht mit, und Google
+betrachtet das als beabsichtigt. Wer sich allein auf `navigator.language`
+verlässt, baut eine App, deren Spracheinstellung sichtbar nichts tut.
+
+Darum fragt die App zusätzlich nativ nach. Die Reihenfolge:
+
+1. die zuletzt gemerkte Sprache aus `localStorage` — damit der erste Anblick
+   schon stimmt und nichts umspringt,
+2. sonst `navigator.language`,
+3. in der App: die Antwort des Bausteins `Sprache`, die immer gewinnt und das
+   Gemerkte auffrischt.
+
+Schritt 3 kommt erst nach dem ersten Zeichnen an — eine Brücke zu Capacitor ist
+immer asynchron. Deshalb muss die Umstellung **in beide Richtungen** gehen, auch
+zurück nach Deutsch. Dafür merkt sich `spracheAnwenden()` beim ersten Durchgang
+den deutschen Urtext jedes Elements (`URTEXT`, `URATTR`); ohne dieses Gedächtnis
+wäre die Übersetzung eine Einbahnstraße.
+
+Sichtbar ist davon nur ein kurzes Umspringen, und auch das nur beim allerersten
+Start nach einer Umstellung — danach steht die Sprache gemerkt im Speicher.
+
+### Was dafür am Android-Projekt hängt
+
+- **`res/xml/locales_config.xml`** zählt auf, welche Sprachen die App kann, und
+  `android:localeConfig` im Manifest verweist darauf. **Ohne beides erscheint
+  der Punkt „Sprache" in den App-Einstellungen gar nicht.**
+- **`SprachePlugin`** liest `getActivity().getResources().getConfiguration()` —
+  nur die Einstellungen der Activity tragen die App-Sprache.
+- **`MainActivity.onConfigurationChanged`** lädt die Seite neu, wenn sich die
+  Sprache geändert hat. Nötig, weil im Manifest `locale` unter `configChanges`
+  steht: Android baut die Activity dann *nicht* neu auf, und die Seite bliebe
+  sonst in der alten Sprache stehen, bis jemand die App beendet.
 
 Zwei Wörterbücher, weil sie zwei verschiedene Aufgaben haben:
 

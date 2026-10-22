@@ -198,10 +198,15 @@ collection applies. Changes to `DEFAULT_GAMES` then only take effect via
 
 ## Language
 
-The app speaks English and German and follows the system language — a German
-device gets German, everything else gets English. There is deliberately **no
-language setting**: one fewer thing to get wrong, and the phone already knows
-the answer.
+The app speaks English and German. By default it follows the system language —
+a German device gets German, everything else gets English.
+
+On **Android 13 and newer** you can also set the language for this app alone,
+without touching the rest of the phone: Settings → Apps → Game Night →
+Language. The app picks that up straight away.
+
+There is deliberately **no language switch inside the app**: Android already has
+one, in the same place for every app.
 
 What the language switch does *not* touch is your data. Mood and difficulty
 keys are the same in both languages, so a backup written on a German phone

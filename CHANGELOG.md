@@ -9,6 +9,28 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.7.1] – 2026-10-22
+
+### Hinzugefügt
+
+- **Die Sprache lässt sich jetzt für die App allein einstellen**, unter
+  Einstellungen → Apps → Spieleabend → Sprache (ab Android 13). Vorher ging nur
+  die systemweite Umstellung — der Punkt erschien gar nicht, weil der App die
+  Angabe fehlte, welche Sprachen sie überhaupt kann (`locales_config.xml` und
+  `android:localeConfig` im Manifest).
+
+### Behoben
+
+- Die Seite richtete sich nach `navigator.language`, und das nennt in der
+  WebView **immer die Systemsprache** — eine App-Sprache wäre dort nie
+  angekommen. Ein kleiner nativer Baustein liest sie jetzt aus und die Seite
+  stellt danach um. Beim allerersten Start nach einer Umstellung springt die
+  Sprache dabei kurz um; danach steht sie gemerkt im Speicher.
+- Ein Wechsel der Sprache bei laufender App wirkte bisher erst nach dem
+  Beenden: Im Manifest steht `locale` unter `configChanges`, Android baut die
+  Activity also nicht neu auf. `MainActivity` sieht jetzt selbst nach und lädt
+  die Seite neu.
+
 ## [2.7.0] – 2026-10-22
 
 ### Hinzugefügt
@@ -556,7 +578,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.7.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.7.1...HEAD
+[2.7.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.1
 [2.7.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.0
 [2.6.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.1
 [2.6.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.0

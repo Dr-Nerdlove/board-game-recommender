@@ -765,7 +765,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p data-t="fussHinweis">Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung" id="fassung" data-fassung="2.7.0"></p>
+    <p class="fassung" id="fassung" data-fassung="2.7.1"></p>
   </footer>
 </div>
 
@@ -788,10 +788,35 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
    Die Schluessel der gespeicherten Daten (party, gruebeln, leicht, mittel,
    schwer ...) sind davon ausgenommen und bleiben in jeder Sprache dieselben.
    Sie stecken in Sicherungen und in der gespeicherten Sammlung: Wer sie
-   uebersetzt, macht jede vorhandene Sicherung unlesbar. */
+   uebersetzt, macht jede vorhandene Sicherung unlesbar.
 
-const SPRACHE = /^de\b/i.test(navigator.language || "") ? "de" : "en";
-const ORTSFORM = SPRACHE === "de" ? "de-DE" : "en-GB";
+   Woher die Sprache kommt, ist nicht so einfach, wie es aussieht. Android
+   laesst ab Version 13 die Sprache einzelner Apps einstellen - nur erreicht
+   das die WebView nicht: navigator.language nennt dort weiter die Sprache des
+   Systems. Das ist kein Fehler dieser Seite, sondern so vorgesehen. Darum
+   fragt die App zusaetzlich nativ nach (Baustein "Sprache") und stellt
+   hinterher um, falls die Antwort abweicht. Die Reihenfolge:
+
+     1. zuletzt gemerkte Sprache aus dem Speicher - damit der erste Anblick
+        schon stimmt und nichts umspringt,
+     2. sonst navigator.language,
+     3. in der App: die native Antwort, die immer gewinnt.
+
+   Deshalb ist die Sprache veraenderlich und nicht fest: spracheSetzen() baut
+   die abhaengigen Listen neu, spracheAnwenden() die Beschriftungen. */
+
+const SPRACHSPEICHER = "spieleabend.sprache";
+
+function ersteSchaetzung(){
+  try{
+    const gemerkt = localStorage.getItem(SPRACHSPEICHER);
+    if(gemerkt === "de" || gemerkt === "en") return gemerkt;
+  }catch(e){/* Privatmodus */}
+  return /^de\b/i.test(navigator.language || "") ? "de" : "en";
+}
+
+let SPRACHE = ersteSchaetzung();
+let ORTSFORM, W, MOODS, WEIGHT_BANDS, SORTS, TIMES;
 
 const MARKUP_EN = {
   marke:              "Game night",
@@ -1121,33 +1146,99 @@ const TEXTE = {
   }
 };
 
-const W = TEXTE[SPRACHE];
 const t = (k, ...a) => { const v = W[k]; return typeof v === "function" ? v(...a) : v; };
 
-// Setzt die uebersetzten Beschriftungen ins Markup. Fuer Deutsch gibt es
-// nichts zu tun: Dort steht der Urtext schon da.
+// Setzt die Sprache und baut alles neu, was an ihr haengt. Die Schluessel
+// (party, leicht ...) bleiben dabei unberuehrt - nur die Beschriftungen.
+function spracheSetzen(code){
+  SPRACHE = code === "de" ? "de" : "en";
+  ORTSFORM = SPRACHE === "de" ? "de-DE" : "en-GB";
+  W = TEXTE[SPRACHE];
+  MOODS = W.moods;
+  WEIGHT_BANDS = [
+    { id:"leicht", label:W.baender.leicht[0], aus:W.baender.leicht[1], test:w => w <= 1.5 },
+    { id:"mittel", label:W.baender.mittel[0], aus:W.baender.mittel[1], test:w => w > 1.5 && w <= 2.6 },
+    { id:"schwer", label:W.baender.schwer[0], aus:W.baender.schwer[1], test:w => w > 2.6 }
+  ];
+  SORTS = [
+    { id:"name",     label:W.sorts.name,     cmp:(a,b) => 0 },
+    { id:"spieler",  label:W.sorts.spieler,  cmp:(a,b) => a.min - b.min || a.max - b.max },
+    { id:"dauer",    label:W.sorts.dauer,    cmp:(a,b) => a.dur[0] - b.dur[0] || a.dur[1] - b.dur[1] },
+    { id:"kopf",     label:W.sorts.kopf,     cmp:(a,b) => a.weight - b.weight },
+    { id:"gespielt", label:W.sorts.gespielt, cmp:(a,b) => (a.lastPlayed || 0) - (b.lastPlayed || 0) }
+  ];
+  TIMES = [
+    { id:0,  label:W.zeitEgal },
+    { id:30, label:"30 " + W.minute },
+    { id:60, label:"60 " + W.minute },
+    { id:90, label:"90 " + W.minute }
+  ];
+}
+spracheSetzen(SPRACHE);
+
+// Setzt die Beschriftungen ins Markup - in beide Richtungen. Der deutsche
+// Urtext steht im Markup; beim ersten Durchgang wird er gemerkt, damit ein
+// spaeterer Wechsel zurueck nach Deutsch ihn wiederherstellen kann. Ohne
+// dieses Gedaechtnis waere die Umstellung eine Einbahnstrasse, und genau die
+// braucht die App: Die native Antwort kommt erst nach dem ersten Zeichnen.
+const URTEXT = new Map();
+const URATTR = new Map();
+const URTITEL = document.title;
+
 function spracheAnwenden(){
   document.documentElement.lang = SPRACHE;
-  const nummer = $("fassung").dataset.fassung;
-  $("fassung").textContent = t("fassung", nummer);
-  if(SPRACHE === "de") return;
-  document.title = MARKUP_EN.titel;
+  $("fassung").textContent = t("fassung", $("fassung").dataset.fassung);
+  document.title = SPRACHE === "de" ? URTITEL : MARKUP_EN.titel;
+
   document.querySelectorAll("[data-t]").forEach(el => {
-    const neu = MARKUP_EN[el.dataset.t];
+    if(!URTEXT.has(el)) URTEXT.set(el, el.innerHTML);
+    const neu = SPRACHE === "de" ? URTEXT.get(el) : MARKUP_EN[el.dataset.t];
     if(neu != null) el.innerHTML = neu;
   });
+
   document.querySelectorAll("[data-t-attr]").forEach(el => {
+    if(!URATTR.has(el)) URATTR.set(el, {});
+    const urspruenglich = URATTR.get(el);
     el.dataset.tAttr.split(";").forEach(paar => {
       const [attr, schluessel] = paar.split(":");
-      const neu = MARKUP_EN[schluessel];
+      if(!(attr in urspruenglich)) urspruenglich[attr] = el.getAttribute(attr);
+      const neu = SPRACHE === "de" ? urspruenglich[attr] : MARKUP_EN[schluessel];
       if(neu != null) el.setAttribute(attr, neu);
     });
   });
 }
 
-// Die Schluessel (party, gruebeln ...) stecken in gespeicherten Sammlungen und
-// bleiben darum in jeder Sprache dieselben; nur die Beschriftung wechselt.
-const MOODS = W.moods;
+// Was sagt das Geraet? Nur in der App beantwortbar; im Browser gibt es den
+// Baustein nicht, dann bleibt es bei navigator.language.
+function spracheVomGeraet(){
+  const bausteine = window.Capacitor && window.Capacitor.Plugins;
+  const baustein = bausteine && bausteine.Sprache;
+  if(!baustein || !baustein.lesen) return Promise.resolve(null);
+  return baustein.lesen().then(
+    a => (a && typeof a.sprache === "string" && a.sprache) ? a.sprache : null,
+    () => null);
+}
+
+// Wird nach dem ersten Zeichnen aufgerufen. Weicht die App-Sprache ab, stellt
+// sie hier um - sichtbar nur als kurzes Umspringen beim allerersten Start nach
+// der Umstellung, danach steht die Sprache gemerkt im Speicher.
+function spracheNachziehen(){
+  return spracheVomGeraet().then(code => {
+    if(!code) return;
+    const neu = /^de/i.test(code) ? "de" : "en";
+    try{ localStorage.setItem(SPRACHSPEICHER, neu); }catch(e){/* Privatmodus */}
+    if(neu === SPRACHE) return;
+    spracheSetzen(neu);
+    spracheAnwenden();
+    // Die Ausgangssammlung darf die Sprache wechseln, eine eigene nicht:
+    // selbst getippte Notizen sind Daten des Benutzers.
+    if(!localTouched) games = freshCollection();
+    resetForm();
+    render();
+    updateStorageNote();
+  });
+}
+
 
 // weight: 1 = Absacker, 5 = Kennerstück. best: [von, bis] Glanzform.
 const DEFAULT_GAMES = [
@@ -1237,27 +1328,8 @@ const DEFAULT_GAMES = [
     noteEn:"Answer an odd question from 1 to 10 and get the order right. Cooperative nonsense." }
 ];
 
-// label: wie der Anspruch heisst. aus: wie er in der Begruendung auftaucht,
-// wenn ein Spiel genau daran scheitert.
-const WEIGHT_BANDS = [
-  { id:"leicht", label:W.baender.leicht[0], aus:W.baender.leicht[1], test:w => w <= 1.5 },
-  { id:"mittel", label:W.baender.mittel[0], aus:W.baender.mittel[1], test:w => w > 1.5 && w <= 2.6 },
-  { id:"schwer", label:W.baender.schwer[0], aus:W.baender.schwer[1], test:w => w > 2.6 }
-];
-const SORTS = [
-  { id:"name",     label:W.sorts.name,     cmp:(a,b) => 0 },
-  { id:"spieler",  label:W.sorts.spieler,  cmp:(a,b) => a.min - b.min || a.max - b.max },
-  { id:"dauer",    label:W.sorts.dauer,    cmp:(a,b) => a.dur[0] - b.dur[0] || a.dur[1] - b.dur[1] },
-  { id:"kopf",     label:W.sorts.kopf,     cmp:(a,b) => a.weight - b.weight },
-  { id:"gespielt", label:W.sorts.gespielt, cmp:(a,b) => (a.lastPlayed || 0) - (b.lastPlayed || 0) }
-];
-
-const TIMES = [
-  { id:0,  label:W.zeitEgal },
-  { id:30, label:"30 " + W.minute },
-  { id:60, label:"60 " + W.minute },
-  { id:90, label:"90 " + W.minute }
-];
+// WEIGHT_BANDS, SORTS und TIMES baut spracheSetzen() - ihre Beschriftungen
+// haengen an der Sprache, ihre Schluessel nicht.
 
 const state = {
   players:4, moods:new Set(), weights:new Set(), time:0,
@@ -1327,7 +1399,8 @@ function normalize(raw, i){
 const freshCollection = () => DEFAULT_GAMES
   .map((g, i) => normalize(Object.assign({}, g, { note: SPRACHE === "de" ? g.note : g.noteEn }), i))
   .filter(Boolean);
-let games = freshCollection();
+let games = [];                            // gefuellt beim Start, wenn die
+                                           // Sprache feststeht
 let lastRemoved = null;
 let localTouched = false;
 
@@ -2471,6 +2544,7 @@ function eineEbeneZurueck(){
 /* ================= Start ================= */
 
 spracheAnwenden();                         // bevor irgendetwas gezeichnet wird
+games = freshCollection();
 loadSettings();
 $("filters").open = state.filtersOpen;     // einmal beim Start, danach fuehrt
                                            // das Element selbst Buch
@@ -2480,6 +2554,7 @@ render();
 updateStorageNote();
 connectDb();
 connectSample();
+spracheNachziehen();                       // fragt die App nach ihrer Sprache
 </script>
 </body>
 </html>
