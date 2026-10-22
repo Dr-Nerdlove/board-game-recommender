@@ -11,6 +11,18 @@ bei x.y.**Z** wird etwas repariert.
 
 ### Hinzugefügt
 
+- **Die App folgt auf Android 12 und neuer den Material-You-Farben.** Android
+  leitet aus dem Hintergrundbild eine Palette ab; die übernimmt die App für
+  Flächen, Schrift, Linien und Akzente. Auf älteren Geräten und im Browser
+  bleibt alles wie bisher.
+
+  Jede Schriftfarbe wird dabei nachgerechnet: Reicht der Abstand zu ihrem
+  Untergrund nicht für 4,5:1, rückt die Seite so lange zur nächsten Tonstufe
+  weiter, bis er reicht. Beim gefüllten Knopf wird notfalls die Fläche
+  nachgedunkelt — heller als die hellste Stufe geht die Schrift nicht. Taugt
+  eine Palette am Ende gar nicht, bleibt die eigene stehen; halb eingefärbt
+  sähe kaputt aus.
+
 - **Das Projekt steht jetzt unter der GNU General Public License, Version 3
   oder jeder späteren.** Der vollständige Text liegt als `LICENSE` im
   Projekt. Bisher war bewusst keine Lizenz vergeben; damit war eine

@@ -157,6 +157,41 @@ genau diese drei Stellen nach — ausdrücklich ohne `registerPlugin` — und pr
 alle vier Fälle (Browser, App, Abbruch, App ohne die Bausteine). Ein Test, der
 stattdessen die eigene Annahme nachbaut, geht durch und beweist nichts.
 
+### Material You
+
+Android leitet ab Version 12 eine Palette aus dem Hintergrundbild ab und stellt
+sie **nur nativen Apps** bereit. Der Browser-Maschine sind diese Farben bewusst
+verborgen — über die Farbe ließe sich ein Gerät wiedererkennen. Nachgemessen:
+Chromium kennt das dafür vorgesehene CSS-Schlüsselwort `AccentColor` nicht
+einmal (`CSS.supports('color','AccentColor')` ist falsch). Es führt also kein
+Weg an nativem Code vorbei.
+
+`SystemfarbenPlugin.java` liest die Palette über
+`getIdentifier("system_accent1_600", "color", "android")` — über den Namen statt
+über `android.R.color.*`, damit es auf älteren Geräten einfach wegfällt statt zu
+scheitern. Der Bauplan schreibt die Datei bei jedem Durchlauf neu, zusammen mit
+einer `MainActivity`, die sie anmeldet; `npx cap add android` erzeugt das
+Projekt ja jedes Mal frisch. Das `registerPlugin` muss **vor** `super.onCreate`
+stehen — dort wird die Brücke gebaut, danach angemeldete Bausteine kommen zu
+spät (nachzulesen in `BridgeActivity.onCreate`).
+
+Androids Stufen laufen umgekehrt zur Material-Zählung: **0 ist am hellsten,
+1000 am dunkelsten.**
+
+Das Heikle ist nicht das Auslesen, sondern der Kontrast: Die Palette kommt vom
+Hintergrundbild und kann alles Mögliche sein. Darum rechnet `passtStufe()` jede
+Schriftfarbe nach und geht nötigenfalls zur nächsten Stufe weiter. Ein Fall
+lässt sich so nicht lösen und braucht `knopfPaar()`: Ist der Knopfton zu hell
+für weiße Schrift, hilft kein Weitersuchen bei der Schrift — heller als Stufe 0
+geht sie nicht, also wird die Fläche nachgedunkelt. Bei einem grünen
+Hintergrundbild ist der Knopfton `#318c4f`, und Weiß darauf schafft nur 4,0.
+
+Prüfen lässt sich das ohne Gerät: `materialyou.mjs` in den Notizen stellt
+`Capacitor.Plugins.Systemfarben` nach und schickt erfundene Paletten durch —
+blau, rot, grün, gelb und eine untaugliche aus lauter Mittelgrau. Erwartet wird:
+vier Paletten greifen in Hell und Dunkel mit allen Abständen über 4,5:1, die
+untaugliche fällt auf die eigenen Farben zurück.
+
 ### Die Zurück-Taste
 
 Ohne Zutun beendet Androids Zurück-Taste die App sofort — gleich ob man im

@@ -146,6 +146,81 @@ jobs:
       - name: Android-Projekt erzeugen
         run: npx cap add android
 
+      - name: Baustein fuer die Systemfarben einsetzen
+        # Android leitet ab Version 12 eine Palette aus dem Hintergrundbild ab
+        # und stellt sie nur nativen Apps bereit. Dieser Baustein liest sie aus
+        # und reicht sie an die Seite weiter; dort werden daraus die Farben der
+        # App. Er muss bei jedem Bau neu hinein, weil "cap add android" das
+        # Projekt jedes Mal frisch erzeugt - dasselbe Muster wie bei der
+        # Signatur weiter unten.
+        run: |
+          set -eu
+          ORDNER=android/app/src/main/java/de/drnerdlove/spieleabend
+          test -d "$ORDNER"
+          cat > "$ORDNER/SystemfarbenPlugin.java" <<'JAVA'
+          package de.drnerdlove.spieleabend;
+
+          import android.os.Build;
+          import com.getcapacitor.JSObject;
+          import com.getcapacitor.Plugin;
+          import com.getcapacitor.PluginCall;
+          import com.getcapacitor.PluginMethod;
+          import com.getcapacitor.annotation.CapacitorPlugin;
+
+          @CapacitorPlugin(name = "Systemfarben")
+          public class SystemfarbenPlugin extends Plugin {
+
+              private static final String[] PALETTEN = { "accent1", "accent2", "accent3", "neutral1", "neutral2" };
+              private static final int[] STUFEN = { 0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+
+              @PluginMethod
+              public void lesen(PluginCall call) {
+                  JSObject antwort = new JSObject();
+                  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                      antwort.put("verfuegbar", false);
+                      call.resolve(antwort);
+                      return;
+                  }
+                  JSObject farben = new JSObject();
+                  boolean gefunden = false;
+                  for (String palette : PALETTEN) {
+                      JSObject stufen = new JSObject();
+                      for (int stufe : STUFEN) {
+                          String name = "system_" + palette + "_" + stufe;
+                          // Ueber den Namen statt ueber android.R.color.*: So faellt
+                          // es auf aelteren Geraeten einfach weg, statt zu scheitern.
+                          int kennung = getContext().getResources().getIdentifier(name, "color", "android");
+                          if (kennung == 0) continue;
+                          int wert = getContext().getResources().getColor(kennung, getContext().getTheme());
+                          stufen.put(String.valueOf(stufe), String.format("#%06X", 0xFFFFFF & wert));
+                          gefunden = true;
+                      }
+                      farben.put(palette, stufen);
+                  }
+                  antwort.put("verfuegbar", gefunden);
+                  antwort.put("farben", farben);
+                  call.resolve(antwort);
+              }
+          }
+          JAVA
+          cat > "$ORDNER/MainActivity.java" <<'JAVA'
+          package de.drnerdlove.spieleabend;
+
+          import android.os.Bundle;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  // Muss vor super.onCreate stehen: Dort wird die Bruecke gebaut,
+                  // danach angemeldete Bausteine kommen zu spaet.
+                  registerPlugin(SystemfarbenPlugin.class);
+                  super.onCreate(savedInstanceState);
+              }
+          }
+          JAVA
+          ls -la "$ORDNER"
+
       - name: Fassung ins Android-Projekt schreiben
         run: |
           set -eu
