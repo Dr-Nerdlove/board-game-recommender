@@ -9,6 +9,17 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.7.2] – 2026-10-23
+
+### Behoben
+
+- „Auf BGG nachschlagen" startete eine leere Suche, wenn man ein Spiel aus der
+  Sammlung änderte. Der Link wurde nur beim Tippen gesetzt — füllte das Skript
+  das Namensfeld selbst, blieb er stehen. Dasselbe traf zwei weitere Stellen:
+  nach „Abbrechen" zeigte er noch auf das vorher bearbeitete Spiel, und nach
+  einem Vorschlag von Claude suchte er den alten statt des berichtigten Titels.
+  Alle drei kommen jetzt über dieselbe Funktion.
+
 ## [2.7.1] – 2026-10-22
 
 ### Hinzugefügt
@@ -578,7 +589,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.7.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.7.2...HEAD
+[2.7.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.2
 [2.7.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.1
 [2.7.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.0
 [2.6.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.6.1
