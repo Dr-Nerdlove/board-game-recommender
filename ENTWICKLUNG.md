@@ -534,6 +534,39 @@ nicht zu erwarten.
 **In der veröffentlichten Claude-Seite** ist der Knopf ausgeblendet: Dort darf
 die Seite keine fremden Server ansprechen, und „Daten vorschlagen" leistet mehr.
 
+## Web-Version (GitHub Pages)
+
+**Warum:** Für das iPhone gibt es keine APK, und der App Store verlangt ein
+bezahltes Entwicklerkonto. Eine Seite auf GitHub Pages kostet nichts (das
+Repo ist öffentlich) und lässt sich über „Zum Home-Bildschirm" wie eine App
+ablegen.
+
+**Veröffentlichen:** `.github/workflows/pages.yml` kopiert nur die Web-Dateien
+(`index.html`, `sw.js`, `manifest.webmanifest`, `icon-*.png`) nach `site/` und
+schiebt sie auf Pages. Jeder Push auf `main`, der eine davon berührt, aktualisiert
+die Web-Version; einen Versionsmarken-Schritt gibt es nicht. Die Android-App baut
+weiter allein `apk.yml`.
+
+**`sw.js`:** Die Seite wird *Netz zuerst* geladen — wer online ist, hat immer die
+neueste Fassung, und in `sw.js` steht keine Versionsnummer, die man vergessen
+könnte. Nur ohne Netz springt der Cache ein. Symbole und Manifest kommen aus dem
+Cache und werden im Hintergrund aufgefrischt. Fremde Adressen (Wikidata) fasst
+der Dienst nicht an.
+
+**Nicht in der Android-App:** Dort liefert die APK die Dateien selbst. Ein Dienst
+könnte nach einem Update noch die alte Fassung festhalten. Registriert wird er
+nur über https oder `localhost`, nie in der App und nie in der Claude-Seite.
+
+**Hinweis für das iPhone:** Eine kleine, wegtippbare Box über dem Regal. Sie
+erscheint nur auf iOS (auch iPad, das sich als Mac meldet), nur im Safari-Tab
+(nicht vom Home-Bildschirm aus), nie in der App oder der Claude-Seite und nicht
+mehr, nachdem sie weggetippt wurde (`spieleabend.ioshinweis`).
+
+**Die Sieben-Tage-Regel:** Safari löscht per Intelligent Tracking Prevention den
+Skriptspeicher von Seiten, die sieben Tage nicht besucht wurden. Web-Apps vom
+Home-Bildschirm sind ausgenommen. Darum die Box — und darum der Rat zur
+Sicherung. Das ist bei `localStorage` kein Fehler der Seite, sondern iOS.
+
 ## Das Datumsfeld
 
 `<input type="date">` zeigt das Format der **Systemsprache**, nicht das der

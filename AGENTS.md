@@ -36,6 +36,8 @@ umschrieben („moeglicherweise").
 | --- | --- |
 | `index.html` | die ganze Anwendung |
 | `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen |
+| `sw.js` | Service Worker der Web-Version |
+| `.github/workflows/pages.yml` | veröffentlicht die Web-Version auf GitHub Pages |
 | `icon-*.png`, `manifest.webmanifest` | Symbole fürs Handy |
 | `CHANGELOG.md` | Änderungshistorie, gepflegt bei jeder Fassung |
 | `README.md` | Anleitung für Benutzer, auf Englisch |

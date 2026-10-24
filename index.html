@@ -387,6 +387,13 @@ details.filters:not([open]) + .panel-foot{margin-top:0}
   text-align:center; color:var(--muted);
 }
 .empty.leer p{margin:0}
+.ios-hinweis{
+  border:1px solid var(--line-strong); border-radius:var(--radius); padding:14px 16px;
+  background:var(--surface); color:var(--ink); font-size:14px;
+  display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin-bottom:var(--luft-mittel);
+}
+.ios-hinweis[hidden]{display:none}
+.ios-hinweis p{margin:0; flex:1 1 220px}
 .leer-knoepfe{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:16px}
 .wdtreffer{margin-top:4px}
 .wdtreffer .chip{text-align:left}
@@ -592,6 +599,11 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
     </div>
   </header>
 
+  <div class="ios-hinweis" id="ioshinweis" hidden>
+    <p id="ioshinweistext"></p>
+    <button class="linkbtn" type="button" id="ioshinweisweg"></button>
+  </div>
+
   <section class="panel" data-t-attr="aria-label:ariaRunde" aria-label="Runde beschreiben">
     <details class="filters" id="filters" open>
       <summary class="filters-head">
@@ -772,7 +784,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p data-t="fussHinweis">Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung" id="fassung" data-fassung="2.8.0"></p>
+    <p class="fassung" id="fassung" data-fassung="2.9.0"></p>
   </footer>
 </div>
 
@@ -979,6 +991,8 @@ const TEXTE = {
       ". Anspruch und „Glänzt bei“ bitte selbst ergänzen" + (ohneStimmung ? ", dazu eine Stimmung" : "") + ".",
     wdOffline: "Keine Verbindung — die Suche braucht Internet.",
     wdBelegt:  "Wikidata ist gerade nicht erreichbar oder überlastet — in ein paar Sekunden noch einmal versuchen.",
+    iosHinweis: "Als App nutzen: in Safari auf Teilen tippen, dann „Zum Home-Bildschirm“. So startet die Seite wie eine App, läuft offline – und iOS löscht deine Sammlung nicht nach ein paar Tagen ohne Besuch.",
+    iosWeg: "Verstanden",
     wdFehler: c => "Wikidata hat nicht geantwortet (" + c + ") — später noch einmal versuchen.",
 
     trefferVon: (a, b) => a + " von " + b + " Spielen",
@@ -1123,6 +1137,8 @@ const TEXTE = {
       ". Please add difficulty and “Shines at” yourself" + (ohneStimmung ? ", plus a mood" : "") + ".",
     wdOffline: "No connection — the search needs the internet.",
     wdBelegt:  "Wikidata is unreachable or busy right now — try again in a few seconds.",
+    iosHinweis: "Use it as an app: in Safari tap Share, then “Add to Home Screen”. It then starts like an app, works offline – and iOS will not delete your collection after a few days without a visit.",
+    iosWeg: "Got it",
     wdFehler: c => "Wikidata did not answer (" + c + ") — try again later.",
 
     trefferVon: (a, b) => a + " of " + b + " games",
@@ -2736,6 +2752,49 @@ updateStorageNote();
 connectDb();
 connectSample();
 spracheNachziehen();                       // fragt die App nach ihrer Sprache
+iosHinweisZeigen();
+dienstArbeiterAnmelden();
+
+/* ================= Web-Version: Hinweis fuers iPhone, Offline-Dienst ================= */
+/* Beides gilt nur fuer die Seite im Browser, nicht fuer die Android-App und
+   nicht fuer die Claude-Seite. */
+
+function inNativerApp(){
+  return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+}
+
+// Auf dem iPhone loescht Safari die Daten einer Seite, die sieben Tage nicht
+// besucht wurde - ausser sie liegt auf dem Home-Bildschirm. Der Hinweis sagt,
+// wie man sie dorthin bringt. Er erscheint nur im Safari-Tab, nie in der
+// Home-Bildschirm-App, und verschwindet fuer immer, wenn man ihn wegtippt.
+function iosHinweisZeigen(){
+  const IOSHINWEIS = "spieleabend.ioshinweis";
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const vomHomeBildschirm = !!navigator.standalone ||
+              matchMedia("(display-mode: standalone)").matches;
+  if(!ios || vomHomeBildschirm || inNativerApp() || window.claude) return;
+  try{ if(localStorage.getItem(IOSHINWEIS) === "weg") return; }catch(e){/* Privatmodus */}
+  $("ioshinweistext").textContent = t("iosHinweis");
+  $("ioshinweisweg").textContent = t("iosWeg");
+  $("ioshinweisweg").addEventListener("click", () => {
+    $("ioshinweis").hidden = true;
+    try{ localStorage.setItem(IOSHINWEIS, "weg"); }catch(e){/* Privatmodus */}
+  });
+  $("ioshinweis").hidden = false;
+}
+
+// Offline-Dienst (sw.js): nur in der Web-Version. Nicht in der Android-App -
+// die bringt ihre Dateien selbst mit, und ein Dienst koennte nach einem
+// APK-Update noch die alte Fassung festhalten. Nicht in der Claude-Seite -
+// dort gibt es keine eigene Adresse, unter der er laufen koennte.
+function dienstArbeiterAnmelden(){
+  if(!("serviceWorker" in navigator)) return;
+  const sicher = location.protocol === "https:" ||
+                 location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  if(!sicher || inNativerApp() || window.claude) return;
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
 </script>
 </body>
 </html>

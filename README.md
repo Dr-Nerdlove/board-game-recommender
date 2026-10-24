@@ -29,8 +29,9 @@ remove one by one later.
 
 **On your phone:** [download the latest Android app](../../releases/latest).
 
-**Just a quick look:** download [`index.html`](index.html) and open it in a
-browser — the same application, no installation.
+**In the browser / on iPhone:** <https://dr-nerdlove.github.io/board-game-recommender/>
+— the same application, no installation. How to keep it on an iPhone is
+described [below](#on-iphone-and-ipad-web-app).
 
 ---
 
@@ -74,6 +75,26 @@ change to `index.html` does not trigger a build.
 The app is signed with a fixed key of its own; the fingerprint is given with
 every release. Because it does not come from the Play Store, Android still shows
 a warning when installing.
+
+---
+
+## On iPhone and iPad (web app)
+
+Free, and without the App Store (which would need a paid Apple developer
+account): the page is also published as a web app.
+
+1. Open <https://dr-nerdlove.github.io/board-game-recommender/> in **Safari**.
+2. Tap **Share**, then **Add to Home Screen**.
+
+After the first visit it runs offline.
+
+**Important:** as a plain website tab, Safari deletes the stored data after
+about **7 days without a visit** — your collection would be gone. As an app on
+the home screen it is not affected. So add it to the home screen, and keep
+backups (see *Backup & moving*).
+
+The Android extras (Material You colours, the back button, per-app language)
+are simply absent. "Save as file" puts the backup in the Files app.
 
 ---
 

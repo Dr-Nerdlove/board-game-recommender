@@ -9,6 +9,19 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.9.0] – 2026-10-25
+
+### Hinzugefügt
+
+- **Web-Version auf GitHub Pages**, auch fürs iPhone: im Safari öffnen, über
+  „Teilen" → „Zum Home-Bildschirm" ablegen. Jeder Push auf `main`, der die
+  Web-Dateien berührt, aktualisiert sie.
+- **Offline-Betrieb per Service Worker** (`sw.js`): die Seite lädt Netz zuerst,
+  ohne Netz aus dem Cache. In der Android-App wird er nicht registriert.
+- **Hinweis fürs iPhone**: eine wegtippbare Box im Safari-Tab erklärt den Weg
+  zum Home-Bildschirm — sonst löscht iOS die Sammlung nach sieben Tagen ohne
+  Besuch.
+
 ## [2.8.0] – 2026-10-24
 
 ### Hinzugefügt
@@ -609,7 +622,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.8.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.9.0...HEAD
+[2.9.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.0
 [2.8.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.8.0
 [2.7.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.2
 [2.7.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.1

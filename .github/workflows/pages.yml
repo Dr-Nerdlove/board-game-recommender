@@ -1,0 +1,45 @@
+# Veroeffentlicht die Web-Version auf GitHub Pages (auch fuers iPhone).
+# Jeder Push auf main, der die Web-Dateien beruehrt, aktualisiert sie.
+# Hinaus gehen nur die Web-Dateien - kein README, keine Bauplaene.
+# Die Android-App baut davon getrennt apk.yml.
+name: Web-Version veroeffentlichen
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - sw.js
+      - manifest.webmanifest
+      - "icon-*.png"
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Web-Dateien zusammenstellen
+        run: |
+          mkdir site
+          cp index.html sw.js manifest.webmanifest icon-32.png icon-180.png icon-192.png icon-512.png site/
+          ls -la site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
