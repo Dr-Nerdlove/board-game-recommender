@@ -11,6 +11,13 @@ time you have — the page sorts your collection by that and suggests what to pu
 on the table. Whatever does not fit is not dropped silently: it is listed below
 with the reason.
 
+<p align="center">
+  <img src="screenshots/1-filters.png" width="190" alt="Describing the group: player count, mood, difficulty and time">
+  <img src="screenshots/2-suggestions.png" width="190" alt="The suggestions, best match first, with a fit bar on each card">
+  <img src="screenshots/3-edit.png" width="190" alt="Changing a game in the collection">
+  <img src="screenshots/4-dark.png" width="190" alt="The suggestions in the dark theme">
+</p>
+
 An **Android app**, and underneath it a single HTML file: no build system, no
 dependencies, no account and **not a single request to the internet** — even the
 fonts are baked in. The same file opens in a browser by double-clicking it.
