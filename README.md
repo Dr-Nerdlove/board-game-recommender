@@ -19,11 +19,13 @@ with the reason.
 </p>
 
 An **Android app**, and underneath it a single HTML file: no build system, no
-dependencies, no account and **not a single request to the internet** — even the
-fonts are baked in. The same file opens in a browser by double-clicking it.
+dependencies, no account and **no request to the internet unless you ask for
+one** — even the fonts are baked in. The same file opens in a browser by
+double-clicking it.
 
-The starting collection is 21 games from my shelf. It is only a starting point:
-games can be added, changed and removed on the page itself.
+The shelf starts **empty**: you add your own games. To try the app first, the
+empty shelf offers **Load example games** — nine well-known titles you can
+remove one by one later.
 
 **On your phone:** [download the latest Android app](../../releases/latest).
 
@@ -107,8 +109,10 @@ At the bottom of the page: **Edit collection**.
 - **Add** — name, player count, length, difficulty and at least one mood;
   **Shines at** is optional and means the player count at which the game really
   shines (the sweet-spot badge depends on it).
-- **Suggest data** — type in just the title and Claude fills in the rest (see
-  below).
+- **Find data** — type the title and the app fetches player count and length
+  from Wikidata, plus a suggested mood (see below).
+- **Suggest data** — only on the published Claude page: type in just the title
+  and Claude fills in the rest (see below).
 - **Change** — fills the same form with the existing game. It also holds **Last
   played** as a date field: fill it in, correct it or clear it (empty means
   "never"). It only appears when changing — a freshly added game counts as never
@@ -127,7 +131,30 @@ At the bottom of the page: **Edit collection**.
 - **Backup & moving** — the whole collection as text, to keep, to add to
   (**Merge in**) or to replace; also the way in for BGG data (see below).
 
-### Typing in just the title
+### Find data (Wikidata)
+
+Next to the name field sits **Find data**. It looks the title up on
+[Wikidata](https://www.wikidata.org), the free knowledge base behind Wikipedia,
+and fills in what it finds:
+
+- the **official title**, **player count** and **length**,
+- a **suggested mood**, derived from the genre (party game, cooperative,
+  quiz, word game, strategy …) — only if you have not picked one yet.
+
+If several games match, the app shows a short list to pick from. Nothing is
+saved until you tap **Put on the shelf**.
+
+What Wikidata does *not* know: **difficulty** and **Shines at**. Those stay with
+you — the **Look up on BGG ↗** link right next to it gets you there quickly.
+Well-known games are covered well, niche titles sometimes not at all; then the
+app says so instead of guessing.
+
+**This is the only time the app talks to the internet**, and only when you tap
+the button. Why not BoardGameGeek directly? Since 2025 BGG requires a personal,
+registered key for its interface, and that key must not be shared — so it
+cannot ship inside an app that other people install.
+
+### Typing in just the title (Claude page only)
 
 Next to the name field, the published page has a **Suggest data** button. It
 asks Claude for player count, best player count, length, difficulty, mood and a
@@ -177,15 +204,14 @@ The line above the form says it:
 In both cases it is written to the device as well, so that something is there
 offline too.
 
-If nothing is stored yet on first opening, the starting collection from
-`DEFAULT_GAMES` in `index.html` applies. That list is only a starting point —
-anyone who prefers working in the code can keep editing it there:
+The example games live in `BEISPIELSPIELE` in `index.html`; they only reach the
+collection when someone taps **Load example games**. An entry looks like this:
 
 ```js
-{ name:"Scout", min:2, max:5, best:[3,5], dur:[15,25], weight:1.6,
-  moods:["schnell","gruebeln"],
-  note:"Kartenhand, die du nicht sortieren darfst. …",
-  noteEn:"A hand of cards you are not allowed to sort. …" },
+{ name:"Azul", min:2, max:4, best:[2,2], dur:[30,45], weight:1.8,
+  moods:["gruebeln","entspannt"],
+  note:"Fliesen ziehen und Muster legen. Sieht friedlich aus, ist es nicht.",
+  noteEn:"Draft tiles, build patterns. Looks peaceful, isn't." },
 ```
 
 - `min`/`max` — player count as printed on the box
@@ -199,9 +225,8 @@ anyone who prefers working in the code can keep editing it there:
 - `note`/`noteEn` — the sentence on the card, German and English. Only the one
   matching the language is ever stored.
 
-Careful: as soon as anything has been changed through the page, the stored
-collection applies. Changes to `DEFAULT_GAMES` then only take effect via
-**Backup & moving** → **Replace collection**.
+Backups use the same fields (without `noteEn`), so a backup file is also the
+easiest way to hand a whole collection to someone else.
 
 ## Language
 
@@ -218,8 +243,8 @@ one, in the same place for every app.
 What the language switch does *not* touch is your data. Mood and difficulty
 keys are the same in both languages, so a backup written on a German phone
 reads perfectly on an English one and the other way round. Notes you have typed
-yourself stay exactly as you typed them; only the starting collection picks its
-notes by language, and only the first time the app opens.
+yourself stay exactly as you typed them; only the example games pick their
+notes by language, at the moment they are loaded.
 
 The name under the app icon follows the same rule.
 

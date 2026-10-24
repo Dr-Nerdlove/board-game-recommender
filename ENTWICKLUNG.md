@@ -12,8 +12,9 @@ Datei, rund 1400 Zeilen. Kein Baukasten, keine Abhängigkeiten, kein
 
 Darin stecken auch die beiden Schriften als Daten (rund 120 KB, Nachweis in
 `SCHRIFTEN.md`). Das ist der Grund, warum die Datei 185 KB groß ist statt 65.
-Der Gegenwert: Es gibt **keine einzige Anfrage ans Netz** mehr, und die Seite
-sieht offline aus wie online. Vorher kamen die Schriften von Google — die App
+Der Gegenwert: Es gibt **keine Anfrage ans Netz, um die niemand gebeten hat**,
+und die Seite sieht offline aus wie online. (Die einzige Ausnahme ist der Knopf
+„Daten suchen", siehe „Daten suchen bei Wikidata".) Vorher kamen die Schriften von Google — die App
 versprach „kein Netz nötig" und hielt es beim Aussehen nicht.
 
 Das ist eine bewusste Entscheidung, keine Nachlässigkeit. Das Projekt soll auch
@@ -22,7 +23,7 @@ keine Werkzeugkette einrichten will. Wer hier Module, Bündler oder ein
 Oberflächen-Gerüst einführt, tauscht diese Eigenschaft gegen Bequemlichkeit ein.
 Gut begründbar, aber eine echte Abwägung.
 
-Im Skriptteil von unten nach oben: Daten (`MOODS`, `DEFAULT_GAMES`), Speicher,
+Im Skriptteil von unten nach oben: Daten (`MOODS`, `BEISPIELSPIELE`), Speicher,
 Bewertung (`evaluate`), Ausgabe (`render*`), Formular, Ereignisbehandlung.
 
 ## Die zwei Speicherwege
@@ -468,8 +469,8 @@ trennt die beiden Sprachfassungen voneinander. Nachgemessen: Eine Sicherung aus
 der deutschen App spielt sich in der englischen ein und umgekehrt, Stimmungen
 und Anspruch kommen richtig an.
 
-Die Notizen der Ausgangssammlung gibt es zweimal (`note` und `noteEn`);
-`freshCollection()` nimmt die passende, gespeichert wird nur eine. Selbst
+Die Notizen der Beispielspiele gibt es zweimal (`note` und `noteEn`);
+`beispielSammlung()` nimmt beim Laden die passende, gespeichert wird nur eine. Selbst
 getippte Notizen rührt die Sprachwahl nicht an — es sind Daten des Benutzers,
 keine Beschriftung.
 
@@ -486,6 +487,52 @@ der Systemsprache aus.
 **Die Frage an Claude** („Daten vorschlagen") steht auf Englisch — sie geht an
 ein Sprachmodell, nicht an den Benutzer. Nur der zurückgelieferte Notizsatz
 wird ausdrücklich in der Sprache des Benutzers verlangt.
+
+## Das leere Regal und die Beispiele
+
+Bis 2.7 lagen 21 Spiele aus dem Regal des Autors als Ausgangssammlung im Code.
+Seit 2.8 beginnt das Regal leer — wer die App bekommt, soll nicht erst fremde
+Spiele löschen müssen. Damit ist das leere Regal der erste Anblick für jeden
+Neuen und bekommt darum zwei Knöpfe statt eines Satzes: „Erstes Spiel
+eintragen" und „Beispielspiele laden". „Würfel entscheiden" ist ausgegraut,
+solange nichts passt.
+
+Eine schon gespeicherte Sammlung bleibt beim Update unberührt (nachgemessen mit
+21 Spielen im Speicher). Verloren ginge nur eine Sammlung, die nie gespeichert
+wurde — also eine, an der nie etwas geändert wurde.
+
+## Daten suchen bei Wikidata
+
+**Warum nicht BGG:** Seit Juli 2025 verlangt BoardGameGeek für die
+XML-Schnittstelle eine Registrierung und einen persönlichen Token, der nicht
+weitergegeben werden soll. In einer App, die andere installieren, lässt er sich
+nicht unterbringen.
+
+**Wikidata** ist frei (CC0), braucht keinen Schlüssel und antwortet mit
+`origin=*` auch Anfragen aus dem Browser. Zwei Anfragen pro Suche:
+
+1. `list=search` mit `haswbstatement:P1872` — nur Einträge mit Spielerzahl.
+   Ohne diesen Filter kommt bei „Catan" zuerst die Stadt Catania.
+2. `wbgetentities` für bis zu sechs Treffer, mit Bezeichnungen und Aussagen.
+
+Ausgewertet werden P1872/P1873 (Spielerzahl), P2047 (Dauer, in Minuten
+umgerechnet, auch Spannen) sowie P136/P31 (Genre/Art → Stimmungsvorschlag,
+Tabelle `WD_STIMMUNG`). Bei mehreren Aussagen gilt der bevorzugte Rang, sonst
+alle normalen; verworfene nie. Beispiel Flügelschlag: Höchstspielerzahl 5, 7
+und 2 eingetragen — ohne Rangbeachtung wäre die Erweiterung durchgerutscht.
+
+Nicht vorhanden: Anspruch und beste Besetzung. Die Meldung sagt das, statt so
+zu tun, als sei das Formular fertig.
+
+**Drosselung:** Wikidata antwortet auf zu viele Anfragen mit 429 — und zwar
+ohne CORS-Kopf. Der Browser meldet dann nur einen Netzfehler. Die App
+unterscheidet darum über `navigator.onLine` zwischen „kein Netz" und „Wikidata
+gerade nicht erreichbar oder überlastet". Beim Testen aus einer Cloud-Maschine
+greift die Drosselung schon nach wenigen Anfragen; auf einem Handy ist das
+nicht zu erwarten.
+
+**In der veröffentlichten Claude-Seite** ist der Knopf ausgeblendet: Dort darf
+die Seite keine fremden Server ansprechen, und „Daten vorschlagen" leistet mehr.
 
 ## Das Datumsfeld
 

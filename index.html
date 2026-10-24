@@ -386,6 +386,10 @@ details.filters:not([open]) + .panel-foot{margin-top:0}
   border:1px dashed var(--line-strong); border-radius:var(--radius); padding:26px;
   text-align:center; color:var(--muted);
 }
+.empty.leer p{margin:0}
+.leer-knoepfe{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:16px}
+.wdtreffer{margin-top:4px}
+.wdtreffer .chip{text-align:left}
 
 /* ---------- Fällt raus ---------- */
 details.out{border-top:1px solid var(--line); padding-top:14px}
@@ -659,12 +663,15 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
             <label for="f-name"><span data-t="labelName">Name</span></label>
             <div class="lookup-row">
               <input type="text" id="f-name" autocomplete="off" data-t-attr="placeholder:phName" placeholder="z. B. Die Crew">
+              <button class="btn ghost" type="button" id="wdlookup" data-t="wdKnopf">Daten suchen</button>
               <button class="btn ghost" type="button" id="lookup" data-t="datenVorschlagen" hidden>Daten vorschlagen</button>
               <a class="linkbtn" id="bgglink" data-t="bggLink" target="_blank" rel="noopener noreferrer"
                  href="https://boardgamegeek.com/geeksearch.php?action=search&amp;objecttype=boardgame&amp;q=">Auf BGG nachschlagen ↗</a>
             </div>
             <p class="hint" id="lookuphint" data-t="lookupHinweis" hidden>Fragt Claude nach Spielerzahl, Dauer, Anspruch und Stimmung. Beim ersten Mal fragt die Seite um Erlaubnis; es zählt auf deine Claude-Nutzung.</p>
+            <p class="hint" id="wdhinweis" data-t="wdHinweis">„Daten suchen“ holt Spielerzahl und Dauer von Wikidata. Nur dabei geht eine Anfrage ins Internet.</p>
             <p class="lookup-status" id="lookupstatus" hidden></p>
+            <div class="chips wdtreffer" id="wdtreffer" role="group" hidden></div>
           </div>
           <div class="stack"><span data-t="labelSpielerzahl">Spielerzahl</span>
             <div class="pair">
@@ -765,7 +772,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p data-t="fussHinweis">Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung" id="fassung" data-fassung="2.7.2"></p>
+    <p class="fassung" id="fassung" data-fassung="2.8.0"></p>
   </footer>
 </div>
 
@@ -879,7 +886,9 @@ const MARKUP_EN = {
   dazuEinspielen:     "Merge in",
   sammlungErsetzen:   "Replace collection",
   fussHinweis:        "Player counts, length and difficulty are rules of thumb — correct them any time under “Edit collection”.",
-  datenVorschlagen:   "Suggest data"
+  datenVorschlagen:   "Suggest data",
+  wdKnopf:            "Find data",
+  wdHinweis:          "“Find data” fetches player count and length from Wikidata. Only then does a request go to the internet."
 };
 
 const TEXTE = {
@@ -957,7 +966,20 @@ const TEXTE = {
     nurLangeNichtChip: "Nur lange nicht Gespieltes",
 
     nichtsPasst: "Für diese Kombination gibt es nichts. Nimm eine Stimmung raus oder gib der Runde mehr Zeit.",
-    regalLeer:   "Im Regal steht noch nichts — unten Spiele hinzufügen.",
+    regalLeer:   "Dein Regal ist noch leer. Trag deine Spiele ein — oder lade ein paar Beispiele, um die App auszuprobieren.",
+    erstesSpiel: "Erstes Spiel eintragen",
+    beispieleLaden: "Beispielspiele laden",
+    wdKnopf:  "Daten suchen",
+    wdSucht:  "Suche bei Wikidata …",
+    wdNichts: n => "Wikidata kennt „" + n + "“ nicht — bitte selbst eintragen, etwa über BGG.",
+    wdWenig:  "Gefunden, aber ohne Spielerzahl und Dauer — bitte selbst eintragen.",
+    wdWahl:   "Mehrere Treffer — welches ist es?",
+    wdSpieler: "Spielerzahl", wdDauer: "Dauer", wdStimmung: "ein Stimmungsvorschlag",
+    wdFertig: (teile, ohneStimmung) => "Von Wikidata übernommen: " + teile +
+      ". Anspruch und „Glänzt bei“ bitte selbst ergänzen" + (ohneStimmung ? ", dazu eine Stimmung" : "") + ".",
+    wdOffline: "Keine Verbindung — die Suche braucht Internet.",
+    wdBelegt:  "Wikidata ist gerade nicht erreichbar oder überlastet — in ein paar Sekunden noch einmal versuchen.",
+    wdFehler: c => "Wikidata hat nicht geantwortet (" + c + ") — später noch einmal versuchen.",
 
     trefferVon: (a, b) => a + " von " + b + " Spielen",
     keinSpielMit: q => "Kein Spiel mit „" + q + "“ im Namen.",
@@ -1088,7 +1110,20 @@ const TEXTE = {
     nurLangeNichtChip: "Only long-unplayed",
 
     nichtsPasst: "There is nothing for this combination. Drop a mood or give the group more time.",
-    regalLeer:   "Nothing on the shelf yet — add games below.",
+    regalLeer:   "Your shelf is still empty. Add your games — or load a few examples to try the app out.",
+    erstesSpiel: "Add your first game",
+    beispieleLaden: "Load example games",
+    wdKnopf:  "Find data",
+    wdSucht:  "Searching Wikidata …",
+    wdNichts: n => "Wikidata does not know “" + n + "” — please fill it in yourself, for example via BGG.",
+    wdWenig:  "Found, but without player count or length — please fill it in yourself.",
+    wdWahl:   "Several matches — which one is it?",
+    wdSpieler: "player count", wdDauer: "length", wdStimmung: "a suggested mood",
+    wdFertig: (teile, ohneStimmung) => "Taken from Wikidata: " + teile +
+      ". Please add difficulty and “Shines at” yourself" + (ohneStimmung ? ", plus a mood" : "") + ".",
+    wdOffline: "No connection — the search needs the internet.",
+    wdBelegt:  "Wikidata is unreachable or busy right now — try again in a few seconds.",
+    wdFehler: c => "Wikidata did not answer (" + c + ") — try again later.",
 
     trefferVon: (a, b) => a + " of " + b + " games",
     keinSpielMit: q => "No game with “" + q + "” in its name.",
@@ -1230,9 +1265,6 @@ function spracheNachziehen(){
     if(neu === SPRACHE) return;
     spracheSetzen(neu);
     spracheAnwenden();
-    // Die Ausgangssammlung darf die Sprache wechseln, eine eigene nicht:
-    // selbst getippte Notizen sind Daten des Benutzers.
-    if(!localTouched) games = freshCollection();
     resetForm();
     render();
     updateStorageNote();
@@ -1240,92 +1272,47 @@ function spracheNachziehen(){
 }
 
 
+// Beispiele zum Ausprobieren. Das Regal beginnt leer - diese Liste kommt nur
+// auf ausdruecklichen Wunsch hinein (Knopf im leeren Regal). Bewusst bekannte
+// Titel, die in beiden Sprachen gleich heissen.
 // weight: 1 = Absacker, 5 = Kennerstück. best: [von, bis] Glanzform.
-const DEFAULT_GAMES = [
-  { name:"5-Minute Dungeon", min:2, max:5, best:[4,5], dur:[15,30], weight:1.3,
-    moods:["party","koop","schnell"],
-    note:"Echtzeit-Koop: fünf Minuten lang brüllen alle gleichzeitig Karten auf den Tisch.",
-    noteEn:"Real-time co-op: for five minutes everyone yells cards onto the table at once." },
-  { name:"Between Two Castles", min:2, max:7, best:[5,6], dur:[45,90], weight:2.5,
+const BEISPIELSPIELE = [
+  { name:"Catan", min:3, max:4, best:[4,4], dur:[60,120], weight:2.3,
     moods:["gruebeln","reden"],
-    note:"Karten draften und mit beiden Nachbarn je ein Schloss bauen — beide Hälften wollen dich.",
-    noteEn:"Draft cards and build one castle with each neighbour — both halves want you." },
-  { name:"Captain Sonar", min:2, max:8, best:[8,8], dur:[45,75], weight:2.5,
-    moods:["party","thema","koop"],
-    note:"Zwei U-Boot-Crews in Echtzeit gegeneinander. Laut, hektisch, herrlich.",
-    noteEn:"Two submarine crews against each other in real time. Loud, frantic, glorious." },
-  { name:"Codenames", min:2, max:8, best:[4,8], dur:[15,25], weight:1.3,
-    moods:["party","reden","schnell","wissen"],
-    note:"Ein Wort als Hinweis, zwei Teams, ein Attentäter. Läuft immer.",
-    noteEn:"One word as a clue, two teams, one assassin. Always works." },
-  { name:"Dorfromantik: Sakura", min:1, max:6, best:[2,4], dur:[30,60], weight:1.8,
-    moods:["entspannt","koop","gruebeln"],
-    note:"Plättchen legen, Landschaft wachsen lassen, gemeinsam den Rekord jagen. Null Aggression.",
-    noteEn:"Lay tiles, let the landscape grow, chase the record together. Zero aggression." },
-  { name:"Dune: Imperium", min:1, max:4, best:[3,4], dur:[60,120], weight:3.5,
-    moods:["gruebeln","thema"],
-    note:"Deckbau trifft Arbeitereinsatz auf Arrakis. Der Abend gehört diesem Spiel.",
-    noteEn:"Deck-building meets worker placement on Arrakis. The evening belongs to this game." },
-  { name:"Finspan", min:1, max:5, best:[2,4], dur:[40,70], weight:2.6,
+    note:"Handeln, bauen, würfeln — und hoffen, dass die Sieben ausbleibt.",
+    noteEn:"Trade, build, roll — and hope the seven stays away." },
+  { name:"Carcassonne", min:2, max:5, best:[2,3], dur:[30,45], weight:1.9,
     moods:["entspannt","gruebeln"],
-    note:"Die Flügelschlag-Maschine unter Wasser: ruhig Motor bauen, am Ende zählt das Aquarium.",
-    noteEn:"The Wingspan machine underwater: build the engine quietly, the aquarium counts at the end." },
-  { name:"Flip 7", min:3, max:18, best:[4,8], dur:[15,25], weight:1.0,
-    moods:["party","schnell"],
-    note:"Karte umdrehen oder aufhören? Push your luck in Reinform, für beliebig viele Leute.",
-    noteEn:"Flip another card or stop? Push-your-luck in its purest form, for any number of people." },
-  { name:"Herdentier", min:3, max:8, best:[4,7], dur:[20,35], weight:1.0,
-    moods:["party","reden","wissen"],
-    note:"Bloß nicht originell sein: Punkte gibt es nur, wenn du dasselbe schreibst wie die Herde.",
-    noteEn:"Do not be original: you only score when you write what the herd writes." },
-  { name:"Hitster: Movies & TV Soundtracks", min:2, max:10, best:[4,8], dur:[20,35], weight:1.0,
-    moods:["party","wissen","schnell"],
-    note:"Soundtracks erkennen und in die Zeitleiste einsortieren. Braucht ein Handy mit Musik-App.",
-    noteEn:"Recognise soundtracks and slot them into the timeline. Needs a phone with a music app." },
-  { name:"Hive Pocket", min:2, max:2, best:[2,2], dur:[15,25], weight:2.7,
-    moods:["gruebeln"],
-    note:"Abstraktes Duell mit Insektensteinen — Schach ohne Brett, passt in die Jackentasche.",
-    noteEn:"An abstract duel with insect tiles — chess without a board, fits in a coat pocket." },
-  { name:"Marvel: Remix", min:2, max:6, best:[3,5], dur:[20,30], weight:1.8,
-    moods:["schnell","gruebeln","thema"],
-    note:"Handkarten kombinieren, bis das Team zusammenpasst. Kurz, knackig, überraschend taktisch.",
-    noteEn:"Combine cards in hand until the team fits together. Short, snappy, surprisingly tactical." },
-  { name:"MicroMacro: Crime City", min:1, max:4, best:[2,4], dur:[15,45], weight:1.4,
-    moods:["koop","entspannt","wissen"],
-    note:"Wimmelbild-Krimi: Nasen an den Stadtplan, Fall für Fall lösen. Jederzeit unterbrechbar.",
-    noteEn:"A hidden-object crime story: noses on the city map, one case after another. Interruptible any time." },
-  { name:"MicroMacro: Crime City – Full House", min:1, max:4, best:[2,4], dur:[15,45], weight:1.4,
-    moods:["koop","entspannt","wissen"],
-    note:"Zweiter Stadtplan, neue Fälle — gleiche Suchtwirkung wie beim ersten.",
-    noteEn:"A second city map, new cases — just as addictive as the first." },
-  { name:"QuizWiz: Die kooperative Länder-Challenge", min:1, max:4, best:[2,4], dur:[25,45], weight:1.2,
-    moods:["wissen","koop","entspannt"],
-    note:"Länderwissen gemeinsam statt gegeneinander — mitraten dürfen am Tisch ruhig mehr.",
-    noteEn:"Country knowledge together instead of against each other — more people may happily join in." },
-  { name:"Scout", min:2, max:5, best:[3,5], dur:[15,25], weight:1.6,
-    moods:["schnell","gruebeln"],
-    note:"Kartenhand, die du nicht sortieren darfst. Kleine Regel, große Entscheidungen.",
-    noteEn:"A hand of cards you are not allowed to sort. Small rule, big decisions." },
-  { name:"Sky Team", min:2, max:2, best:[2,2], dur:[15,25], weight:2.2,
-    moods:["koop","gruebeln","thema"],
-    note:"Zu zweit ein Flugzeug landen, ohne über die entscheidenden Würfel zu reden. Konzentriert und dicht.",
-    noteEn:"Land a plane as a pair without talking about the dice that matter. Focused and tense." },
-  { name:"Smart10", min:2, max:8, best:[3,6], dur:[30,45], weight:1.2,
-    moods:["wissen","party"],
-    note:"Zehn Antworten pro Frage, du sagst, wie weit du dich traust. Quiz ohne Nerd-Vorsprung.",
-    noteEn:"Ten answers per question, and you say how far you dare. A quiz without the nerd advantage." },
-  { name:"Star Wars: The Clone Wars", min:1, max:5, best:[3,4], dur:[45,75], weight:2.8,
-    moods:["koop","thema","gruebeln"],
-    note:"Pandemie-Motor im Star-Wars-Gewand: gemeinsam Krisen löschen, jeder Held kann etwas anderes.",
-    noteEn:"The Pandemic engine in Star Wars clothing: put out crises together, every hero does something different." },
-  { name:"Time's Up! Party", min:4, max:12, best:[6,10], dur:[30,60], weight:1.0,
-    moods:["party","reden","schnell"],
-    note:"Dieselben Begriffe in drei Runden: erklären, ein Wort, pantomimisch. Garantiert laut.",
-    noteEn:"The same words in three rounds: describe, one word, mime. Guaranteed loud." },
-  { name:"Top Ten", min:4, max:9, best:[5,7], dur:[25,40], weight:1.0,
-    moods:["party","reden","koop"],
-    note:"Von 1 bis 10 auf eine schräge Frage antworten und die Reihenfolge treffen. Kooperativer Blödsinn.",
-    noteEn:"Answer an odd question from 1 to 10 and get the order right. Cooperative nonsense." }
+    note:"Plättchen anlegen, Gefolgsleute setzen. Ruhig, bis jemand eine Stadt übernimmt.",
+    noteEn:"Lay tiles, place followers. Calm — until someone takes over a city." },
+  { name:"Azul", min:2, max:4, best:[2,2], dur:[30,45], weight:1.8,
+    moods:["gruebeln","entspannt"],
+    note:"Fliesen ziehen und Muster legen. Sieht friedlich aus, ist es nicht.",
+    noteEn:"Draft tiles, build patterns. Looks peaceful, isn't." },
+  { name:"Kingdomino", min:2, max:4, best:[3,4], dur:[15,20], weight:1.2,
+    moods:["schnell","entspannt"],
+    note:"Ein kleines Königreich aus Dominosteinen, in einer Viertelstunde gebaut.",
+    noteEn:"A small kingdom of dominoes, built in a quarter of an hour." },
+  { name:"Patchwork", min:2, max:2, best:[2,2], dur:[15,30], weight:1.6,
+    moods:["gruebeln","entspannt"],
+    note:"Zu zweit Flicken zur Decke nähen. Kleines Puzzle, kluge Zeitleiste.",
+    noteEn:"Sew a quilt from patches, two players. Small puzzle, clever time track." },
+  { name:"Dixit", min:3, max:6, best:[5,6], dur:[30,30], weight:1.2,
+    moods:["party","reden"],
+    note:"Ein Bild, ein Hinweis — nicht zu deutlich, nicht zu dunkel.",
+    noteEn:"One picture, one clue — not too obvious, not too obscure." },
+  { name:"Just One", min:3, max:7, best:[5,7], dur:[20,20], weight:1.0,
+    moods:["party","koop","reden"],
+    note:"Alle geben ein Wort als Hinweis, doppelte fliegen raus. Gemeinsam raten.",
+    noteEn:"Everyone writes a one-word clue, duplicates are removed. Guess together." },
+  { name:"The Mind", min:2, max:4, best:[3,4], dur:[15,20], weight:1.1,
+    moods:["koop","schnell"],
+    note:"Karten aufsteigend ablegen — ohne ein Wort. Verblüffend.",
+    noteEn:"Play cards in ascending order — without a word. Uncanny." },
+  { name:"Love Letter", min:2, max:6, best:[4,4], dur:[20,20], weight:1.2,
+    moods:["schnell","party"],
+    note:"Sechzehn Karten, viel Bluff, eine Runde dauert Minuten.",
+    noteEn:"Sixteen cards, lots of bluffing, a round takes minutes." }
 ];
 
 // WEIGHT_BANDS, SORTS und TIMES baut spracheSetzen() - ihre Beschriftungen
@@ -1394,13 +1381,12 @@ function normalize(raw, i){
   };
 }
 
-// note/noteEn stehen beide in DEFAULT_GAMES; gespeichert wird nur die, die zur
-// Sprache passt - normalize() kennt nur das Feld note.
-const freshCollection = () => DEFAULT_GAMES
+// note/noteEn stehen beide in BEISPIELSPIELE; gespeichert wird nur die, die
+// zur Sprache passt - normalize() kennt nur das Feld note.
+const beispielSammlung = () => BEISPIELSPIELE
   .map((g, i) => normalize(Object.assign({}, g, { note: SPRACHE === "de" ? g.note : g.noteEn }), i))
   .filter(Boolean);
-let games = [];                            // gefuellt beim Start, wenn die
-                                           // Sprache feststeht
+let games = [];                            // das Regal beginnt leer
 let lastRemoved = null;
 let localTouched = false;
 
@@ -1476,6 +1462,10 @@ async function connectSample(){
   sampler = s;
   $("lookup").hidden = false;
   $("lookuphint").hidden = false;
+  // Veroeffentlichte Claude-Seiten duerfen keine fremden Server fragen; dort
+  // uebernimmt "Daten vorschlagen" die Aufgabe.
+  $("wdlookup").hidden = true;
+  $("wdhinweis").hidden = true;
 }
 
 function lookupStatus(msg, tone){
@@ -1581,6 +1571,163 @@ async function lookupGame(){
   }finally{
     lookupAbort = null;
     btn.textContent = t("datenVorschlagen");
+  }
+}
+
+/* ================= Daten suchen bei Wikidata ================= */
+/* BGG verlangt seit 2025 fuer seine Schnittstelle einen persoenlichen,
+   registrierten Schluessel, der nicht weitergegeben werden darf - in einer
+   App, die andere installieren, geht das nicht. Wikidata ist frei (CC0),
+   braucht keinen Schluessel und erlaubt Anfragen aus dem Browser
+   (origin=*). Es kennt Spielerzahl (P1872/P1873), Dauer (P2047) und Genre
+   (P136), aber weder Anspruch noch die beste Besetzung - die bleiben
+   Handarbeit, darum sagt die Meldung das auch.
+
+   Gesucht wird nur unter Eintraegen, die eine Spielerzahl haben
+   (haswbstatement:P1872): Sonst kaeme bei "Catan" zuerst die Stadt Catania. */
+
+const WD_API = "https://www.wikidata.org/w/api.php";
+const WD_MINUTEN = { Q7727:1, Q25235:60, Q11574:1/60 };   // Minute, Stunde, Sekunde
+// Genre bzw. Art -> Stimmung. Nur Vorschlag, und nur wenn noch keine gewaehlt ist.
+const WD_STIMMUNG = {
+  Q839864:["party"],                       // Partyspiel
+  Q1783817:["koop"],                       // kooperatives Brettspiel
+  Q274079:["wissen"], Q2594402:["wissen"], // Quiz, Ratespiel
+  Q15220419:["reden"],                     // Wortspiel
+  Q85801811:["reden","party"],             // Social Deduction
+  Q1150710:["gruebeln"], Q573573:["gruebeln"], Q788553:["gruebeln"],   // Strategie, abstrakt, Eurogame
+  Q1501543:["gruebeln"], Q15804899:["gruebeln"], Q1182245:["gruebeln"] // Kriegs-, Deckbau-, Deduktionsspiel
+};
+let wdAbort = null;
+let wdKandidaten = [];
+
+async function wdAbfrage(params, signal){
+  const url = WD_API + "?" + new URLSearchParams(Object.assign({ format:"json", origin:"*" }, params));
+  const r = await fetch(url, { signal });
+  if(!r.ok){ const e = new Error("HTTP " + r.status); e.code = "HTTP " + r.status; throw e; }
+  return r.json();
+}
+
+// Aussagen einer Eigenschaft: bevorzugte, sonst alle normalen; verworfene nie.
+function wdAussagen(claims, p){
+  const liste = ((claims && claims[p]) || []).filter(c =>
+    c.rank !== "deprecated" && c.mainsnak && c.mainsnak.snaktype === "value" && c.mainsnak.datavalue);
+  const bevorzugt = liste.filter(c => c.rank === "preferred");
+  return bevorzugt.length ? bevorzugt : liste;
+}
+const wdZahl = c => Number(c.mainsnak.datavalue.value.amount);
+
+function wdAuswerten(e){
+  const text = feld => { const f = e[feld] || {}; return (f[SPRACHE] || f.de || f.en || {}).value || ""; };
+  const c = e.claims || {};
+  const min = wdAussagen(c, "P1872").map(wdZahl).find(Number.isFinite) || 0;
+  const max = wdAussagen(c, "P1873").map(wdZahl).find(Number.isFinite) || 0;
+
+  // Dauer: alle Angaben (auch Spannen) einsammeln, in Minuten umrechnen.
+  const minuten = [];
+  wdAussagen(c, "P2047").forEach(a => {
+    const v = a.mainsnak.datavalue.value;
+    const faktor = WD_MINUTEN[String(v.unit || "").split("/").pop()];
+    if(!faktor) return;
+    [v.amount, v.lowerBound, v.upperBound].forEach(x => {
+      const m = Math.round(Number(x) * faktor);
+      if(Number.isFinite(m) && m > 0) minuten.push(m);
+    });
+  });
+  const dur = minuten.length ? [Math.min(...minuten), Math.max(...minuten)] : null;
+
+  const arten = ["P136", "P31"].flatMap(p => wdAussagen(c, p).map(a => a.mainsnak.datavalue.value.id));
+  const moods = [...new Set(arten.flatMap(id => WD_STIMMUNG[id] || []))];
+  if(dur && dur[1] <= 20 && !moods.includes("schnell")) moods.push("schnell");
+
+  return { id:e.id, titel:text("labels"), beschreibung:text("descriptions"),
+           min, max, dur, moods:moods.slice(0, 3) };
+}
+
+function wdTrefferZeigen(liste){
+  wdKandidaten = liste;
+  const box = $("wdtreffer");
+  box.hidden = !liste.length;
+  box.innerHTML = liste.map((k, i) => {
+    const zusatz = [(k.min || k.max) ? fmtPlayers({ min:k.min || k.max, max:k.max || k.min }) : "",
+                    k.dur ? fmtDur({ dur:k.dur }) : ""].filter(Boolean).join(" · ");
+    return '<button type="button" class="chip mini" data-wdwahl="' + i + '"' +
+      (k.beschreibung ? ' title="' + esc(k.beschreibung) + '"' : "") + ">" +
+      esc(k.titel || k.id) + (zusatz ? " · " + esc(zusatz) : "") + "</button>";
+  }).join("");
+}
+
+function wdUebernehmen(k){
+  if(!k) return;
+  const teile = [];
+  if(k.titel){ $("f-name").value = k.titel; bggLinkSetzen(); }
+  if(k.min || k.max){
+    const lo = clampInt(k.min || k.max, 1, 30, 1);
+    const hi = clampInt(k.max || k.min, lo, 30, lo);
+    $("f-min").value = lo; $("f-max").value = hi;
+    // "Glaenzt bei" muss innerhalb der Spielerzahl liegen - sonst scheitert
+    // das Speichern an einem Feld, das der Benutzer gar nicht angefasst hat.
+    const b0 = Number($("f-bestmin").value), b1 = Number($("f-bestmax").value);
+    if(($("f-bestmin").value && (b0 < lo || b0 > hi)) || ($("f-bestmax").value && (b1 < lo || b1 > hi))){
+      $("f-bestmin").value = ""; $("f-bestmax").value = "";
+    }
+    teile.push(t("wdSpieler"));
+  }
+  if(k.dur){
+    $("f-durmin").value = clampInt(k.dur[0], 1, 600, 30);
+    $("f-durmax").value = clampInt(k.dur[1], k.dur[0], 600, k.dur[0]);
+    teile.push(t("wdDauer"));
+  }
+  if(k.moods.length && !form.moods.size){
+    form.moods = new Set(k.moods);
+    renderFormChips();
+    teile.push(t("wdStimmung"));
+  }
+  wdTrefferZeigen([]);
+  lookupStatus(t("wdFertig", aufzaehlung(teile), !form.moods.size), "ok");
+}
+
+async function wdSuchen(){
+  if(wdAbort){ wdAbort.abort(); return; }                // zweiter Klick bricht ab
+  const name = $("f-name").value.trim();
+  if(!name){ lookupStatus(t("lookupErstName"), "warn"); $("f-name").focus(); return; }
+
+  const btn = $("wdlookup");
+  const abbruch = wdAbort = new AbortController();
+  let zeitUm = false;
+  const uhr = setTimeout(() => { zeitUm = true; abbruch.abort(); }, 15000);
+  btn.textContent = t("abbrechen");
+  wdTrefferZeigen([]);
+  lookupStatus(t("wdSucht"), "busy");
+
+  try{
+    const such = await wdAbfrage({ action:"query", list:"search", srlimit:"6",
+      srsearch: name + " haswbstatement:P1872" }, abbruch.signal);
+    const ids = ((such.query && such.query.search) || []).map(x => x.title).filter(x => /^Q\d+$/.test(x));
+    if(!ids.length) return lookupStatus(t("wdNichts", name), "warn");
+
+    const daten = await wdAbfrage({ action:"wbgetentities", ids:ids.join("|"),
+      props:"labels|descriptions|claims", languages:"de|en" }, abbruch.signal);
+    const kandidaten = ids.map(id => daten.entities && daten.entities[id])
+      .filter(e => e && !("missing" in e)).map(wdAuswerten)
+      .filter(k => k.min || k.max || k.dur);
+    if(!kandidaten.length) return lookupStatus(t("wdWenig"), "warn");
+
+    // Genau der getippte Titel? Dann ohne Rueckfrage nehmen.
+    const gleich = kandidaten.filter(k => k.titel.toLowerCase() === name.toLowerCase());
+    if(kandidaten.length === 1 || gleich.length === 1) return wdUebernehmen(gleich[0] || kandidaten[0]);
+    lookupStatus(t("wdWahl"), "busy");
+    wdTrefferZeigen(kandidaten.slice(0, 5));
+  }catch(e){
+    if(e && e.name === "AbortError") lookupStatus(zeitUm ? t("wdFehler", "Zeitüberschreitung / timeout") : "", zeitUm ? "warn" : "");
+    // fetch scheitert ohne Netz - aber auch, wenn Wikidata drosselt: Die
+    // Antwort 429 kommt ohne CORS-Kopf, der Browser sieht nur "gesperrt".
+    else if(e instanceof TypeError) lookupStatus(t(navigator.onLine === false ? "wdOffline" : "wdBelegt"), "warn");
+    else lookupStatus(t("wdFehler", (e && e.code) || t("fehlerWort")), "warn");
+  }finally{
+    clearTimeout(uhr);
+    if(wdAbort === abbruch) wdAbort = null;
+    btn.textContent = t("wdKnopf");
   }
 }
 
@@ -1890,7 +2037,16 @@ function renderResults(){
         return card(h.g, h.res, i === 0,
                     gewuerfelt ? "wuerfel" : (h.g.id === bestId ? "top" : ""));
       }).join("")
-    : '<p class="empty">' + esc(t(games.length ? "nichtsPasst" : "regalLeer")) + "</p>";
+    : games.length
+      ? '<p class="empty">' + esc(t("nichtsPasst")) + "</p>"
+      // Das leere Regal ist jetzt der erste Anblick fuer jeden Neuen - darum
+      // nicht nur ein Satz, sondern gleich die beiden Wege heraus.
+      : '<div class="empty leer"><p>' + esc(t("regalLeer")) + "</p>" +
+        '<div class="leer-knoepfe">' +
+          '<button class="btn" type="button" data-leer="hinzufuegen">' + t("erstesSpiel") + "</button>" +
+          '<button class="btn ghost" type="button" data-leer="beispiele">' + t("beispieleLaden") + "</button>" +
+        "</div></div>";
+  $("dice").disabled = hits.length === 0;
 
   outs.sort((a,b) => byName(a.g, b.g));
   $("outcount").textContent = t("faelltRaus", outs.length);
@@ -1994,6 +2150,7 @@ function hideUndo(){ $("undo").hidden = true; lastRemoved = null; }
 function resetForm(){
   state.editing = null;
   lookupStatus("");
+  wdTrefferZeigen([]);
   form.weight = "mittel"; form.moods.clear();
   ["f-name","f-min","f-max","f-bestmin","f-bestmax","f-durmin","f-durmax","f-note","f-played"]
     .forEach(id => { $(id).value = ""; });
@@ -2124,6 +2281,21 @@ document.addEventListener("click", ev => {
     return;
   }
 
+  if(d.leer === "hinzufuegen"){
+    $("collection").open = true;
+    $("gameform").scrollIntoView({ behavior:"smooth", block:"start" });
+    $("f-name").focus({ preventScroll:true });
+    return;
+  }
+  if(d.leer === "beispiele"){
+    games = beispielSammlung();
+    hideUndo();
+    persist();
+    render();
+    return;
+  }
+  if(d.wdwahl !== undefined){ wdUebernehmen(wdKandidaten[Number(d.wdwahl)]); return; }
+
   if(d.colsort){ state.colSort = d.colsort; saveSettings(); renderCollection(); return; }
 
   if(d.reroll){ wuerfeln(); return; }
@@ -2167,6 +2339,7 @@ $("colsearch").addEventListener("input", () => {
 });
 
 $("lookup").addEventListener("click", lookupGame);
+$("wdlookup").addEventListener("click", wdSuchen);
 $("f-name").addEventListener("input", bggLinkSetzen);
 $("gameform").addEventListener("submit", submitGame);
 $("f-cancel").addEventListener("click", () => { resetForm(); renderCollection(); });
@@ -2553,7 +2726,6 @@ function eineEbeneZurueck(){
 /* ================= Start ================= */
 
 spracheAnwenden();                         // bevor irgendetwas gezeichnet wird
-games = freshCollection();
 loadSettings();
 $("filters").open = state.filtersOpen;     // einmal beim Start, danach fuehrt
                                            // das Element selbst Buch

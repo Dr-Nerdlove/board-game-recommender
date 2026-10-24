@@ -9,6 +9,26 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.8.0] – 2026-10-24
+
+### Hinzugefügt
+
+- **„Daten suchen"** neben dem Namensfeld: holt offiziellen Titel, Spielerzahl
+  und Dauer von Wikidata, dazu einen Stimmungsvorschlag aus dem Genre. Bei
+  mehreren Treffern erscheint eine kleine Auswahl. Anspruch und „Glänzt bei"
+  kennt Wikidata nicht — die bleiben Handarbeit, die Meldung sagt das.
+  Die Anfrage geht nur beim Tippen auf den Knopf hinaus, sonst nie.
+- **Beispielspiele zum Ausprobieren**: neun bekannte Titel, zu laden mit einem
+  Knopf im leeren Regal.
+
+### Geändert
+
+- **Das Regal beginnt leer.** Die 21 Spiele des Autors sind aus App und Repo
+  entfernt. Eine schon gespeicherte Sammlung bleibt beim Update erhalten.
+- Das leere Regal zeigt jetzt zwei Wege heraus („Erstes Spiel eintragen",
+  „Beispielspiele laden"), und „Würfel entscheiden" ist ausgegraut, solange
+  nichts passt.
+
 ## [2.7.2] – 2026-10-23
 
 ### Behoben
@@ -589,7 +609,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.7.2...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.8.0...HEAD
+[2.8.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.8.0
 [2.7.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.2
 [2.7.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.1
 [2.7.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.0
