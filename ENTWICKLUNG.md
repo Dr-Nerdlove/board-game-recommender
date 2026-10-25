@@ -7,15 +7,16 @@ aufgebaut ist — das Warum steht nirgends im Quelltext und geht sonst verloren.
 ## Der Kern: eine Datei
 
 `index.html` ist die ganze Anwendung — Aufbau, Gestaltung und Logik in einer
-Datei, rund 1400 Zeilen. Kein Baukasten, keine Abhängigkeiten, kein
+Datei, rund 2600 Zeilen. Kein Baukasten, keine Abhängigkeiten, kein
 Übersetzungsschritt. Datei öffnen genügt.
 
 Darin stecken auch die beiden Schriften als Daten (rund 120 KB, Nachweis in
-`SCHRIFTEN.md`). Das ist der Grund, warum die Datei 185 KB groß ist statt 65.
-Der Gegenwert: Es gibt **keine Anfrage ans Netz, um die niemand gebeten hat**,
-und die Seite sieht offline aus wie online. (Die einzige Ausnahme ist der Knopf
-„Daten suchen", siehe „Daten suchen bei Wikidata".) Vorher kamen die Schriften von Google — die App
-versprach „kein Netz nötig" und hielt es beim Aussehen nicht.
+`SCHRIFTEN.md`). Das ist der Grund, warum die Datei rund 250 KB groß ist statt
+130. Der Gegenwert: Es gibt **keine Anfrage ans Netz, um die niemand gebeten
+hat**, und die Seite sieht offline aus wie online. (Die einzige Ausnahme ist der
+Knopf „Daten suchen", siehe „Daten suchen bei Wikidata".) Vorher kamen die
+Schriften von Google — die App versprach „kein Netz nötig" und hielt es beim
+Aussehen nicht.
 
 Das ist eine bewusste Entscheidung, keine Nachlässigkeit. Das Projekt soll auch
 in fünf Jahren noch laufen und von jemandem weiterentwickelt werden können, der
@@ -70,12 +71,27 @@ beim Feld `lastPlayed` einmal passiert.
 ## Android-App
 
 `.github/workflows/apk.yml` baut die APK auf GitHubs Maschinen, weil dort das
-Android-SDK vorinstalliert ist. Capacitor verpackt `index.html` zu einer
-App; das Ergebnis hängt dauerhaft an der Veröffentlichung `apk`.
+Android-SDK vorinstalliert ist. Capacitor verpackt `index.html` zu einer App.
 
-Der Bauplan springt **nur auf Versionsmarken** an (`v*`) und legt dafür je eine
-eigene Veröffentlichung an, die danach unverändert bleibt. „Run workflow" baut
-zum Ausprobieren, ohne zu veröffentlichen.
+Der Bauplan läuft **nur auf Abruf**: auf eine Versionsmarke (`v*`) oder über
+„Run workflow". Mit dem Haken `veroeffentlichen` entsteht eine eigene
+Veröffentlichung, die danach unverändert bleibt; ohne Haken ist es ein
+Probelauf, dessen APK nur als Arbeitsergebnis anhängt (und nach sieben Tagen
+verschwindet).
+
+**Was der Bauplan dem frisch erzeugten Android-Projekt hinzufügt** — `npx cap
+add android` legt `android/` bei jedem Bau neu an, deshalb steht alles
+Angepasste als Heredoc im Bauplan:
+
+- die nativen Bausteine `SystemfarbenPlugin` und `SprachePlugin` und eine
+  `MainActivity`, die beide anmeldet (siehe „Material You" und „Zwei Sprachen"),
+- `values-de/strings.xml` (deutscher App-Name), `locales_config.xml` samt
+  Verweis im Manifest,
+- die Signatur und die Fassungsnummer.
+
+**Java lässt sich außerhalb des Baus nicht übersetzen.** Nach jeder Änderung an
+diesen Bausteinen deshalb erst ein Probelauf ohne Haken, dann erst
+veröffentlichen.
 
 ### Das Symbol
 
@@ -89,7 +105,7 @@ im Logo. Darauf das Motiv, auf **118 % der Kreisdiagonale** skaliert und
 1,5 % nach oben gerückt. Bei diesen Werten ist nichts angeschnitten und der Rand
 bleibt gleichmäßig; sie stammen aus einem Vergleich von 112, 118 und 124 Prozent.
 
-Drei Dinge, die beim Bauen schiefgingen und wieder schiefgehen können:
+Vier Dinge, die beim Bauen schiefgingen und wieder schiefgehen können:
 
 - **Der helle Rand des Originals muss weg**, sonst zeichnet sein
   Anti-Aliasing-Saum die Silhouette der alten Kachel in die Scheibe. Flutfüllung
@@ -154,10 +170,11 @@ hier etwas ändert: `window.Capacitor` wird von drei Stellen zusammengesetzt
 (`JSExport.getGlobalJS`, `native-bridge.js`, `JSExport.getPluginJS`), und nur
 was dort steht, ist in der App vorhanden.
 
-Nachstellen lässt sich das im Browser: Die Datei `echt.mjs` in den Notizen baut
-genau diese drei Stellen nach — ausdrücklich ohne `registerPlugin` — und prüft
-alle vier Fälle (Browser, App, Abbruch, App ohne die Bausteine). Ein Test, der
-stattdessen die eigene Annahme nachbaut, geht durch und beweist nichts.
+Nachstellen lässt sich das im Browser mit einer Attrappe, die genau diese drei
+Stellen nachbaut — ausdrücklich ohne `registerPlugin` — und alle vier Fälle
+prüft (Browser, App, Abbruch, App ohne die Bausteine). Ein Test, der
+stattdessen die eigene Annahme nachbaut, geht durch und beweist nichts. (Die
+Prüfskripte waren Wegwerf-Dateien und liegen nicht im Repo.)
 
 ### Material You
 
@@ -172,8 +189,8 @@ Weg an nativem Code vorbei.
 `getIdentifier("system_accent1_600", "color", "android")` — über den Namen statt
 über `android.R.color.*`, damit es auf älteren Geräten einfach wegfällt statt zu
 scheitern. Der Bauplan schreibt die Datei bei jedem Durchlauf neu, zusammen mit
-einer `MainActivity`, die sie anmeldet; `npx cap add android` erzeugt das
-Projekt ja jedes Mal frisch. Das `registerPlugin` muss **vor** `super.onCreate`
+einer `MainActivity`, die sie (und das `SprachePlugin`) anmeldet; `npx cap add
+android` erzeugt das Projekt ja jedes Mal frisch. Das `registerPlugin` muss **vor** `super.onCreate`
 stehen — dort wird die Brücke gebaut, danach angemeldete Bausteine kommen zu
 spät (nachzulesen in `BridgeActivity.onCreate`).
 
@@ -188,8 +205,8 @@ für weiße Schrift, hilft kein Weitersuchen bei der Schrift — heller als Stuf
 geht sie nicht, also wird die Fläche nachgedunkelt. Bei einem grünen
 Hintergrundbild ist der Knopfton `#318c4f`, und Weiß darauf schafft nur 4,0.
 
-Prüfen lässt sich das ohne Gerät: `materialyou.mjs` in den Notizen stellt
-`Capacitor.Plugins.Systemfarben` nach und schickt erfundene Paletten durch —
+Prüfen lässt sich das ohne Gerät: Eine Attrappe für
+`Capacitor.Plugins.Systemfarben` schickt erfundene Paletten durch —
 blau, rot, grün, gelb und eine untaugliche aus lauter Mittelgrau. Erwartet wird:
 vier Paletten greifen in Hell und Dunkel mit allen Abständen über 4,5:1, die
 untaugliche fällt auf die eigenen Farben zurück.
@@ -265,10 +282,12 @@ bricht ab, wenn eine abweicht — dieser Vergleich ist die eigentliche Absicheru
 | Stelle | Form |
 | --- | --- |
 | `package.json` | `"version": "1.2.3"` |
-| `index.html` | `Fassung 1.2.3` im Fuß |
+| `index.html` | `data-fassung="1.2.3"` am Fuß-Element |
 | `CHANGELOG.md` | Abschnitt `## [1.2.3] – JJJJ-MM-TT` |
 
-Danach gibt es zwei Wege, und beide landen an derselben Stelle:
+Ein Push auf `main` aktualisiert die **Web-Version** von selbst (siehe dort).
+Die **APK** gibt es nur auf Abruf, und dafür gibt es zwei Wege, die an derselben
+Stelle landen:
 
 **Im Browser** — Reiter „Actions" → „Android-App bauen" → „Run workflow",
 Haken bei `veroeffentlichen`. Die Marke wird dabei angelegt.
@@ -391,8 +410,9 @@ hineinschreiben, weil der Ordner `android/` bei jedem Bau neu entsteht.
 ## Zwei Sprachen
 
 Die Oberfläche spricht Deutsch und Englisch. **Einen eigenen Umschalter gibt es
-bewusst nicht** — Android hat selbst einen, unter Einstellungen → Apps →
-Spieleabend → Sprache, und der gilt systemweit für alle Apps gleich.
+bewusst nicht**: Die Sprache kommt vom Gerät. Auf Android 13 aufwärts lässt sie
+sich zusätzlich für die App allein einstellen (Einstellungen → Apps →
+Spieleabend → Sprache); die Web-Version folgt der Sprache des Browsers.
 
 ### Woher die Sprache kommt
 
@@ -460,8 +480,8 @@ getippte Notizen rührt die Sprachwahl nicht an — es sind Daten des Benutzers,
 keine Beschriftung.
 
 **Die Fassungsnummer** steht im Fuß nicht mehr als Text, sondern als
-`data-fassung` am Element; das Skript setzt daraus „Fassung 2.7.0" oder
-„Version 2.7.0". So bleibt die Nummer eine einzige Stelle, und der Bauplan
+`data-fassung` am Element; das Skript setzt daraus „Fassung 1.2.3" oder
+„Version 1.2.3". So bleibt die Nummer eine einzige Stelle, und der Bauplan
 prüft sie weiterhin — er sucht jetzt nach `data-fassung="…"`.
 
 **Der Name im App-Menü** folgt derselben Regel, aber über Android:
@@ -585,6 +605,13 @@ zurück.
   dafür entweder Netz oder viel Speicher, und die Rechtelage bei Verlagsbildern
   ist unklar. Der Gewinn wiegt den Verlust der Offline-Eigenschaft nicht auf.
 - **Kein Heimserver mehr.** Bis 1.4.1 lag ein Node-Server bei, der die Sammlung
-  im Heimnetz teilte, samt Windows-Dienst. Das Projekt ist eine Android-App; der
-  Server war Wartungsaufwand ohne Nutzen. Geschichte: `git log --diff-filter=D`.
+  im Heimnetz teilte, samt Windows-Dienst. Das Projekt ist eine Android-App mit
+  Web-Version; der Server war Wartungsaufwand ohne Nutzen. Geschichte:
+  `git log --diff-filter=D`.
+- **Keine native iOS-App.** Dafür bräuchte es ein bezahltes Apple-Entwicklerkonto
+  (99 $ im Jahr); ohne läuft eine selbst gebaute App nur sieben Tage. Die
+  Web-Version auf dem Home-Bildschirm ersetzt sie kostenlos.
+- **Keine Claude-Artifact-Fassung mehr.** Die Seite lief einmal zusätzlich als
+  Artifact, mit Konto-Speicher und „Daten vorschlagen" über Claude. Beides ist
+  mit 2.9.2 entfernt.
 - **Keine Anmeldung.** Die Sammlung liegt auf dem Gerät, nicht auf einem Dienst.
