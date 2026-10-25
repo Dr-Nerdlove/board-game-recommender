@@ -2,19 +2,27 @@
 
 Kurzorientierung für eine neue Sitzung an diesem Projekt — egal mit welchem
 Werkzeug. Ausführlicher und mit Begründungen: `ENTWICKLUNG.md`. Für Benutzer:
-`README.md`, englisch `README.en.md` — wer das eine ändert, ändert das
-andere mit.
+`README.md` (englisch).
 
 ## Was das ist
 
 Entscheidungshilfe für den Spieleabend: Welches Brettspiel aus der eigenen
 Sammlung passt zur heutigen Runde (Spielerzahl, Stimmung, Anspruch, Zeit)?
 Alles steckt in `index.html` — eine Datei, kein Baukasten, keine
-Abhängigkeiten, kein Übersetzungsschritt.
+Abhängigkeiten, kein Übersetzungsschritt. Das Regal beginnt **leer**; die neun
+`BEISPIELSPIELE` kommen nur auf Knopfdruck hinein.
 
-**Das Ziel ist die Android-App.** Seit 2.0.0 gibt es keinen Heimserver und
-keine Windows-Skripte mehr; was hier liegt, dient dem APK-Bau. Die Seite lässt
-sich weiterhin einfach im Browser öffnen.
+**Zwei Wege zum Benutzer, dieselbe Datei:**
+
+- **Android-App** (Capacitor): `apk.yml` baut sie, nur auf Abruf.
+- **Web-Version auf GitHub Pages**, vor allem fürs iPhone: `pages.yml`
+  veröffentlicht bei **jedem Push auf `main`**, der die Webdateien berührt.
+  Das Repo ist deshalb öffentlich — es gehört nichts hinein, was geheim bleiben
+  muss (Schlüssel und Passwort liegen als GitHub-Secrets).
+
+Es gibt weder Heimserver noch Windows-Skripte noch eine Claude-Artifact-Fassung
+mehr; die Geschichte steht in `ENTWICKLUNG.md`. Alles speichert auf dem Gerät,
+ein Konto gibt es nicht.
 
 ## Sprache
 
@@ -22,8 +30,14 @@ sich weiterhin einfach im Browser öffnen.
 Code und Commit-Meldungen. Bitte beibehalten.
 
 **Die Oberfläche ist zweisprachig** und folgt der Systemsprache — ohne
-Einstellung. Wer Text in der App ändert, ändert ihn an *beiden* Stellen; wie
-das aufgebaut ist, steht in `ENTWICKLUNG.md` unter „Zwei Sprachen".
+Einstellung im Programm; auf Android 13 aufwärts lässt sie sich über die
+Systemeinstellungen der App festlegen. Wer Text ändert, ändert ihn in *beiden*
+Sprachen (`MARKUP_EN` für feste Beschriftungen, `TEXTE` für alles, was das
+Skript baut); Näheres in `ENTWICKLUNG.md` unter „Zwei Sprachen".
+
+**Die Schlüssel der gespeicherten Daten werden nie übersetzt** (`party`,
+`gruebeln`, `leicht` …). Sie stecken in jeder Sicherung; wer sie ändert, macht
+vorhandene Sicherungen unlesbar.
 
 **Das README ist englisch**, es ist die Außenseite des Projekts.
 
@@ -35,13 +49,16 @@ umschrieben („moeglicherweise").
 | Datei | Zweck |
 | --- | --- |
 | `index.html` | die ganze Anwendung |
-| `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen |
-| `sw.js` | Service Worker der Web-Version |
+| `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen; schreibt dabei auch die nativen Bausteine (Java) und die Android-Sprachlisten |
+| `sw.js` | Service Worker der Web-Version (nicht in der App) |
 | `.github/workflows/pages.yml` | veröffentlicht die Web-Version auf GitHub Pages |
-| `icon-*.png`, `manifest.webmanifest` | Symbole fürs Handy |
+| `icon-*.png`, `app-icon-*.png`, `manifest.webmanifest` | Symbole |
+| `logo.png`, `screenshots/` | Bilder für das README |
 | `CHANGELOG.md` | Änderungshistorie, gepflegt bei jeder Fassung |
 | `README.md` | Anleitung für Benutzer, auf Englisch |
+| `ENTWICKLUNG.md` | Begründungen und Geschichte der Entscheidungen |
 | `SCHRIFTEN.md` | Lizenznachweis der eingebetteten Schriften |
+| `LICENSE` | GPL-3.0-oder-später (die Schriften behalten die OFL 1.1) |
 
 ## Vor dem Ändern von `index.html` lesen
 
@@ -50,10 +67,14 @@ es beim Bearbeiten still verloren: `normalize()`, `submitGame()`, die
 Export-Projektion in `renderCollection()` und gegebenenfalls `startEdit()` /
 `resetForm()`. Dieser Fehler ist schon einmal passiert.
 
-Die Datei ist 185 KB groß, weil zwei Schriften als Daten darin stecken. Nicht
+Die Datei ist rund 250 KB groß, weil zwei Schriften als Daten darin stecken. Nicht
 erschrecken und nicht „aufräumen": Sie sind der Grund, warum die App ohne Netz
 aussieht wie mit. Lizenznachweis in `SCHRIFTEN.md`, Begründung in
 `ENTWICKLUNG.md`.
+
+Die Fassungsnummer steht im Fuß als `data-fassung="1.2.3"` am Element, nicht
+als Text; das Skript setzt daraus „Fassung" bzw. „Version". Der Bauplan sucht
+genau diese Schreibweise.
 
 Der Innenabstand von `.wrap` steht an **zwei** Stellen (normale Regel und
 `@media (max-width:520px)`) und enthält in beiden die Variablen `--sicher-*`.
@@ -72,14 +93,21 @@ den Fingerabdruck ins Protokoll — er muss gleich bleiben. Hintergrund in
 ## Eine neue Fassung herausgeben
 
 Die Nummer steht an drei Stellen und muss überall gleich sein, sonst bricht der
-Bau ab: `package.json`, der Fuß in `index.html` (`Fassung 1.2.3`) und ein
+Bau ab: `package.json`, `data-fassung="1.2.3"` in `index.html` und ein
 Abschnitt `## [1.2.3]` in `CHANGELOG.md`.
 
-Dann entweder `git tag v1.2.3 && git push origin v1.2.3` — oder, **aus einer
+Ein Push auf `main` aktualisiert die **Web-Version** von selbst. Die **APK**
+entsteht nur auf Abruf, und zwar entweder `git tag v1.2.3 && git push origin v1.2.3` — oder, **aus einer
 Sitzung heraus notwendig**, im Reiter „Actions" den Bauplan mit dem Haken
-`veroeffentlichen` starten. Marken lassen sich von hier aus nicht schieben,
+`veroeffentlichen` (über die GitHub-Werkzeuge: `run_workflow` mit der Eingabe
+`veroeffentlichen`). Marken lassen sich von hier aus nicht schieben,
 der Server antwortet mit HTTP 403; Branch-Pushes gehen. Näheres in
 `ENTWICKLUNG.md`.
+
+**Nach einer Änderung an den nativen Bausteinen** (Java in `apk.yml`,
+Manifest, Sprachlisten) erst einen **Probelauf ohne Haken** machen: Java lässt
+sich hier nicht übersetzen, erst der Bau zeigt, ob es trägt. Ein Fehler dort
+kostet sonst eine verbrannte Fassungsnummer.
 
 ## Zwei Regeln für die Oberfläche
 
@@ -95,11 +123,11 @@ der Server antwortet mit HTTP 403; Branch-Pushes gehen. Näheres in
 Es gibt keine automatischen Tests. Bewährt hat sich:
 
 ```bash
-# Syntax der Seite
-python3 -c "s=open('index.html').read(); open('/tmp/app.js','w').write(s[s.index('<script>')+8:s.index('</script>')])"
-node --check /tmp/app.js
+# Syntax der Seite (und des Service Workers)
+sed -n '/^<script>/,/^<\/script>/p' index.html | sed '1d;$d' > /tmp/app.js
+node --check /tmp/app.js && node --check sw.js
 
-# Ausliefern, um sie im Browser zu pruefen
+# Ausliefern, um sie im Browser zu pruefen (localhost darf den Service Worker)
 python3 -m http.server 8111
 ```
 
@@ -118,9 +146,17 @@ Klick neu suchen.
 Kommandozeile und beendet die laufende Shell. `pkill -x node` benutzen oder
 die Prozessnummer merken.
 
-Windows-Skripte lassen sich hier **nicht** ausführen. Sie wurden statisch
-geprüft: reines ASCII, ausgeglichene Klammern, keine Variable mit
-Parameternamen, Funktionen vor ihrer Nutzung definiert.
+**Das Regal ist beim Start leer.** Ein Test, der Spiele braucht, klickt zuerst
+`[data-leer="beispiele"]` (oder schreibt `spieleabend.sammlung` in den Speicher).
+
+**Die Capacitor-Brücke nachbauen**, wenn ein Test „in der App" laufen soll: als
+fertige Objekte unter `window.Capacitor.Plugins` (`isNativePlatform`,
+`Sprache.lesen`, …). Ein `registerPlugin` gibt es dort nicht — das hat schon
+einmal einen Fehler verdeckt, weil der Test es still mitlieferte.
+
+**Wikidata drosselt Cloud-Maschinen** mit HTTP 429 (ohne CORS-Kopf, der Browser
+meldet nur einen Netzfehler). Die Auswertung darum mit Antworten im
+Wikidata-Format testen (`page.setRequestInterception`), nur einzelne Fälle live.
 
 ## Haltung, die sich bewährt hat
 
