@@ -160,6 +160,29 @@ Wikidata-Format testen (`page.setRequestInterception`), nur einzelne Fälle live
 
 ## Haltung, die sich bewährt hat
 
+**Wer der Besitzer ist und wie er arbeiten will:**
+
+- Der Besitzer ist **kein Programmierer**. Antworten auf **Deutsch**, ohne
+  Fachwörter, wo es auch einfacher geht; bei Entscheidungen ein klarer Vorschlag
+  statt einer Aufzählung aller Möglichkeiten.
+- **Bauen und veröffentlichen darf ohne Rückfrage geschehen**, wenn die Änderung
+  geprüft ist („du darfst einfach bauen"). Fragen kosten ihn mehr, als sie
+  nützen. Ausnahme: alles, was sich nicht zurücknehmen lässt (Schlüssel
+  tauschen, Verlauf umschreiben, etwas löschen, das nicht im Repo liegt).
+- **Direkt auf `main` arbeiten ist hier der eingespielte Weg**; Pull Requests
+  nur, wenn er darum bittet.
+- **Erst messen, dann behaupten — und Fehler offen sagen.** Er verlässt sich auf
+  die Zusicherung „geprüft"; wo etwas nur im Browser statt auf einem echten
+  Gerät geprüft werden konnte, gehört das dazu. Was sich hier nicht prüfen lässt
+  (Wirkung auf dem Handy, Java-Übersetzung), ausdrücklich benennen.
+- **Ein Gerät hat er nur zum Ausprobieren:** Rückmeldungen kommen mit
+  Bildschirmfoto vom Handy. Danach messen, nicht nach Gefühl nachbessern.
+- **Vor jedem Update mit Folgen für gespeicherte Daten** daran erinnern, vorher
+  eine Sicherung zu machen („Sicherung & Umzug").
+- **Kleine, klar umrissene Aufträge** darf ein günstigeres Modell als Hilfskraft
+  erledigen; das Ergebnis trotzdem selbst nachmessen, bevor es veröffentlicht
+  wird.
+
 - Erst nachsehen, dann behaupten. Mehrere Fehler in diesem Projekt entstanden
   aus geratenen Adressen und Annahmen über Dateien.
 - Keine Zeile einbauen, die auf jeder Karte steht — was alle teilen, sagt
