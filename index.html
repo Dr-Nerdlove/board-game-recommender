@@ -784,7 +784,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p data-t="fussHinweis">Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung" id="fassung" data-fassung="2.9.0"></p>
+    <p class="fassung" id="fassung" data-fassung="2.9.1"></p>
   </footer>
 </div>
 
@@ -991,7 +991,7 @@ const TEXTE = {
       ". Anspruch und „Glänzt bei“ bitte selbst ergänzen" + (ohneStimmung ? ", dazu eine Stimmung" : "") + ".",
     wdOffline: "Keine Verbindung — die Suche braucht Internet.",
     wdBelegt:  "Wikidata ist gerade nicht erreichbar oder überlastet — in ein paar Sekunden noch einmal versuchen.",
-    iosHinweis: "Als App nutzen: in Safari auf Teilen tippen, dann „Zum Home-Bildschirm“. So startet die Seite wie eine App, läuft offline – und iOS löscht deine Sammlung nicht nach ein paar Tagen ohne Besuch.",
+    iosHinweis: "Als App nutzen: in Safari auf Teilen tippen, dann „Zum Home-Bildschirm“. So startet die Seite wie eine App, läuft offline – und iOS löscht deine Sammlung nicht nach ein paar Tagen ohne Besuch. Wichtig: Spiele erst dort eintragen. Safari und die App auf dem Home-Bildschirm haben getrennte Speicher; schon hier Eingetragenes ziehst du über „Sicherung & Umzug“ um.",
     iosWeg: "Verstanden",
     wdFehler: c => "Wikidata hat nicht geantwortet (" + c + ") — später noch einmal versuchen.",
 
@@ -1137,7 +1137,7 @@ const TEXTE = {
       ". Please add difficulty and “Shines at” yourself" + (ohneStimmung ? ", plus a mood" : "") + ".",
     wdOffline: "No connection — the search needs the internet.",
     wdBelegt:  "Wikidata is unreachable or busy right now — try again in a few seconds.",
-    iosHinweis: "Use it as an app: in Safari tap Share, then “Add to Home Screen”. It then starts like an app, works offline – and iOS will not delete your collection after a few days without a visit.",
+    iosHinweis: "Use it as an app: in Safari tap Share, then “Add to Home Screen”. It then starts like an app, works offline – and iOS will not delete your collection after a few days without a visit. Important: add your games there. Safari and the home-screen app keep separate storage; anything entered here moves over via “Backup & moving”.",
     iosWeg: "Got it",
     wdFehler: c => "Wikidata did not answer (" + c + ") — try again later.",
 
@@ -1417,6 +1417,7 @@ function updateStorageNote(msg){
 
 function persist(){
   localTouched = true;
+  speicherFestmachen();
   try{ localStorage.setItem(COLLECTION_KEY, JSON.stringify({ games })); }catch(e){/* Privatmodus */}
   if(dbDoc){
     dbDoc.set({ games, updatedAt:Date.now() }).then(
@@ -2782,6 +2783,23 @@ function iosHinweisZeigen(){
     try{ localStorage.setItem(IOSHINWEIS, "weg"); }catch(e){/* Privatmodus */}
   });
   $("ioshinweis").hidden = false;
+}
+
+// Bittet den Browser, die Daten dieser Seite nicht von selbst zu loeschen,
+// wenn der Speicher knapp wird. Erst beim ersten Speichern, nicht beim
+// Oeffnen: Firefox fragt dafuer nach, und die Frage soll kommen, wenn es
+// etwas zu schuetzen gibt. Chrome entscheidet still. In der Android-App
+// unnoetig - dort raeumt niemand den Speicher einer App weg. Gegen die
+// 7-Tage-Regel von Safari hilft das nicht; dagegen hilft nur der
+// Home-Bildschirm.
+let speicherErbeten = false;
+function speicherFestmachen(){
+  if(speicherErbeten) return;
+  speicherErbeten = true;
+  if(inNativerApp() || window.claude) return;
+  const st = navigator.storage;
+  if(!st || !st.persist || !st.persisted) return;
+  st.persisted().then(fest => fest || st.persist()).catch(() => {});
 }
 
 // Offline-Dienst (sw.js): nur in der Web-Version. Nicht in der Android-App -

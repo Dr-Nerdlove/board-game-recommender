@@ -567,6 +567,21 @@ Skriptspeicher von Seiten, die sieben Tage nicht besucht wurden. Web-Apps vom
 Home-Bildschirm sind ausgenommen. Darum die Box — und darum der Rat zur
 Sicherung. Das ist bei `localStorage` kein Fehler der Seite, sondern iOS.
 
+### Zwei Fallen der Web-Version
+
+**Getrennte Speicher auf iOS.** Safari-Tab und Home-Bildschirm-App teilen sich
+keinen `localStorage`. Wer im Tab eine Sammlung anlegt und die Seite danach auf
+den Home-Bildschirm legt, findet dort ein leeres Regal. Der iPhone-Hinweis sagt
+darum ausdrücklich: erst auf den Home-Bildschirm, dann eintragen — und nennt den
+Umzug über „Sicherung & Umzug".
+
+**Speicher räumt der Browser selbst.** Ohne Weiteres darf ein Browser die Daten
+einer Seite löschen, wenn Platz knapp wird. `speicherFestmachen()` bittet beim
+ersten Speichern um dauerhaften Speicher (`navigator.storage.persist()`) —
+bewusst nicht beim Öffnen, weil Firefox dafür nachfragt und die Frage erst
+Sinn ergibt, wenn es etwas zu schützen gibt. Gegen Safaris 7-Tage-Regel hilft
+das nicht.
+
 ## Das Datumsfeld
 
 `<input type="date">` zeigt das Format der **Systemsprache**, nicht das der

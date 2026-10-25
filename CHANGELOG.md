@@ -9,6 +9,18 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.9.1] – 2026-10-25
+
+### Geändert
+
+- Der iPhone-Hinweis warnt jetzt vor der eigentlichen Falle: Safari-Tab und
+  Home-Bildschirm-App haben **getrennte Speicher**. Spiele also erst in der
+  App auf dem Home-Bildschirm eintragen; schon im Tab Eingetragenes zieht man
+  über „Sicherung & Umzug" um. Das README sagt dasselbe und listet, worauf
+  Nutzer der Web-Version sonst achten sollten.
+- Die Web-Version bittet beim ersten Speichern um dauerhaften Speicher, damit
+  der Browser die Sammlung nicht bei Platzmangel von selbst löscht.
+
 ## [2.9.0] – 2026-10-25
 
 ### Hinzugefügt
@@ -622,7 +634,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.9.0...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.9.1...HEAD
+[2.9.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.1
 [2.9.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.0
 [2.8.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.8.0
 [2.7.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.7.2

@@ -88,10 +88,28 @@ account): the page is also published as a web app.
 
 After the first visit it runs offline.
 
-**Important:** as a plain website tab, Safari deletes the stored data after
-about **7 days without a visit** — your collection would be gone. As an app on
-the home screen it is not affected. So add it to the home screen, and keep
-backups (see *Backup & moving*).
+**Important — two things on iPhone:**
+
+- **Add it to the home screen first, then enter your games.** Safari and the
+  home-screen app keep **separate storage**: games entered in a Safari tab do
+  not show up in the home-screen app. Already started in Safari? Move the
+  collection over with **Backup & moving** → **Copy as text**, then paste it
+  into the app and tap **Replace collection**.
+- As a plain website tab, Safari deletes the stored data after about **7 days
+  without a visit**. On the home screen that does not happen.
+
+**For everyone using the web version** (iPhone, Android browser, computer):
+
+- The collection lives **in that browser on that device** — every browser has
+  its own, nothing syncs. Moving between devices works through backups.
+- **Clearing browser data clears the collection too.** Make a backup now and
+  then.
+- The first visit needs the internet; after that it works offline. Only
+  **Find data** always needs a connection.
+- Updates arrive by themselves the next time you open it online.
+- On first save the page asks the browser to keep its data permanently
+  (Firefox may show a prompt for that). That protects against clean-ups when
+  storage runs low — not against Safari's 7-day rule.
 
 The Android extras (Material You colours, the back button, per-app language)
 are simply absent. "Save as file" puts the backup in the Files app.
