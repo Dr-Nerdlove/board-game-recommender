@@ -20,7 +20,8 @@ with the reason.
 
 An **Android app**, and underneath it a single HTML file: no build system, no
 dependencies, no account and **no request to the internet unless you ask for
-one** — even the fonts are baked in. The same file opens in a browser by
+one** — even the fonts are baked in. The same page runs as a web app (for
+iPhone and iPad, or any browser) and opens from a local file by
 double-clicking it.
 
 The shelf starts **empty**: you add your own games. To try the app first, the
@@ -52,8 +53,8 @@ Every version gets its own release, which stays unchanged afterwards. What
 changed is written there and in the [changelog](CHANGELOG.md). Which version you
 are running is at the very bottom of the page.
 
-The app contains everything and needs **no network**. Your collection lives in
-the app's storage, on this phone.
+The app contains everything and needs **no network** (only **Find data**
+does). Your collection lives in the app's storage, on this phone.
 
 **Backup — important before switching phones.** Under **Edit collection** →
 **Backup & moving**:
@@ -66,11 +67,14 @@ the app's storage, on this phone.
 - **Read a file** — on the new device, pick the backup, then **Replace
   collection**.
 
-**Building a new version:** the *Actions* tab → *Android-App bauen* →
-*Run workflow*, with the "veroeffentlichen" (publish) box ticked. A few minutes
-later the new release is there with its APK. Without the tick it is only a trial
-build. Pushing a tag `v1.2.3` does the same thing. Nothing builds on its own — a
-change to `index.html` does not trigger a build.
+**Building a new version:**
+
+- **Android app:** the *Actions* tab → *Android-App bauen* → *Run workflow*,
+  with the "veroeffentlichen" (publish) box ticked. A few minutes later the new
+  release is there with its APK. Without the tick it is only a trial build.
+  Pushing a tag `v1.2.3` does the same thing. The APK never builds on its own.
+- **Web version:** updates itself — every push to `main` that touches the web
+  files publishes it again (*Web-Version veroeffentlichen*).
 
 The app is signed with a fixed key of its own; the fingerprint is given with
 every release. Because it does not come from the Play Store, Android still shows
@@ -150,8 +154,6 @@ At the bottom of the page: **Edit collection**.
   shines (the sweet-spot badge depends on it).
 - **Find data** — type the title and the app fetches player count and length
   from Wikidata, plus a suggested mood (see below).
-- **Suggest data** — only on the published Claude page: type in just the title
-  and Claude fills in the rest (see below).
 - **Change** — fills the same form with the existing game. It also holds **Last
   played** as a date field: fill it in, correct it or clear it (empty means
   "never"). It only appears when changing — a freshly added game counts as never
@@ -168,7 +170,7 @@ At the bottom of the page: **Edit collection**.
   name, players, length, difficulty or **Long unplayed**. The heading **Sort by**
   sits above the row — it looks like the filters but does something else.
 - **Backup & moving** — the whole collection as text, to keep, to add to
-  (**Merge in**) or to replace; also the way in for BGG data (see below).
+  (**Merge in**) or to replace.
 
 ### Find data (Wikidata)
 
@@ -193,55 +195,30 @@ the button. Why not BoardGameGeek directly? Since 2025 BGG requires a personal,
 registered key for its interface, and that key must not be shared — so it
 cannot ship inside an app that other people install.
 
-### Typing in just the title (Claude page only)
+### Difficulty and best player count from BGG
 
-Next to the name field, the published page has a **Suggest data** button. It
-asks Claude for player count, best player count, length, difficulty, mood and a
-sentence of notes, and puts it all into the form — nothing is saved until you
-tap **Put on the shelf**. So the suggestion is always open to correction, and
-that is exactly how it is meant:
-
-- Claude knows many games, but not all of them, and editions differ. If it does
-  not know a game for certain, it says so instead of inventing numbers. Even so:
-  **give the values a quick look before saving.**
-- The title is set to the official spelling if it differs — the line under the
-  field says so when that happens.
-- The query runs on your Claude usage; the first time, the page asks for
-  permission. A second click on the button cancels a running query.
-
-The button only appears in the published page. A locally opened `index.html` has
-no access to Claude and hides it.
-
-### Taking a single game from BGG (no terminal needed)
-
-For a single game you do not need a script:
+**Find data** cannot supply difficulty or "Shines at". BoardGameGeek has both:
 
 1. Under **Edit collection**, type the title into the name field.
 2. **Look up on BGG ↗** opens the BGG search for that title in a new tab. Click
    the game there.
-3. The BGG page has all the numbers you need at the top right: *Players*,
-   *Playing Time*, *Weight* — and in the *Community* box, under "Best", the
-   player count it plays best at.
-4. Transfer the numbers into the form. The *Weight* (1–5) becomes the
-   difficulty: up to 1.5 easy, 1.5–2.6 medium, from 2.6 demanding — the
-   conversion is also written under the difficulty buttons.
+3. The BGG page has the numbers at the top right: *Weight* — and in the
+   *Community* box, under "Best", the player count it plays best at. (*Players*
+   and *Playing Time* are there too, if **Find data** did not know the game.)
+4. Transfer them into the form. The *Weight* (1–5) becomes the difficulty: up
+   to 1.5 easy, 1.5–2.6 medium, from 2.6 demanding — the conversion is also
+   written under the difficulty buttons.
 5. Pick a mood, write a note, **Put on the shelf**.
 
-The page cannot query BGG itself: published Artifact pages may not talk to
-foreign servers, and the BGG XML API does not allow browser access from other
-sites anyway. Hence the detour via the link and the form.
+The page cannot query BGG itself (see above), hence the detour via the link and
+the form.
 
 ### Where the collection lives
 
-The line above the form says it:
-
-- **In the app and in the browser**, on that particular device. Moving to
-  another device: via **Backup & moving**.
-- **As a published Claude page**, additionally in the account — then phone and
-  laptop see the same collection.
-
-In both cases it is written to the device as well, so that something is there
-offline too.
+**On the device you are using** — in the app's storage on Android, in the
+browser's storage for the web version. Nothing syncs and nothing leaves the
+device; the line above the form says so. Moving to another device works through
+**Backup & moving**.
 
 The example games live in `BEISPIELSPIELE` in `index.html`; they only reach the
 collection when someone taps **Load example games**. An entry looks like this:
