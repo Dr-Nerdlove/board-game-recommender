@@ -664,7 +664,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
   <details class="panel" id="collection">
     <summary data-t="sammlungBearbeiten">Sammlung bearbeiten</summary>
     <div class="col-body">
-      <p class="storage-note" id="storagenote" data-mode="local">Sammlung wird gespeichert …</p>
+      <p class="storage-note" id="storagenote" data-mode="local"></p>
 
       <p class="undo" id="undo" hidden></p>
 
@@ -676,11 +676,9 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
             <div class="lookup-row">
               <input type="text" id="f-name" autocomplete="off" data-t-attr="placeholder:phName" placeholder="z. B. Die Crew">
               <button class="btn ghost" type="button" id="wdlookup" data-t="wdKnopf">Daten suchen</button>
-              <button class="btn ghost" type="button" id="lookup" data-t="datenVorschlagen" hidden>Daten vorschlagen</button>
               <a class="linkbtn" id="bgglink" data-t="bggLink" target="_blank" rel="noopener noreferrer"
                  href="https://boardgamegeek.com/geeksearch.php?action=search&amp;objecttype=boardgame&amp;q=">Auf BGG nachschlagen ↗</a>
             </div>
-            <p class="hint" id="lookuphint" data-t="lookupHinweis" hidden>Fragt Claude nach Spielerzahl, Dauer, Anspruch und Stimmung. Beim ersten Mal fragt die Seite um Erlaubnis; es zählt auf deine Claude-Nutzung.</p>
             <p class="hint" id="wdhinweis" data-t="wdHinweis">„Daten suchen“ holt Spielerzahl und Dauer von Wikidata. Nur dabei geht eine Anfrage ins Internet.</p>
             <p class="lookup-status" id="lookupstatus" hidden></p>
             <div class="chips wdtreffer" id="wdtreffer" role="group" hidden></div>
@@ -784,7 +782,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p data-t="fussHinweis">Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung" id="fassung" data-fassung="2.9.1"></p>
+    <p class="fassung" id="fassung" data-fassung="2.9.2"></p>
   </footer>
 </div>
 
@@ -861,7 +859,6 @@ const MARKUP_EN = {
   labelName:          "Name",
   phName:             "e.g. The Crew",
   bggLink:            "Look up on BGG ↗",
-  lookupHinweis:      "Asks Claude for player count, length, difficulty and mood. The first time, the page asks for permission; it counts towards your Claude usage.",
   labelSpielerzahl:   "Players",
   ariaSpielerMin:     "Players at least",
   ariaSpielerMax:     "Players at most",
@@ -898,7 +895,6 @@ const MARKUP_EN = {
   dazuEinspielen:     "Merge in",
   sammlungErsetzen:   "Replace collection",
   fussHinweis:        "Player counts, length and difficulty are rules of thumb — correct them any time under “Edit collection”.",
-  datenVorschlagen:   "Suggest data",
   wdKnopf:            "Find data",
   wdHinweis:          "“Find data” fetches player count and length from Wikidata. Only then does a request go to the internet."
 };
@@ -921,24 +917,10 @@ const TEXTE = {
                gespielt:"Lange nicht gespielt" },
     zeitEgal: "Egal",
     minute:   "Min",
-    datenVorschlagen: "Daten vorschlagen",
     abbrechen:        "Abbrechen",
 
-    speicherKonto:  "Sammlung liegt in deinem Konto — auf jedem Gerät dieselbe.",
     speicherGeraet: "Sammlung liegt auf diesem Gerät.",
-    speicherFehler: c => "Konnte nicht ins Konto speichern (" + c + ") — die Änderung liegt vorerst auf diesem Gerät.",
-    kontoWeg:       "Konto gerade nicht erreichbar — Änderungen bleiben auf diesem Gerät.",
-
-    lookupKeine:    n => "Zu „" + n + "“ gibt es keine verlässlichen Angaben — bitte selbst eintragen.",
-    lookupHalb:     "Die Antwort war unvollständig — bitte selbst eintragen.",
-    lookupErkannt:  n => "Erkannt als „" + n + "“. ",
-    lookupFertig:   ohneStimmung => "Vorschlag eingetragen — bitte prüfen" +
-                      (ohneStimmung ? " und eine Stimmung wählen" : "") + ", dann speichern.",
     lookupErstName: "Erst den Namen eintippen.",
-    lookupSucht:    "Claude sucht die Eckdaten — das dauert ein paar Sekunden",
-    lookupGesperrt: "Ohne Freigabe kann die Seite Claude nicht fragen — die Angaben also bitte selbst eintragen.",
-    lookupZuViele:  "Gerade zu viele Anfragen. Gleich noch einmal probieren.",
-    lookupFehler:   c => "Hat nicht geklappt (" + c + ") — bitte selbst eintragen oder noch einmal versuchen.",
     fehlerWort:     "Fehler",
 
     spiele:    n => n === 1 ? "1 Spiel" : n + " Spiele",
@@ -1067,24 +1049,10 @@ const TEXTE = {
                gespielt:"Long unplayed" },
     zeitEgal: "Any",
     minute:   "min",
-    datenVorschlagen: "Suggest data",
     abbrechen:        "Cancel",
 
-    speicherKonto:  "Your collection lives in your account — the same on every device.",
     speicherGeraet: "Your collection lives on this device.",
-    speicherFehler: c => "Could not save to the account (" + c + ") — the change stays on this device for now.",
-    kontoWeg:       "The account is not reachable right now — changes stay on this device.",
-
-    lookupKeine:    n => "There is nothing reliable on “" + n + "” — please fill it in yourself.",
-    lookupHalb:     "The answer was incomplete — please fill it in yourself.",
-    lookupErkannt:  n => "Recognised as “" + n + "”. ",
-    lookupFertig:   ohneStimmung => "Suggestion filled in — please check it" +
-                      (ohneStimmung ? " and pick a mood" : "") + ", then save.",
     lookupErstName: "Type the name first.",
-    lookupSucht:    "Claude is looking up the details — this takes a few seconds",
-    lookupGesperrt: "Without permission the page cannot ask Claude — so please fill the details in yourself.",
-    lookupZuViele:  "Too many requests right now. Try again in a moment.",
-    lookupFehler:   c => "That did not work (" + c + ") — fill it in yourself or try again.",
     fehlerWort:     "error",
 
     spiele:    n => n === 1 ? "1 game" : n + " games",
@@ -1404,27 +1372,18 @@ const beispielSammlung = () => BEISPIELSPIELE
   .filter(Boolean);
 let games = [];                            // das Regal beginnt leer
 let lastRemoved = null;
-let localTouched = false;
 
-let storageMode = "local";
-let dbDoc = null;
-
-function updateStorageNote(msg){
+// Die Sammlung liegt immer auf dem Geraet: in der App im Speicher der App, in
+// der Web-Version im Speicher des Browsers. Ein Konto gibt es nicht.
+function updateStorageNote(){
   const el = $("storagenote");
-  el.dataset.mode = storageMode === "local" ? "local" : "geteilt";
-  el.textContent = msg || t(storageMode === "db" ? "speicherKonto" : "speicherGeraet");
+  el.dataset.mode = "local";
+  el.textContent = t("speicherGeraet");
 }
 
 function persist(){
-  localTouched = true;
   speicherFestmachen();
   try{ localStorage.setItem(COLLECTION_KEY, JSON.stringify({ games })); }catch(e){/* Privatmodus */}
-  if(dbDoc){
-    dbDoc.set({ games, updatedAt:Date.now() }).then(
-      () => updateStorageNote(),
-      e => updateStorageNote(t("speicherFehler", e && e.code ? e.code : t("fehlerWort")))
-    );
-  }
 }
 
 function loadCollection(){
@@ -1433,58 +1392,13 @@ function loadCollection(){
     if(!raw) return;
     const parsed = JSON.parse(raw);
     const list = Array.isArray(parsed && parsed.games) ? parsed.games.map(normalize).filter(Boolean) : [];
-    if(list.length){ games = list; localTouched = true; }
+    if(list.length) games = list;
   }catch(e){/* dann eben die Ausgangssammlung */}
 }
 
-async function connectDb(){
-  if(!(window.claude && typeof window.claude.use === "function")) return;
-  let db = null;
-  try{ db = await window.claude.use("db"); }catch(e){ return; }
-  if(!db) return;
+/* ================= Meldungszeile am Namensfeld ================= */
 
-  dbDoc = db.doc("sammlung/regal");
-  storageMode = "db";
-  let first = true;
-  dbDoc.onSnapshot(snap => {
-    const data = snap.exists ? snap.data() : null;
-    const list = data && Array.isArray(data.games) ? data.games.map(normalize).filter(Boolean) : [];
-    if(list.length){
-      games = list;
-      if(state.editing && !games.some(g => g.id === state.editing)) resetForm();
-      render();
-    }else if(first && localTouched){
-      persist();               // vorhandene Sammlung einmalig ins Konto heben
-    }
-    first = false;
-    updateStorageNote();
-  }, () => {
-    storageMode = "local";
-    updateStorageNote(t("kontoWeg"));
-  });
-  updateStorageNote();
-}
-
-/* ================= Titel eingeben, Rest von Claude ================= */
-
-// Nur in der veröffentlichten Seite verfügbar; als lokale Datei bleibt der Knopf weg.
-let sampler = null;
-let lookupAbort = null;
-
-async function connectSample(){
-  if(!(window.claude && typeof window.claude.use === "function")) return;
-  let s = null;
-  try{ s = await window.claude.use("sample"); }catch(e){ return; }
-  if(typeof s !== "function") return;
-  sampler = s;
-  $("lookup").hidden = false;
-  $("lookuphint").hidden = false;
-  // Veroeffentlichte Claude-Seiten duerfen keine fremden Server fragen; dort
-  // uebernimmt "Daten vorschlagen" die Aufgabe.
-  $("wdlookup").hidden = true;
-  $("wdhinweis").hidden = true;
-}
-
+// Gemeinsame Zeile fuer die Wikidata-Suche und das Formular.
 function lookupStatus(msg, tone){
   const el = $("lookupstatus");
   el.hidden = !msg;
@@ -1492,103 +1406,15 @@ function lookupStatus(msg, tone){
   el.dataset.tone = tone || "busy";
 }
 
-// Die Frage selbst steht auf Englisch - sie geht an ein Sprachmodell, nicht an
-// den Benutzer. Nur der zurueckgelieferte Notizsatz soll in dessen Sprache
-// stehen, darum wird sie hier ausdruecklich verlangt.
-function lookupPrompt(name){
-  const satzsprache = SPRACHE === "de" ? "German" : "English";
-  return [
-    'You are a reference work for board and card games. Return the key facts for the game "' + name + '".',
-    "",
-    "Answer with nothing but a JSON object in exactly this shape:",
-    '{"found":true,"title":"official title","min":2,"max":5,"bestMin":3,"bestMax":4,' +
-      '"durMin":30,"durMax":60,"weight":"mittel","moods":["party","schnell"],' +
-      '"note":"one sentence in ' + satzsprache + ', at most 140 characters"}',
-    "",
-    "Rules:",
-    '- "found": false if you do not know the game for certain. Then leave out every other field. Do not guess numbers.',
-    "- min/max: player count as printed on the box. bestMin/bestMax: the player count it plays best at.",
-    "- durMin/durMax: usual length of one game in minutes.",
-    '- "weight": one of these three keys exactly: "leicht" (filler, explained in two minutes), ' +
-      '"mittel" (family game or light hobby game) or "anspruchsvoll" (hobby game with a long explanation).',
-    '- "moods": one to three keys from exactly this list: party (loud, sociable), entspannt (calm, unhurried), ' +
-      "gruebeln (strategy, thinking), koop (everyone against the game), schnell (short filler), wissen (quiz, guessing), " +
-      "reden (explaining, wordplay), thema (strong theme or story).",
-    '- "note": one sentence in ' + satzsprache + ' about what makes the game at the table. No marketing language.'
-  ].join("\n");
-}
-
 const BGG_SEARCH = "https://boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=";
 
 // Der Link zeigt immer auf das, was im Namensfeld steht. Eigene Funktion, weil
 // das Feld nicht nur beim Tippen gefuellt wird: Beim Aendern eines Spiels, beim
-// Leeren des Formulars und nach einem Vorschlag von Claude setzt das Skript den
+// Leeren des Formulars und nach einer Suche bei Wikidata setzt das Skript den
 // Namen selbst - und dabei feuert kein input-Ereignis. Vorher lief genau das
 // auseinander: Beim Aendern suchte der Link ins Leere.
 function bggLinkSetzen(){
   $("bgglink").href = BGG_SEARCH + encodeURIComponent($("f-name").value.trim());
-}
-
-const LOOKUP_BANDS = { leicht:"leicht", mittel:"mittel", anspruchsvoll:"schwer", schwer:"schwer" };
-
-function applyLookup(typed, data){
-  if(!data || typeof data !== "object" || Array.isArray(data) || data.found === false)
-    return lookupStatus(t("lookupKeine", typed), "warn");
-
-  const min = clampInt(data.min, 1, 30, 0);
-  const max = clampInt(data.max, Math.max(min, 1), 30, 0);
-  const d0  = clampInt(data.durMin, 1, 600, 0);
-  const d1  = clampInt(data.durMax, Math.max(d0, 1), 600, d0);
-  if(!min || !max || !d0)
-    return lookupStatus(t("lookupHalb"), "warn");
-
-  const title = typeof data.title === "string" && data.title.trim() ? data.title.trim().slice(0,80) : typed;
-  const moods = Array.isArray(data.moods)
-    ? data.moods.filter(m => typeof m === "string" && m in MOODS).slice(0,3) : [];
-
-  $("f-name").value = title;
-  bggLinkSetzen();
-  $("f-min").value = min;
-  $("f-max").value = max;
-  $("f-bestmin").value = clampInt(data.bestMin, min, max, min);
-  $("f-bestmax").value = clampInt(data.bestMax, clampInt(data.bestMin, min, max, min), max, max);
-  $("f-durmin").value = d0;
-  $("f-durmax").value = d1;
-  $("f-note").value = typeof data.note === "string" ? data.note.trim().slice(0,300) : "";
-  form.weight = LOOKUP_BANDS[String(data.weight).toLowerCase()] || "mittel";
-  if(moods.length) form.moods = new Set(moods);
-  renderFormChips();
-
-  const renamed = title.toLowerCase() !== typed.toLowerCase();
-  lookupStatus((renamed ? t("lookupErkannt", title) : "") + t("lookupFertig", !moods.length), "ok");
-}
-
-async function lookupGame(){
-  if(lookupAbort){ lookupAbort.abort(); return; }        // zweiter Klick bricht ab
-  const name = $("f-name").value.trim();
-  if(!name){ lookupStatus(t("lookupErstName"), "warn"); $("f-name").focus(); return; }
-
-  const btn = $("lookup");
-  lookupAbort = new AbortController();
-  btn.textContent = t("abbrechen");
-  lookupStatus(t("lookupSucht"), "busy");
-
-  try{
-    const data = await sampler.json(lookupPrompt(name), { modelTier:"quick", signal:lookupAbort.signal });
-    applyLookup(name, data);
-  }catch(e){
-    const code = e && e.code;
-    if(code === "cancelled") lookupStatus("", "");
-    else if(code === "not_granted" || code === "sampling_disabled" || code === "capability_removed"){
-      btn.hidden = true; $("lookuphint").hidden = true;
-      lookupStatus(t("lookupGesperrt"), "warn");
-    }
-    else if(code === "rate_limited") lookupStatus(t("lookupZuViele"), "warn");
-    else lookupStatus(t("lookupFehler", code || t("fehlerWort")), "warn");
-  }finally{
-    lookupAbort = null;
-    btn.textContent = t("datenVorschlagen");
-  }
 }
 
 /* ================= Daten suchen bei Wikidata ================= */
@@ -2355,7 +2181,6 @@ $("colsearch").addEventListener("input", () => {
   renderCollection();                      // nur die Liste, nicht die ganze Seite
 });
 
-$("lookup").addEventListener("click", lookupGame);
 $("wdlookup").addEventListener("click", wdSuchen);
 $("f-name").addEventListener("input", bggLinkSetzen);
 $("gameform").addEventListener("submit", submitGame);
@@ -2397,7 +2222,7 @@ function importGames(mode){
 }
 
 // Sicherung: Kopieren klappt überall, Herunterladen nicht in jeder Umgebung
-// (im Claude-Viewer und in manchen App-Containern sind Downloads gesperrt).
+// (in manchen App-Containern sind Downloads gesperrt).
 $("kopieren").addEventListener("click", async () => {
   const note = $("importnote");
   const text = $("backup").value;
@@ -2750,15 +2575,12 @@ loadCollection();
 resetForm();
 render();
 updateStorageNote();
-connectDb();
-connectSample();
 spracheNachziehen();                       // fragt die App nach ihrer Sprache
 iosHinweisZeigen();
 dienstArbeiterAnmelden();
 
 /* ================= Web-Version: Hinweis fuers iPhone, Offline-Dienst ================= */
-/* Beides gilt nur fuer die Seite im Browser, nicht fuer die Android-App und
-   nicht fuer die Claude-Seite. */
+/* Beides gilt nur fuer die Seite im Browser, nicht fuer die Android-App. */
 
 function inNativerApp(){
   return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
@@ -2774,7 +2596,7 @@ function iosHinweisZeigen(){
               (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const vomHomeBildschirm = !!navigator.standalone ||
               matchMedia("(display-mode: standalone)").matches;
-  if(!ios || vomHomeBildschirm || inNativerApp() || window.claude) return;
+  if(!ios || vomHomeBildschirm || inNativerApp()) return;
   try{ if(localStorage.getItem(IOSHINWEIS) === "weg") return; }catch(e){/* Privatmodus */}
   $("ioshinweistext").textContent = t("iosHinweis");
   $("ioshinweisweg").textContent = t("iosWeg");
@@ -2796,7 +2618,7 @@ let speicherErbeten = false;
 function speicherFestmachen(){
   if(speicherErbeten) return;
   speicherErbeten = true;
-  if(inNativerApp() || window.claude) return;
+  if(inNativerApp()) return;
   const st = navigator.storage;
   if(!st || !st.persist || !st.persisted) return;
   st.persisted().then(fest => fest || st.persist()).catch(() => {});
@@ -2804,13 +2626,12 @@ function speicherFestmachen(){
 
 // Offline-Dienst (sw.js): nur in der Web-Version. Nicht in der Android-App -
 // die bringt ihre Dateien selbst mit, und ein Dienst koennte nach einem
-// APK-Update noch die alte Fassung festhalten. Nicht in der Claude-Seite -
-// dort gibt es keine eigene Adresse, unter der er laufen koennte.
+// APK-Update noch die alte Fassung festhalten.
 function dienstArbeiterAnmelden(){
   if(!("serviceWorker" in navigator)) return;
   const sicher = location.protocol === "https:" ||
                  location.hostname === "localhost" || location.hostname === "127.0.0.1";
-  if(!sicher || inNativerApp() || window.claude) return;
+  if(!sicher || inNativerApp()) return;
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 </script>

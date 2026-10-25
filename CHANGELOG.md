@@ -9,6 +9,17 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
+## [2.9.2] – 2026-10-25
+
+### Entfernt
+
+- **Alles, was nur für die Seite als Claude-Artifact da war:** der Speicher im
+  Claude-Konto, „Daten vorschlagen" samt Anfrage an Claude, die zugehörigen
+  Texte und Abfragen auf `window.claude`. Die Seite läuft ohnehin nur noch als
+  App und als Web-Version; beide speichern auf dem Gerät. Der Code war dort nie
+  erreichbar, bläht die Datei aber auf und führt in die Irre. Die Suche bei
+  Wikidata („Daten suchen") ist davon nicht berührt.
+
 ## [2.9.1] – 2026-10-25
 
 ### Geändert
@@ -634,7 +645,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.9.1...HEAD
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.9.2...HEAD
+[2.9.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.2
 [2.9.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.1
 [2.9.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.0
 [2.8.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.8.0

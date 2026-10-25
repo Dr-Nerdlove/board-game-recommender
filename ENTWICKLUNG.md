@@ -26,20 +26,21 @@ Gut begründbar, aber eine echte Abwägung.
 Im Skriptteil von unten nach oben: Daten (`MOODS`, `BEISPIELSPIELE`), Speicher,
 Bewertung (`evaluate`), Ausgabe (`render*`), Formular, Ereignisbehandlung.
 
-## Die zwei Speicherwege
+## Der Speicher
 
-1. **Gerät** — `localStorage`, immer geschrieben. In der Android-App ist das der
-   einzige Weg und der Normalfall.
-2. **Claude-Konto** — `connectDb()` über die `db`-Fähigkeit des Artifacts, nur
-   in der veröffentlichten Claude-Fassung.
+Die Sammlung liegt **nur auf dem Gerät**: `localStorage`, geschrieben von
+`persist()`. In der Android-App ist das der Speicher der App, in der Web-Version
+der des Browsers. Es gibt kein Konto und keinen Abgleich; der Weg zwischen
+Geräten ist die Sicherung. Die Zeile über dem Formular sagt das dem Benutzer.
 
-`persist()` schreibt immer auf das Gerät und zusätzlich ins Konto, falls es
-verbunden ist. Welcher Weg greift, steht für den Benutzer sichtbar über dem
-Formular.
+Es gab einmal zwei weitere Wege, beide sind weg — nachzulesen in der
+Git-Historie:
 
-Bis 1.4.1 gab es einen dritten Weg: einen mitgelieferten Node-Server fürs
-Heimnetz, samt Windows-Dienst. Der ist mit 2.0.0 entfallen — das Projekt ist
-eine Android-App. Wer ihn sucht: `git log -- spieleabend-server.mjs`.
+- ein **Claude-Konto** (`connectDb()` über die `db`-Fähigkeit eines Artifacts)
+  für die Seite als Claude-Artifact, entfernt mit 2.9.2,
+- bis 1.4.1 ein mitgelieferter **Node-Server** fürs Heimnetz samt
+  Windows-Dienst, entfallen mit 2.0.0. Wer ihn sucht:
+  `git log -- spieleabend-server.mjs`.
 
 **Wichtig beim Ändern:** Jedes neue Feld am Spiel muss an *vier* Stellen
 mitgeführt werden, sonst geht es stillschweigend verloren:
@@ -320,22 +321,6 @@ Deshalb **muss** `viewport-fit=cover` im Viewport-Vermerk stehen bleiben, und
 Capacitor darf nicht unter Fassung 8 zurückfallen. Capacitor 8 verlangt Node 22;
 das ist im Bauplan eingestellt.
 
-## Veröffentlichte Claude-Fassung
-
-Die Seite lief zusätzlich als Claude-Artifact. Dafür wird aus `index.html` ein
-Fragment gebaut: alles von `<title>` bis vor `</body>`, abzüglich der Zeilen,
-die dort ins Leere zeigen würden:
-
-```
-<link rel="icon" …>            <link rel="apple-touch-icon" …>
-<link rel="manifest" …>        <meta name="apple-mobile-web-app-… …>
-<img class="logo" …>
-```
-
-Danach `</head>\n<body>\n` entfernen. Die `theme-color` bleibt — die braucht
-keine Datei. Die `@font-face`-Blöcke bleiben ebenfalls: Sie zeigen auf Daten in
-der Datei selbst, nicht auf eine Adresse.
-
 ## Ausgabe der Treffer
 
 Die ersten `VOLLE_KARTEN` (drei) Treffer stehen als volle Karte da, der Rest als
@@ -484,10 +469,6 @@ prüft sie weiterhin — er sucht jetzt nach `data-fassung="…"`.
 zusätzlich `values-de/strings.xml` mit „Spieleabend" an. Android wählt anhand
 der Systemsprache aus.
 
-**Die Frage an Claude** („Daten vorschlagen") steht auf Englisch — sie geht an
-ein Sprachmodell, nicht an den Benutzer. Nur der zurückgelieferte Notizsatz
-wird ausdrücklich in der Sprache des Benutzers verlangt.
-
 ## Das leere Regal und die Beispiele
 
 Bis 2.7 lagen 21 Spiele aus dem Regal des Autors als Ausgangssammlung im Code.
@@ -531,9 +512,6 @@ gerade nicht erreichbar oder überlastet". Beim Testen aus einer Cloud-Maschine
 greift die Drosselung schon nach wenigen Anfragen; auf einem Handy ist das
 nicht zu erwarten.
 
-**In der veröffentlichten Claude-Seite** ist der Knopf ausgeblendet: Dort darf
-die Seite keine fremden Server ansprechen, und „Daten vorschlagen" leistet mehr.
-
 ## Web-Version (GitHub Pages)
 
 **Warum:** Für das iPhone gibt es keine APK, und der App Store verlangt ein
@@ -555,11 +533,11 @@ der Dienst nicht an.
 
 **Nicht in der Android-App:** Dort liefert die APK die Dateien selbst. Ein Dienst
 könnte nach einem Update noch die alte Fassung festhalten. Registriert wird er
-nur über https oder `localhost`, nie in der App und nie in der Claude-Seite.
+nur über https oder `localhost`, nie in der App.
 
 **Hinweis für das iPhone:** Eine kleine, wegtippbare Box über dem Regal. Sie
 erscheint nur auf iOS (auch iPad, das sich als Mac meldet), nur im Safari-Tab
-(nicht vom Home-Bildschirm aus), nie in der App oder der Claude-Seite und nicht
+(nicht vom Home-Bildschirm aus), nie in der App und nicht
 mehr, nachdem sie weggetippt wurde (`spieleabend.ioshinweis`).
 
 **Die Sieben-Tage-Regel:** Safari löscht per Intelligent Tracking Prevention den
