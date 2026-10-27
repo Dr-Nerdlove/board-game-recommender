@@ -394,6 +394,7 @@ details.filters:not([open]) + .panel-foot{margin-top:0}
 }
 .ios-hinweis[hidden]{display:none}
 .ios-hinweis p{margin:0; flex:1 1 220px}
+.erinnerung-knoepfe{display:flex; gap:8px; flex-wrap:wrap}
 .leer-knoepfe{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:16px}
 .wdtreffer{margin-top:4px}
 .wdtreffer .chip{text-align:left}
@@ -603,6 +604,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
     <p id="ioshinweistext"></p>
     <button class="linkbtn" type="button" id="ioshinweisweg"></button>
   </div>
+  <div class="ios-hinweis sicherungs-erinnerung" id="erinnerung" hidden><p id="erinnerungtext"></p><div class="erinnerung-knoepfe"><button class="btn" type="button" id="erinnerungjetzt"></button><button class="linkbtn" type="button" id="erinnerungspaeter"></button></div></div>
 
   <section class="panel" data-t-attr="aria-label:ariaRunde" aria-label="Runde beschreiben">
     <details class="filters" id="filters" open>
@@ -782,7 +784,7 @@ footer .fassung{margin-top:10px; font-size:12px; opacity:.75}
 
   <footer>
     <p data-t="fussHinweis">Spielerzahlen, Dauer und Anspruch sind Erfahrungswerte — unter „Sammlung bearbeiten“ jederzeit korrigierbar.</p>
-    <p class="fassung" id="fassung" data-fassung="2.9.2"></p>
+    <p class="fassung" id="fassung" data-fassung="2.10.0"></p>
   </footer>
 </div>
 
@@ -975,6 +977,10 @@ const TEXTE = {
     wdBelegt:  "Wikidata ist gerade nicht erreichbar oder überlastet — in ein paar Sekunden noch einmal versuchen.",
     iosHinweis: "Als App nutzen: in Safari auf Teilen tippen, dann „Zum Home-Bildschirm“. So startet die Seite wie eine App, läuft offline – und iOS löscht deine Sammlung nicht nach ein paar Tagen ohne Besuch. Wichtig: Spiele erst dort eintragen. Safari und die App auf dem Home-Bildschirm haben getrennte Speicher; schon hier Eingetragenes ziehst du über „Sicherung & Umzug“ um.",
     iosWeg: "Verstanden",
+    erinnerungNie: "Deine Sammlung liegt nur auf diesem Gerät und wurde noch nie gesichert. Geht das Gerät verloren, ist sie weg.",
+    erinnerungAlt: w => "Deine Sammlung liegt nur auf diesem Gerät. Letzte Sicherung: " + w + ".",
+    erinnerungJetzt: "Jetzt sichern",
+    erinnerungSpaeter: "Später",
     wdFehler: c => "Wikidata hat nicht geantwortet (" + c + ") — später noch einmal versuchen.",
 
     trefferVon: (a, b) => a + " von " + b + " Spielen",
@@ -1107,6 +1113,10 @@ const TEXTE = {
     wdBelegt:  "Wikidata is unreachable or busy right now — try again in a few seconds.",
     iosHinweis: "Use it as an app: in Safari tap Share, then “Add to Home Screen”. It then starts like an app, works offline – and iOS will not delete your collection after a few days without a visit. Important: add your games there. Safari and the home-screen app keep separate storage; anything entered here moves over via “Backup & moving”.",
     iosWeg: "Got it",
+    erinnerungNie: "Your collection lives only on this device and has never been backed up. If the device is lost, so is the collection.",
+    erinnerungAlt: w => "Your collection lives only on this device. Last backup: " + w + ".",
+    erinnerungJetzt: "Back up now",
+    erinnerungSpaeter: "Later",
     wdFehler: c => "Wikidata did not answer (" + c + ") — try again later.",
 
     trefferVon: (a, b) => a + " of " + b + " games",
@@ -1384,6 +1394,8 @@ function updateStorageNote(){
 function persist(){
   speicherFestmachen();
   try{ localStorage.setItem(COLLECTION_KEY, JSON.stringify({ games })); }catch(e){/* Privatmodus */}
+  try{ if(!localStorage.getItem(SEIT_KEY)) localStorage.setItem(SEIT_KEY, String(Date.now())); }catch(e){/* Privatmodus */}
+  erinnerungPruefen();
 }
 
 function loadCollection(){
@@ -1978,6 +1990,7 @@ function render(){
   renderResults();
   renderCollection();
   saveSettings();
+  erinnerungPruefen();                       // auch fuer den Text nach Sprachwechsel
 }
 
 /* ================= Formular ================= */
@@ -2228,6 +2241,7 @@ $("kopieren").addEventListener("click", async () => {
   const text = $("backup").value;
   try{
     await navigator.clipboard.writeText(text);
+    gesichertMerken();                          // nur der echte Weg zaehlt
     note.textContent = t("kopiert");
   }catch(e){
     $("backup").select();                       // Rückfall: markieren, Nutzer drückt Strg+C
@@ -2297,6 +2311,7 @@ async function sichern(){
         files:[uri],
         dialogTitle:t("teilenDialog")
       });
+      gesichertMerken();                        // Abbruch wirft, kommt nicht hierher
       note.textContent = t("teilenFertig");
     }catch(e){
       const grund = String(e && e.message || e);
@@ -2314,6 +2329,7 @@ async function sichern(){
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    if(!inDerApp()) gesichertMerken();          // Browser hat den Download begonnen
     // In der App ohne die beiden Bausteine kommt hier nichts an - das sagen
     // wir dann auch, statt eine Datei zu behaupten, die es nicht gibt.
     note.textContent = t(inDerApp() ? "fehltFassung" : "browserAblage");
@@ -2566,6 +2582,70 @@ function eineEbeneZurueck(){
 })();
 
 /* ================= Start ================= */
+
+/* ================= Erinnerung an die Sicherung ================= */
+/* Warum: Die Sammlung liegt nur auf dem Geraet, und kaum jemand sichert sie
+   von sich aus. Geht das Geraet verloren, ist alles weg. Darum meldet sich
+   die Seite von selbst - aber zurueckhaltend:
+   - Ab 5 Spielen: Fuer eine winzige Sammlung lohnt das Draengeln nicht.
+   - 14 Tage Schonfrist, wenn noch nie gesichert wurde (gemessen ab dem ersten
+     persist()): Nicht schon am ersten Abend.
+   - 30 Tage nach der letzten Sicherung: oft genug, um wenig zu verlieren,
+     selten genug, um nicht zu nerven.
+   - "Spaeter" schiebt die Erinnerung um eine Woche.
+   Was als Sicherung zaehlt: "Text kopieren", wenn writeText geklappt hat;
+   das Teilen-Blatt in der App, wenn share() ohne Abbruch zurueckkam; der
+   Download im Browser. NICHT der Rueckfall (Text nur markieren): Ob der Text
+   in der Zwischenablage gelandet ist, wissen wir dann nicht.
+   Schluessel: seit (erstes persist), gesichert (letzte Sicherung),
+   erinnerungspaeter (Ruhe bis). Alle drei sind Zeitstempel in Millisekunden. */
+const SEIT_KEY = "spieleabend.seit";
+const GESICHERT_KEY = "spieleabend.gesichert";
+const ERINNERUNG_SPAETER_KEY = "spieleabend.erinnerungspaeter";
+const TAG_MS = 86400000;
+
+function zeitLesen(schluessel){
+  try{
+    const z = Number(localStorage.getItem(schluessel));
+    return z > 0 ? z : 0;
+  }catch(e){ return 0; }
+}
+
+function gesichertMerken(){
+  try{ localStorage.setItem(GESICHERT_KEY, String(Date.now())); }catch(e){/* Privatmodus */}
+  erinnerungPruefen();
+}
+
+function erinnerungPruefen(){
+  const box = $("erinnerung");
+  if(!box) return;
+  const jetzt = Date.now();
+  const gesichert = zeitLesen(GESICHERT_KEY);
+  const seit = zeitLesen(SEIT_KEY);
+  let zeigen = games.length >= 5 && jetzt >= zeitLesen(ERINNERUNG_SPAETER_KEY);
+  if(zeigen){
+    zeigen = gesichert ? jetzt - gesichert > 30 * TAG_MS
+                       : (seit > 0 && jetzt - seit > 14 * TAG_MS);
+  }
+  box.hidden = !zeigen;
+  if(!zeigen) return;
+  $("erinnerungtext").textContent = gesichert ? t("erinnerungAlt", vorWieLange(gesichert)) : t("erinnerungNie");
+  $("erinnerungjetzt").textContent = t("erinnerungJetzt");
+  $("erinnerungspaeter").textContent = t("erinnerungSpaeter");
+}
+
+// Fuehrt zur Sicherung, zaehlt aber noch nicht als gesichert.
+$("erinnerungjetzt").addEventListener("click", () => {
+  $("collection").open = true;
+  const d = document.querySelector("details.backup");
+  d.open = true;
+  d.scrollIntoView({ behavior:"smooth", block:"start" });
+});
+
+$("erinnerungspaeter").addEventListener("click", () => {
+  try{ localStorage.setItem(ERINNERUNG_SPAETER_KEY, String(Date.now() + 7 * TAG_MS)); }catch(e){/* Privatmodus */}
+  $("erinnerung").hidden = true;
+});
 
 spracheAnwenden();                         // bevor irgendetwas gezeichnet wird
 loadSettings();

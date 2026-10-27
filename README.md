@@ -67,6 +67,10 @@ does). Your collection lives in the app's storage, on this phone.
 - **Read a file** — on the new device, pick the backup, then **Replace
   collection**.
 
+The app reminds you after 30 days without a backup (from 5 games on; the first
+reminder comes two weeks after you start, at the earliest). **Later** snoozes
+it for a week.
+
 **Building a new version:**
 
 - **Android app:** the *Actions* tab → *Android-App bauen* → *Run workflow*,

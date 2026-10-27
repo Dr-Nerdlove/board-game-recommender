@@ -580,6 +580,23 @@ bewusst nicht beim Öffnen, weil Firefox dafür nachfragt und die Frage erst
 Sinn ergibt, wenn es etwas zu schützen gibt. Gegen Safaris 7-Tage-Regel hilft
 das nicht.
 
+## Erinnerung an die Sicherung
+
+Die Sammlung liegt nur auf dem Gerät, und kaum jemand sichert sie von sich aus.
+Darum zeigt die Seite eine Erinnerung (`erinnerungPruefen()`, Kasten im Stil
+des iOS-Hinweises). Die Schwellen sind absichtlich zurückhaltend: ab 5 Spielen
+(eine winzige Sammlung ist das Drängeln nicht wert), bei noch nie gesichert
+erst 14 Tage nach dem ersten Speichern (nicht gleich am ersten Abend), sonst
+30 Tage nach der letzten Sicherung. „Später" schiebt um 7 Tage.
+
+Als Sicherung zählt: „Text kopieren", wenn `writeText` geklappt hat; in der App
+`share()` ohne Abbruch; im Browser der begonnene Download. Der Rückfall (Text
+nur markieren) zählt **nicht** — ob er in der Zwischenablage ankam, ist
+unbekannt. „Jetzt sichern" öffnet nur die Sicherung und zählt nicht.
+
+Schlüssel (Zeitstempel in Millisekunden): `spieleabend.seit` (erstes
+`persist()`), `spieleabend.gesichert`, `spieleabend.erinnerungspaeter`.
+
 ## Das Datumsfeld
 
 `<input type="date">` zeigt das Format der **Systemsprache**, nicht das der
