@@ -589,8 +589,8 @@ ohne den Kalender des Geräts aufzugeben; der ist auf dem Handy aber das
 Wertvollste am Feld.
 
 Deshalb steht der gewählte Tag darunter noch einmal ausgeschrieben
-(`datumAusgeschrieben()`), fest mit `toLocaleDateString("de-DE", …)` und mit
-Wochentag. Wer hier aufräumt und diese Zeile entfernt, holt sich das Problem
+(`datumAusgeschrieben()`), in der Sprache der Oberfläche
+(`toLocaleDateString(ORTSFORM, …)`, also `de-DE` oder `en-GB`) und mit Wochentag. Wer hier aufräumt und diese Zeile entfernt, holt sich das Problem
 zurück.
 
 ## Was absichtlich fehlt
