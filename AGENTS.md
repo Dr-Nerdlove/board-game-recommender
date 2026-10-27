@@ -96,6 +96,11 @@ Die Nummer steht an drei Stellen und muss überall gleich sein, sonst bricht der
 Bau ab: `package.json`, `data-fassung="1.2.3"` in `index.html` und ein
 Abschnitt `## [1.2.3]` in `CHANGELOG.md`.
 
+**Keine zweistelligen Stellen** in der Nummer (Wunsch des Besitzers): nach x.9.z
+kommt die nächste Hauptfassung, also 2.9.2 → 3.0.0, nicht 2.10.0. Niemals
+zurück auf eine kleinere Nummer: Android rechnet 1.2.3 zu 10203 und verweigert
+jede Aktualisierung auf eine kleinere Zahl.
+
 Ein Push auf `main` aktualisiert die **Web-Version** von selbst. Die **APK**
 entsteht nur auf Abruf, und zwar entweder `git tag v1.2.3 && git push origin v1.2.3` — oder, **aus einer
 Sitzung heraus notwendig**, im Reiter „Actions" den Bauplan mit dem Haken
