@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Quelltext holen
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Fassung bestimmen und Stellen vergleichen
         # Drei Stellen nennen die Fassung. Weichen sie voneinander ab,
@@ -111,12 +111,12 @@ jobs:
           echo "Schluessel bereit ($(wc -c < "$RUNNER_TEMP/spieleabend.keystore") Bytes)."
 
       - name: Node einrichten
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
 
       - name: Java einrichten
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
@@ -421,7 +421,7 @@ jobs:
         # ab am 28.10.). Bei einem Probelauf ist er der einzige Weg an die
         # gebaute Datei, dort bleibt er.
         if: steps.fassung.outputs.raus != 'ja'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: spieleabend-apk
           path: ${{ steps.apk.outputs.name }}
@@ -453,7 +453,7 @@ jobs:
         # Gibt es die Marke noch nicht, legt GitHub sie beim Anlegen der
         # Veroeffentlichung auf diesem Stand an.
         if: steps.fassung.outputs.raus == 'ja'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.fassung.outputs.nummer }}
           target_commitish: ${{ github.sha }}
