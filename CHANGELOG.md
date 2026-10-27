@@ -9,7 +9,7 @@ bei x.y.**Z** wird etwas repariert.
 
 ## [Unveröffentlicht]
 
-## [2.10.0] – 2026-10-27
+## [3.0.0] – 2026-10-27
 
 ### Hinzugefügt
 
@@ -656,8 +656,8 @@ Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
 - Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
   Hintergrund liegen nun als eigene Ebenen vor.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v2.10.0...HEAD
-[2.10.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.10.0
+[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v3.0.0
 [2.9.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.2
 [2.9.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.1
 [2.9.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.0
