@@ -20,6 +20,12 @@ bei x.y.**Z** wird etwas repariert.
   Woche. Als Sicherung zählt Kopieren (nur wenn es geklappt hat), Teilen in der
   App und Herunterladen im Browser.
 
+### Geändert
+
+- Der Bauplan nutzt aktuelle Fassungen seiner GitHub-Bausteine (Node 24).
+  GitHub mustert die alte Node-Fassung aus; ohne den Wechsel wäre der Bau
+  irgendwann abgebrochen. Für die App selbst ändert sich nichts.
+
 ## [2.9.2] – 2026-10-25
 
 ### Entfernt
