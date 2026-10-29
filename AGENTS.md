@@ -194,3 +194,48 @@ Wikidata-Format testen (`page.setRequestInterception`), nur einzelne Fälle live
   nichts.
 - Nichts hart ausschließen, was der Benutzer noch wollen könnte: lieber in der
   Rangfolge senken und den Grund nennen.
+
+<!-- owner-rules v2: general (AGENTS.md) - begin -->
+
+## Allgemeine Regeln
+
+### Der Besitzer
+
+- Der Besitzer **programmiert nicht**. Mit ihm auf **Deutsch** sprechen, in
+  einfachen Worten, ohne Fachjargon. Sagen, was sich für ihn ändert, nicht,
+  welche Datei sich geändert hat.
+- Wenn er nach Ideen fragt oder etwas unklar ist, **Auswahlmöglichkeiten
+  anbieten und ihn wählen lassen, bevor gebaut wird**, mit einer Empfehlung.
+  Keinen Vorschlag bauen, den niemand gewählt hat.
+- Sichtbare Änderungen als **Bildschirmfotos** zeigen, statt sie zu
+  beschreiben.
+- Ehrlich berichten: ein Test, der fehlgeschlagen ist, ein Schritt, der
+  übersprungen wurde, eine Korrektur, die sich als falsch erwies - das sagen,
+  und sagen, was es für ihn bedeutet.
+
+### Tests
+
+Das gilt dort, wo das Projekt automatische Tests hat. Wo es keine hat, nicht
+eigenmächtig eine Testsuite aufsetzen: Wäre eine Änderung ohne sie riskant,
+sie dem Besitzer als Auswahl anbieten.
+
+- **Jedes neue Verhalten bekommt einen Test und eine Sabotageprobe**: das
+  Verhalten absichtlich kaputt machen (es muss weiterhin übersetzbar sein, und
+  es muss das Verhalten brechen, nicht nur einen Selektor oder einen Text),
+  den Test laufen lassen, ihn fehlschlagen sehen, den Code zurücksetzen und
+  prüfen, dass die Datei Byte für Byte so ist wie vorher (`cmp`). Ein Test,
+  der gegen kaputten Code besteht, ist wertlos.
+- Vor dem Pushen die Prüfungen des Projekts ausführen, wie seine eigenen
+  Anweisungen es sagen. Wo sie nichts sagen: die Prüfungen, die abdecken, was
+  sich geändert hat, und die ganze Suite, wenn die Änderung anderswo Wirkung
+  haben könnte.
+
+### Wissen im Repository halten
+
+- Sitzungen enden und werden gelöscht; das Repository bleibt. Was eine spätere
+  Sitzung wissen muss - Entscheidungen und ihre Gründe, Fallen, die Zeit
+  gekostet haben, wie man Dinge startet und veröffentlicht - gehört in die
+  Dateien des Projekts (diese Datei, das README, andere Dokumente,
+  Commit-Meldungen), nicht nur in die Unterhaltung.
+
+<!-- owner-rules v2: general (AGENTS.md) - end -->
