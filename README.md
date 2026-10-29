@@ -39,7 +39,7 @@ described [below](#on-iphone-and-ipad-web-app).
 ## As an app on your phone (Android)
 
 1. On the phone, open the [latest release](../../releases/latest) and download
-   the file `spieleabend-1.2.3.apk` (the number is the version).
+   the file `game-night-1.2.3.apk` (the number is the version).
 2. Tap the downloaded file. The first time, Android asks whether apps from this
    source may be installed — confirm once.
 3. Done. The app sits in the app drawer with its own icon.

@@ -292,7 +292,7 @@ git tag v1.2.3
 git push origin v1.2.3
 ```
 
-GitHub does the rest: build the APK, name it `spieleabend-1.2.3.apk`, create the
+GitHub does the rest: build the APK, name it `game-night-1.2.3.apk`, create the
 release `v1.2.3` and insert the matching section from `CHANGELOG.md` as the
 accompanying text.
 

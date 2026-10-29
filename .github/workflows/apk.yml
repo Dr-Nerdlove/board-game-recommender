@@ -386,7 +386,7 @@ jobs:
         # because the following sed was content with empty input.
         run: |
           set -euo pipefail
-          NAME="spieleabend-${{ steps.fassung.outputs.nummer }}.apk"
+          NAME="game-night-${{ steps.fassung.outputs.nummer }}.apk"
           cp android/app/build/outputs/apk/release/app-release.apk "$NAME"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           ls -la "$NAME"
@@ -422,7 +422,7 @@ jobs:
         if: steps.fassung.outputs.raus != 'ja'
         uses: actions/upload-artifact@v7
         with:
-          name: spieleabend-apk
+          name: game-night-apk
           path: ${{ steps.apk.outputs.name }}
 
       - name: Get the release text from the changelog
@@ -456,7 +456,7 @@ jobs:
         with:
           tag_name: v${{ steps.fassung.outputs.nummer }}
           target_commitish: ${{ github.sha }}
-          name: Spieleabend v${{ steps.fassung.outputs.nummer }}
+          name: Game Night v${{ steps.fassung.outputs.nummer }}
           body_path: begleittext.md
           files: ${{ steps.apk.outputs.name }}
           fail_on_unmatched_files: true
