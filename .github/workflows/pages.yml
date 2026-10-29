@@ -1,5 +1,6 @@
 # Publishes the web version on GitHub Pages (also for the iPhone).
 # Every push to main that touches the web files updates it.
+# A syntax check runs first; a broken script stops the publishing.
 # Only the web files go out - no README, no build plans.
 # The Android app is built separately by apk.yml.
 name: Web-Version veroeffentlichen
@@ -32,6 +33,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
+      - name: Check the syntax of the script and the service worker
+        run: |
+          sed -n '/^<script>/,/^<\/script>/p' index.html | sed '1d;$d' > app.js
+          node --check app.js
+          node --check sw.js
       - name: Assemble web files
         run: |
           mkdir site
