@@ -162,7 +162,7 @@ individual cases live.
 - Don't add a line that appears on every card - what everyone shares says nothing.
 - Don't hard-exclude anything the user might still want: lower it in the ranking and name the reason instead.
 
-<!-- owner-rules v6: general (AGENTS.md) - begin -->
+<!-- owner-rules v8: general (AGENTS.md) - begin -->
 
 ## General rules
 
@@ -225,9 +225,35 @@ individual cases live.
 ### Changes
 
 - **One topic per change** (branch, pull request): easier to check, to release and to undo.
+- **Branch names say what the change is about**: `type/short-topic`, lower case, English, words joined by
+  hyphens - `feature/` for something new, `fix/` for a bug, `docs/` for documentation, `chore/` for tidying
+  up (e.g. `feature/online-update`, `fix/ota-redirect-query`, `docs/ai-rules`). Not who or when, and nothing
+  vague like `test` or `update2`. Where the project has its own naming habits, follow them; where the
+  environment gives the session a fixed branch name, use that unless the person asks for another.
+- **Commit messages and pull request titles** say in one line what changes, e.g. "Fix online update: keep
+  the signed download URL"; more detail, and why, goes below.
 - Changes that users notice go into the release notes or changelog in plain words (in English, like
   everything in the repository; texts shown to users inside the product or in a store, such as "what's new",
   in every language the product offers).
+
+### Repository
+
+Aim for what is common practice on GitHub, in proportion to the project: a small experiment needs less than
+something others install. **Do not restructure an existing repository on your own**: point out what is
+missing, with a recommendation, and let the people choose.
+
+- **README**: what the project is (with a picture where it helps), how to install and use it, how to work on
+  it (build, test, release), and its licence. Keep it up to date with every change that affects it.
+- **Pull request descriptions**: what changes, why, how it was tested (and what was not), and anything the
+  reviewer should know.
+- **Automatic checks (CI)**: every push and pull request builds the project and runs its tests
+  automatically; merge only when they pass. Where a project has none, offer to set it up.
+- **Releases**: version numbers `vMAJOR.MINOR.PATCH` (e.g. `v1.4.2`: major for breaking changes, minor for
+  new features, patch for fixes). Files that are published are built by CI, never by hand. Each release says
+  in plain words what is new and how to install or update.
+- **Basics**: a `.gitignore` for build output and local files, a **licence** file (without one, nobody may
+  legally reuse the code, even in a public repository; the choice of licence is the people's), and a
+  `CHANGELOG.md` where releases alone do not tell the story.
 
 ### Showing changes
 
@@ -248,7 +274,7 @@ individual cases live.
   conversation: decisions and why, traps that cost time, how to build, test and release, and the limits of
   the environment (what a cloud session cannot do there).
 
-<!-- owner-rules v6: general (AGENTS.md) - end -->
+<!-- owner-rules v8: general (AGENTS.md) - end -->
 
 ## Project knowledge
 
@@ -273,5 +299,8 @@ Most of this project's knowledge is in the sections above and in `DEVELOPMENT.md
   padding in two places; touch targets of at least 44 px; "Played today" must not re-sort; the test traps under
   "Check, don't hope" (`getComputedStyle` after `render()`, `pkill -f`, empty shelf, Capacitor bridge,
   Wikidata 429).
+- **Repository:** public; GPL-3.0-or-later (`LICENSE`; the fonts keep the OFL 1.1). Version scheme `x.y.z` without
+  two-digit parts (see "Releasing a new version"), changes in `CHANGELOG.md`. No automated checks (CI) on pushes
+  because there are no tests; the workflows only publish the web version and build the APK on demand.
 - **Limits of the environment:** a cloud session cannot push tags (HTTP 403; use the workflow instead) and cannot
   compile Java. Wikidata throttles cloud machines.
