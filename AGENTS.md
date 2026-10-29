@@ -195,47 +195,116 @@ Wikidata-Format testen (`page.setRequestInterception`), nur einzelne Fälle live
 - Nichts hart ausschließen, was der Benutzer noch wollen könnte: lieber in der
   Rangfolge senken und den Grund nennen.
 
-<!-- owner-rules v2: general (AGENTS.md) - begin -->
+<!-- owner-rules v6: general (AGENTS.md) - begin -->
 
-## Allgemeine Regeln
+## General rules
 
-### Der Besitzer
+### People
 
-- Der Besitzer **programmiert nicht**. Mit ihm auf **Deutsch** sprechen, in
-  einfachen Worten, ohne Fachjargon. Sagen, was sich für ihn ändert, nicht,
-  welche Datei sich geändert hat.
-- Wenn er nach Ideen fragt oder etwas unklar ist, **Auswahlmöglichkeiten
-  anbieten und ihn wählen lassen, bevor gebaut wird**, mit einer Empfehlung.
-  Keinen Vorschlag bauen, den niemand gewählt hat.
-- Sichtbare Änderungen als **Bildschirmfotos** zeigen, statt sie zu
-  beschreiben.
-- Ehrlich berichten: ein Test, der fehlgeschlagen ist, ein Schritt, der
-  übersprungen wurde, eine Korrektur, die sich als falsch erwies - das sagen,
-  und sagen, was es für ihn bedeutet.
+- Unless "Project knowledge" says otherwise, assume that the people you work with **do not program**: they
+  build their projects together with AI assistants and rely on you for the code, its quality and its
+  explanation. "Project knowledge" lists who works on the project.
+- Talk to them in **German**, in plain words, without jargon. Say what changes for them, not which file
+  changed.
+- When they ask for ideas or something is unclear, **offer choices and let them pick before building**, with
+  a recommendation. Do not build a proposal nobody chose.
+- **Report honestly**: a test that failed, a step that was skipped, a fix that turned out to be wrong. Say
+  what was **really tested** and what was only built or compiled, and what it means for them.
+- **Merge, release or publish only when the person asks for it.** Never merge or overwrite the work of
+  someone else without their consent; propose it to them (pull request, comment) instead.
 
-### Tests
+### Language
 
-Das gilt dort, wo das Projekt automatische Tests hat. Wo es keine hat, nicht
-eigenmächtig eine Testsuite aufsetzen: Wäre eine Änderung ohne sie riskant,
-sie dem Besitzer als Auswahl anbieten.
+- **Everything in the repository is English**: files and documentation, code comments, commit messages,
+  branch names, pull requests, issues and release notes. Only the conversation with the people is German.
+- Text that the product itself shows to its users (an app's interface, a device's display, its store page)
+  stays in the language or languages the product is made for. "Project knowledge" names them.
+- **A product in several languages stays in all of them.** Every new or changed text goes into every
+  language the product offers, in the same change; never leave one language behind, drop one, or fall back
+  to another language silently. Write each language naturally (not word for word), with its proper
+  characters (ä, ö, ü, ß in German). Check that no text is missing in any language before calling the change
+  done.
+- Where a project still has older content in another language, do not translate it on your own: offer it as
+  a choice.
 
-- **Jedes neue Verhalten bekommt einen Test und eine Sabotageprobe**: das
-  Verhalten absichtlich kaputt machen (es muss weiterhin übersetzbar sein, und
-  es muss das Verhalten brechen, nicht nur einen Selektor oder einen Text),
-  den Test laufen lassen, ihn fehlschlagen sehen, den Code zurücksetzen und
-  prüfen, dass die Datei Byte für Byte so ist wie vorher (`cmp`). Ein Test,
-  der gegen kaputten Code besteht, ist wertlos.
-- Vor dem Pushen die Prüfungen des Projekts ausführen, wie seine eigenen
-  Anweisungen es sagen. Wo sie nichts sagen: die Prüfungen, die abdecken, was
-  sich geändert hat, und die ganze Suite, wenn die Änderung anderswo Wirkung
-  haben könnte.
+### Testing
 
-### Wissen im Repository halten
+- Where the project has automated tests, **every new behaviour that can be tested automatically gets a test,
+  and a sabotage check**: break the behaviour on purpose (it must still compile, and it must break the
+  behaviour, not just a selector or a text), run the test, see it fail, put the code back and confirm that
+  the file is byte for byte what it was (`cmp`). A test that passes against broken code is worthless.
+- **What cannot be tested automatically** (hardware, devices, displays, animations, things that need a real
+  account or service) gets no test suite of its own. Check it as far as possible (build, compile, a preview),
+  then on the real device or service, and say plainly which part is checked how.
+- Where the project has no tests at all, do not set up a test suite on your own: when a change would be
+  risky without one, offer it to the owner as a choice.
+- Run the project's checks before pushing, as "Project knowledge" or the project's own instructions say.
+  Where they say nothing: the checks that cover what changed, and the whole suite when the change could have
+  effects elsewhere.
 
-- Sitzungen enden und werden gelöscht; das Repository bleibt. Was eine spätere
-  Sitzung wissen muss - Entscheidungen und ihre Gründe, Fallen, die Zeit
-  gekostet haben, wie man Dinge startet und veröffentlicht - gehört in die
-  Dateien des Projekts (diese Datei, das README, andere Dokumente,
-  Commit-Meldungen), nicht nur in die Unterhaltung.
+### Safety and data
 
-<!-- owner-rules v2: general (AGENTS.md) - end -->
+- **Never put secrets into the repository**: passwords, API keys, tokens, private addresses. Use the
+  project's way of keeping them out (environment, settings, `.gitignore`); if there is none, ask.
+- **Personal data** (of the people or of the product's users) is not sent anywhere new, logged or published
+  without asking.
+- **What users have stays usable after an update**: their settings, saved data, accounts. When a change
+  would break or reset them, say so before building and offer a way to carry them over.
+- **Ask before anything hard to undo**: deleting data or files that are not part of the change, rewriting
+  history, changing a live service, publishing to a store.
+- **New libraries or services** only with a reason, said in plain words; prefer what the project already
+  uses.
+
+### Changes
+
+- **One topic per change** (branch, pull request): easier to check, to release and to undo.
+- Changes that users notice go into the release notes or changelog in plain words (in English, like
+  everything in the repository; texts shown to users inside the product or in a store, such as "what's new",
+  in every language the product offers).
+
+### Showing changes
+
+- Show visual changes rather than describing them: **screenshots** where the result runs on a computer.
+- Where no screenshot is possible (a device, a display, a phone app, print): build a **preview** (a mock-up
+  page, a pixel preview), or ask for a **photo** of the real thing.
+
+### Checking facts at the source
+
+- Do not build on memory where the real thing can be checked: read the actual source of a library, look at
+  the real answer of a server or service, read the real data. Behaviour that "should" be so is often not.
+- When a cause is unclear, **ask for a log or an error message before guessing**, and say what it would show.
+
+### Keeping knowledge in the repository
+
+- Sessions end and are deleted; the repository stays. What a later session needs to know goes into the
+  project's files ("Project knowledge", the README, other docs, commit messages), not only into the
+  conversation: decisions and why, traps that cost time, how to build, test and release, and the limits of
+  the environment (what a cloud session cannot do there).
+
+<!-- owner-rules v6: general (AGENTS.md) - end -->
+
+## Project knowledge
+
+Most of this project's knowledge is in the German sections above and in `ENTWICKLUNG.md`; this list points to it.
+
+- **People:** the owner (GitHub: Dr-Nerdlove) works on it alone, with AI assistants, and does not program. They
+  decide about merging and releases; as "Haltung, die sich bewährt hat" says, tested changes may be built and
+  published without asking, and work happens directly on `main`.
+- **Repository language:** this project keeps its instructions, code comments and commit messages in German (see
+  "Sprache"; commit messages and the build workflow in plain ASCII). That is the project's own rule and wins over
+  "everything in the repository is English"; `README.md` is English.
+- **Product languages:** German and English, following the system language. Fixed labels in `MARKUP_EN`, script
+  texts in `TEXTE` (both in `index.html`); Android language lists are written by `apk.yml`. Stored data keys are
+  never translated.
+- **Build and test:** no automated tests. Syntax check and local server as under "Prüfen statt hoffen";
+  interface checks with puppeteer-core against the preinstalled Chromium. Not checkable here: the Java parts
+  (only the GitHub build shows it) and the real effect on a phone (the owner sends a phone screenshot).
+- **Release:** see "Eine neue Fassung herausgeben": version in `package.json`, `data-fassung` and
+  `CHANGELOG.md`, no two-digit parts, never lower. A push to `main` publishes the web version; the APK comes from
+  the `apk.yml` workflow with `veroeffentlichen`. Never change the signing key.
+- **Traps:** a new game field must be carried in four places; the embedded fonts are not clutter; `.wrap`
+  padding in two places; touch targets of at least 44 px; "Heute gespielt" must not re-sort; the test traps under
+  "Prüfen statt hoffen" (`getComputedStyle` after `render()`, `pkill -f`, empty shelf, Capacitor bridge,
+  Wikidata 429).
+- **Limits of the environment:** a cloud session cannot push tags (HTTP 403; use the workflow instead) and cannot
+  compile Java. Wikidata throttles cloud machines.

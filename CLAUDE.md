@@ -7,59 +7,49 @@ das ist die werkzeugübergreifende Konvention, damit nicht jedes Programm eine
 eigene Datei braucht. Bitte dort nachlesen, bevor du etwas änderst.
 Ausführlicher und mit Begründungen: [`ENTWICKLUNG.md`](ENTWICKLUNG.md).
 
-<!-- owner-rules v2: claude (CLAUDE.md) - begin -->
+<!-- owner-rules v6: claude (CLAUDE.md) - begin -->
 
-## Claude: Modelle und Nutzung
+## Claude: models and usage
 
-Der Besitzer zahlt einen Tarif mit Nutzungsgrenze, und je stärker ein Modell
-ist, desto schneller verbraucht es diese Grenze. Die Kosten einer Aufgabe
-hängen nicht von der Größe der Änderung ab, sondern von **der Zahl der Schritte
-mal der Länge der Unterhaltung**: Jeder Schritt verarbeitet die ganze
-Unterhaltung erneut.
+The owner pays for a plan with a usage limit, and the stronger a model, the faster it uses the limit up. The
+cost of a task is not the size of the change but **the number of steps times the length of the conversation**:
+every step processes the whole conversation again.
 
-### Das Modell wählen
+### Choosing the model
 
-Das **günstigste Modell nehmen, das die Aufgabe zuverlässig erledigt**. Stand
-Ende 2026 gibt es drei Stufen; die Namen ändern sich mit der Zeit, das Prinzip
-nicht. Die aktuell angebotenen Modelle prüfen (`/model`), statt dieser Liste zu
-trauen, und wenn der Besitzer sagt, dass sich die Grenzen oder das Angebot
-geändert haben, nach seinen Worten richten.
+Use **the cheapest model that does the task reliably**. As of late 2026 there are three tiers; the names change
+over time, the principle does not. Check the models currently offered (`/model`) rather than trusting this list,
+and when the owner says the limits or the offer have changed, follow what they say.
 
-| Stufe | Wofür |
-| --- | --- |
-| Klein und schnell (jetzt: **Haiku**) | Nur für Subagenten: Dinge im Code finden, Protokolle und Testausgaben lesen, mechanische Änderungen über viele Dateien mit genauem Auftrag. Nicht für Entscheidungen, nicht für Gespräche mit dem Besitzer. |
-| Mitte (jetzt: **Sonnet**) – **der Standard** | Kleine Korrekturen, Texte und Gestaltung, Dokumentation, Fragen dazu, wie etwas funktioniert oder was eine Meldung bedeutet, Datenanalysen und die Schritte einer Aufgabe, die Opus geplant hat. |
-| Stärkste (jetzt: **Opus**; **Fable**, wo der Besitzer Zugang hat) | Ein Fehler mit unklarer Ursache, eine größere neue Funktion oder alles, was Sicherheit berührt, eine Entscheidung, die schwer rückgängig zu machen ist, ein Problem, an dem die mittlere Stufe zweimal gescheitert ist. |
+| Tier                                       | For                                                                                   |
+| ------------------------------------------ | ------------------------------------------------------------------------------------- |
+| Small and fast (now: **Haiku**)            | Subagents only: finding things in the code, reading logs and test output, mechanical edits across many files with an exact brief. Not for decisions, not for talking to the owner. |
+| Middle (now: **Sonnet**) - **the default** | Small fixes, texts and styling, documentation, questions about how something works or what a message means, data analyses, and the steps of a task Opus has planned. |
+| Strongest (now: **Opus**; **Fable** where the owner has access) | A bug whose cause is unclear, a larger new feature or anything touching security or updates, a decision that is hard to take back, a problem the middle tier has failed at twice. |
 
-- Die Sitzung läuft auf dem Modell, das der Besitzer gewählt hat; nur er kann
-  wechseln (`/model`). **Das sagen**, wenn eine Aufgabe auf einer anderen Stufe
-  besser aufgehoben wäre - hoch für etwas Schweres, runter, sobald der schwere
-  Teil erledigt ist.
-- Subagenten bekommen ihr Modell ausdrücklich gesetzt (`model: "haiku"`,
-  `model: "sonnet"`), nie dem der Sitzung überlassen.
+- The session runs on the model the owner picked; only they can switch it (`/model`). **Say so** when a task
+  would be better done on another tier - up for something hard, down once the hard part is done.
+- Subagents get their model set explicitly (`model: "haiku"`, `model: "sonnet"`), never left to inherit the
+  session's.
 
-### Delegieren
+### Delegating
 
-- Auf der stärksten Stufe **die Schritte delegieren**. Alles mit mehreren
-  Schritten - Ändern, Tests ausführen, Sabotageproben, Bildschirmfotos - geht
-  an einen Subagenten auf der günstigsten Stufe, die es kann, mit kurzem
-  Auftrag und der Anweisung, knapp zu berichten: was sich geändert hat, die
-  Testergebnisse, sonst nichts. Das starke Modell plant, liest den Diff und den
-  Bericht, entscheidet und committet.
-- Das gilt auch für kleine Änderungen: Der kurze Kontext eines frischen
-  Subagenten ist billiger, als wenn jeder Schritt eine lange Unterhaltung
-  mitschleppt. Nicht darüber streiten, ob eine Aufgabe zu klein zum Abgeben
-  ist.
-- Einem Bericht nie blind trauen: den Diff lesen, bevor committet wird.
+- On the strongest tier, **delegate the steps**. Anything with several steps - editing, running tests, waiting
+  for a build, sabotage checks, screenshots - goes to a subagent on the cheapest tier that can do it, with a
+  short brief, told to report tersely: what changed, the test and build results, nothing else. The strong model
+  plans, reads the diff and the report, decides, and commits.
+- This holds for small changes too: a fresh subagent's short context is cheaper than each step dragging a long
+  conversation along. Do not argue a task is too small to hand over.
+- Never trust a report blindly: read the diff before committing, and check its claims about libraries or
+  services against the real source where it matters (see "Checking facts at the source").
+- Subagents must not leave background jobs running when they finish.
 
-### Kosten niedrig halten
+### Keeping the cost down
 
-- **Bildschirmfotos** nur, wenn sich etwas Sichtbares geändert hat. Bilder sind
-  teuer.
-- **Eine lange Sitzung kostet bei jedem Schritt.** Ist ein Thema erledigt und
-  committet, eine neue Sitzung für das nächste vorschlagen; alles
-  Bewahrenswerte steht im Repository.
-- Werkzeugausgaben kurz halten: Protokolle und Testläufe auf das Wesentliche
-  filtern, statt sie ganz zu lesen.
+- **Screenshots** only when something visible changed. Images are expensive.
+- **A long session costs on every step.** Once a topic is done and committed, suggest starting a new session for
+  the next one; everything worth keeping is in the repository.
+- Keep tool output short: filter logs and test runs to what matters rather than reading them whole.
+- Waiting for something (a build, a release): schedule a check-in instead of polling step by step.
 
-<!-- owner-rules v2: claude (CLAUDE.md) - end -->
+<!-- owner-rules v6: claude (CLAUDE.md) - end -->
