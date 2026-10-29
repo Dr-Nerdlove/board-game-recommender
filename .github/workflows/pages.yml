@@ -1,7 +1,7 @@
-# Veroeffentlicht die Web-Version auf GitHub Pages (auch fuers iPhone).
-# Jeder Push auf main, der die Web-Dateien beruehrt, aktualisiert sie.
-# Hinaus gehen nur die Web-Dateien - kein README, keine Bauplaene.
-# Die Android-App baut davon getrennt apk.yml.
+# Publishes the web version on GitHub Pages (also for the iPhone).
+# Every push to main that touches the web files updates it.
+# Only the web files go out - no README, no build plans.
+# The Android app is built separately by apk.yml.
 name: Web-Version veroeffentlichen
 
 on:
@@ -32,7 +32,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
-      - name: Web-Dateien zusammenstellen
+      - name: Assemble web files
         run: |
           mkdir site
           cp index.html sw.js manifest.webmanifest icon-32.png icon-180.png icon-192.png icon-512.png site/

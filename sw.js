@@ -1,19 +1,19 @@
-/* Service Worker der Web-Version (GitHub Pages).
+/* Service worker of the web version (GitHub Pages).
 
-   Er macht aus der Seite eine Offline-Seite: nach dem ersten Besuch startet
-   sie auch ohne Netz, auf dem iPhone vom Home-Bildschirm aus.
+   It turns the page into an offline page: after the first visit it also
+   starts without a network, on the iPhone from the home screen.
 
-   Die Seite selbst wird NETZ ZUERST geladen. Wer online ist, bekommt damit
-   immer die neueste Fassung, ohne dass hier eine Versionsnummer steht - der
-   Cache heisst immer gleich, es gibt keine vierte Stelle, die bei einer neuen
-   Fassung hochzuzaehlen waere. Nur wenn das Netz fehlt, springt der Cache ein.
+   The page itself is loaded NETWORK FIRST. Anyone who is online always gets
+   the newest version, without a version number standing here - the cache
+   always has the same name, so there is no fourth digit to count up with each
+   new version. Only when the network is missing does the cache step in.
 
-   Alles andere (Symbole, Manifest) kommt aus dem Cache und wird im Hintergrund
-   aufgefrischt: schnell, und beim naechsten Mal ist es aktuell.
+   Everything else (icons, manifest) comes from the cache and is refreshed in
+   the background: fast, and next time it is up to date.
 
-   Fremde Adressen (Wikidata) fasst er nicht an: Die Antworten gehoeren nicht
-   in den Cache, und eine verbrauchte Drosselantwort (429) darf nicht haengen
-   bleiben. Die Suche braucht ohnehin Netz. */
+   It does not touch foreign addresses (Wikidata): the answers do not belong
+   in the cache, and a used-up throttling answer (429) must not stick around.
+   The search needs a network anyway. */
 
 const CACHE = "spieleabend";
 const VORRAT = ["./", "index.html", "manifest.webmanifest",
@@ -32,7 +32,7 @@ self.addEventListener("activate", ev => {
   );
 });
 
-// Antwort in den Cache legen, aber nur eine heile.
+// Put a response into the cache, but only an intact one.
 function merken(anfrage, antwort){
   if(!antwort || !antwort.ok) return antwort;
   const kopie = antwort.clone();
@@ -44,10 +44,10 @@ self.addEventListener("fetch", ev => {
   const anfrage = ev.request;
   if(anfrage.method !== "GET") return;
   const url = new URL(anfrage.url);
-  if(url.origin !== self.location.origin) return;   // Fremdes: nicht anfassen
+  if(url.origin !== self.location.origin) return;   // Foreign: do not touch
 
   if(anfrage.mode === "navigate" || url.pathname.endsWith(".html")){
-    // Seite: Netz zuerst, Cache nur als Rueckfall.
+    // Page: network first, cache only as a fallback.
     ev.respondWith(
       fetch(anfrage).then(a => merken(anfrage, a)).catch(() =>
         caches.match(anfrage)
@@ -58,7 +58,7 @@ self.addEventListener("fetch", ev => {
     return;
   }
 
-  // Rest: aus dem Cache, im Hintergrund auffrischen.
+  // Rest: from the cache, refreshed in the background.
   ev.respondWith(
     caches.match(anfrage).then(gemerkt => {
       const frisch = fetch(anfrage).then(a => merken(anfrage, a));

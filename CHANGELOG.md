@@ -1,668 +1,665 @@
-# Änderungshistorie
+# Changelog
 
-Alle nennenswerten Änderungen stehen hier, neueste zuerst.
+All notable changes are listed here, newest first.
 
-Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
-die Nummerierung [Semantic Versioning](https://semver.org/lang/de/):
-bei **X**.y.z ändert sich etwas Grundlegendes, bei x.**Y**.z kommt etwas dazu,
-bei x.y.**Z** wird etwas repariert.
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and the numbering follows [Semantic Versioning](https://semver.org/):
+with **X**.y.z something fundamental changes, with x.**Y**.z something is
+added, with x.y.**Z** something is repaired.
 
-## [Unveröffentlicht]
+## [Unreleased]
 
 ## [3.0.0] – 2026-10-27
 
-### Hinzugefügt
+### Added
 
-- **Erinnerung an die Sicherung:** Die Sammlung liegt nur auf dem Gerät, und
-  kaum jemand sichert sie. Ab 5 Spielen meldet sich ein Kasten, wenn die letzte
-  Sicherung über 30 Tage her ist (noch nie gesichert: frühestens 14 Tage nach
-  dem Start). „Jetzt sichern" öffnet die Sicherung, „Später" schiebt um eine
-  Woche. Als Sicherung zählt Kopieren (nur wenn es geklappt hat), Teilen in der
-  App und Herunterladen im Browser.
+- **Backup reminder:** The collection lives only on the device, and hardly
+  anyone backs it up. From 5 games on, a box appears when the last backup is
+  more than 30 days old (never backed up: no sooner than 14 days after the
+  start). "Back up now" opens the backup, "Later" postpones it by a week. A
+  copy to the clipboard counts as a backup (only if it worked), as do sharing
+  in the app and downloading in the browser.
 
-### Geändert
+### Changed
 
-- Der Bauplan nutzt aktuelle Fassungen seiner GitHub-Bausteine (Node 24).
-  GitHub mustert die alte Node-Fassung aus; ohne den Wechsel wäre der Bau
-  irgendwann abgebrochen. Für die App selbst ändert sich nichts.
+- The build workflow now uses current versions of its GitHub building blocks
+  (Node 24). GitHub is retiring the old Node version; without the switch the
+  build would eventually have broken. Nothing changes for the app itself.
 
 ## [2.9.2] – 2026-10-25
 
-### Entfernt
+### Removed
 
-- **Alles, was nur für die Seite als Claude-Artifact da war:** der Speicher im
-  Claude-Konto, „Daten vorschlagen" samt Anfrage an Claude, die zugehörigen
-  Texte und Abfragen auf `window.claude`. Die Seite läuft ohnehin nur noch als
-  App und als Web-Version; beide speichern auf dem Gerät. Der Code war dort nie
-  erreichbar, bläht die Datei aber auf und führt in die Irre. Die Suche bei
-  Wikidata („Daten suchen") ist davon nicht berührt.
+- **Everything that existed only for the page as a Claude artifact:** the
+  storage in the Claude account, "Suggest data" including the request to
+  Claude, the related texts and the queries on `window.claude`. The page now
+  runs only as an app and as a web version, and both save on the device. The
+  code was never reachable there, but it bloated the file and was misleading.
+  The Wikidata lookup ("Find data") is not affected.
 
 ## [2.9.1] – 2026-10-25
 
-### Geändert
+### Changed
 
-- Der iPhone-Hinweis warnt jetzt vor der eigentlichen Falle: Safari-Tab und
-  Home-Bildschirm-App haben **getrennte Speicher**. Spiele also erst in der
-  App auf dem Home-Bildschirm eintragen; schon im Tab Eingetragenes zieht man
-  über „Sicherung & Umzug" um. Das README sagt dasselbe und listet, worauf
-  Nutzer der Web-Version sonst achten sollten.
-- Die Web-Version bittet beim ersten Speichern um dauerhaften Speicher, damit
-  der Browser die Sammlung nicht bei Platzmangel von selbst löscht.
+- The iPhone notice now warns about the real trap: the Safari tab and the
+  Home Screen app have **separate storage**. So enter games in the app on the
+  Home Screen first; anything already entered in the tab is moved over via
+  "Backup & moving". The README says the same and lists what else users of the
+  web version should watch out for.
+- On the first save, the web version asks for persistent storage so that the
+  browser does not delete the collection by itself when space runs short.
 
 ## [2.9.0] – 2026-10-25
 
-### Hinzugefügt
+### Added
 
-- **Web-Version auf GitHub Pages**, auch fürs iPhone: im Safari öffnen, über
-  „Teilen" → „Zum Home-Bildschirm" ablegen. Jeder Push auf `main`, der die
-  Web-Dateien berührt, aktualisiert sie.
-- **Offline-Betrieb per Service Worker** (`sw.js`): die Seite lädt Netz zuerst,
-  ohne Netz aus dem Cache. In der Android-App wird er nicht registriert.
-- **Hinweis fürs iPhone**: eine wegtippbare Box im Safari-Tab erklärt den Weg
-  zum Home-Bildschirm — sonst löscht iOS die Sammlung nach sieben Tagen ohne
-  Besuch.
+- **Web version on GitHub Pages**, also for the iPhone: open it in Safari and
+  put it on the Home Screen via "Share" → "Add to Home Screen". Every push to
+  `main` that touches the web files updates it.
+- **Offline use through a service worker** (`sw.js`): the page loads from the
+  network first and from the cache when there is no network. It is not
+  registered in the Android app.
+- **A notice for the iPhone**: a box that can be dismissed, shown in the
+  Safari tab, explains the way to the Home Screen — otherwise iOS deletes the
+  collection after seven days without a visit.
 
 ## [2.8.0] – 2026-10-24
 
-### Hinzugefügt
+### Added
 
-- **„Daten suchen"** neben dem Namensfeld: holt offiziellen Titel, Spielerzahl
-  und Dauer von Wikidata, dazu einen Stimmungsvorschlag aus dem Genre. Bei
-  mehreren Treffern erscheint eine kleine Auswahl. Anspruch und „Glänzt bei"
-  kennt Wikidata nicht — die bleiben Handarbeit, die Meldung sagt das.
-  Die Anfrage geht nur beim Tippen auf den Knopf hinaus, sonst nie.
-- **Beispielspiele zum Ausprobieren**: neun bekannte Titel, zu laden mit einem
-  Knopf im leeren Regal.
+- **"Find data"** next to the name field: fetches the official title, player
+  count and length from Wikidata, plus a mood suggestion derived from the
+  genre. With several hits a small selection appears. Difficulty and "Shines
+  at" are unknown to Wikidata — those stay manual work, and the message says
+  so. The request goes out only when the button is tapped, never otherwise.
+- **Example games to try out**: nine well-known titles, loaded with one button
+  on the empty shelf.
 
-### Geändert
+### Changed
 
-- **Das Regal beginnt leer.** Die 21 Spiele des Autors sind aus App und Repo
-  entfernt. Eine schon gespeicherte Sammlung bleibt beim Update erhalten.
-- Das leere Regal zeigt jetzt zwei Wege heraus („Erstes Spiel eintragen",
-  „Beispielspiele laden"), und „Würfel entscheiden" ist ausgegraut, solange
-  nichts passt.
+- **The shelf starts empty.** The author's 21 games are removed from the app
+  and the repo. A collection that is already saved is kept on update.
+- The empty shelf now offers two ways out ("Add your first game", "Load
+  example games"), and "Let the dice decide" is greyed out as long as nothing
+  fits.
 
 ## [2.7.2] – 2026-10-23
 
-### Behoben
+### Fixed
 
-- „Auf BGG nachschlagen" startete eine leere Suche, wenn man ein Spiel aus der
-  Sammlung änderte. Der Link wurde nur beim Tippen gesetzt — füllte das Skript
-  das Namensfeld selbst, blieb er stehen. Dasselbe traf zwei weitere Stellen:
-  nach „Abbrechen" zeigte er noch auf das vorher bearbeitete Spiel, und nach
-  einem Vorschlag von Claude suchte er den alten statt des berichtigten Titels.
-  Alle drei kommen jetzt über dieselbe Funktion.
+- "Look up on BGG" started an empty search when you edited a game from the
+  collection. The link was only set while typing — when the script filled the
+  name field itself, it stayed as it was. The same hit two further places:
+  after "Cancel" it still pointed at the game edited before, and after a
+  suggestion from Claude it searched for the old title instead of the
+  corrected one. All three now go through the same function.
 
 ## [2.7.1] – 2026-10-22
 
-### Hinzugefügt
+### Added
 
-- **Die Sprache lässt sich jetzt für die App allein einstellen**, unter
-  Einstellungen → Apps → Spieleabend → Sprache (ab Android 13). Vorher ging nur
-  die systemweite Umstellung — der Punkt erschien gar nicht, weil der App die
-  Angabe fehlte, welche Sprachen sie überhaupt kann (`locales_config.xml` und
-  `android:localeConfig` im Manifest).
+- **The language can now be set for the app alone**, under Settings → Apps →
+  Game Night → Language (from Android 13). Before, only the system-wide
+  switch worked — the entry did not even appear, because the app lacked the
+  declaration of which languages it supports (`locales_config.xml` and
+  `android:localeConfig` in the manifest).
 
-### Behoben
+### Fixed
 
-- Die Seite richtete sich nach `navigator.language`, und das nennt in der
-  WebView **immer die Systemsprache** — eine App-Sprache wäre dort nie
-  angekommen. Ein kleiner nativer Baustein liest sie jetzt aus und die Seite
-  stellt danach um. Beim allerersten Start nach einer Umstellung springt die
-  Sprache dabei kurz um; danach steht sie gemerkt im Speicher.
-- Ein Wechsel der Sprache bei laufender App wirkte bisher erst nach dem
-  Beenden: Im Manifest steht `locale` unter `configChanges`, Android baut die
-  Activity also nicht neu auf. `MainActivity` sieht jetzt selbst nach und lädt
-  die Seite neu.
+- The page took its language from `navigator.language`, and in the WebView
+  that **always reports the system language** — a per-app language would
+  never have arrived. A small native building block now reads it out and the
+  page switches accordingly. On the very first start after a change, the
+  language jumps over briefly; after that it is remembered in storage.
+- Changing the language while the app was running only took effect after
+  quitting: the manifest lists `locale` under `configChanges`, so Android does
+  not rebuild the activity. `MainActivity` now checks for itself and reloads
+  the page.
 
 ## [2.7.0] – 2026-10-22
 
-### Hinzugefügt
+### Added
 
-- **Die App gibt es jetzt auch auf Englisch** und folgt dabei der Systemsprache:
-  Ein deutsches Gerät bekommt Deutsch, jedes andere Englisch. Eine Einstellung
-  dafür gibt es bewusst nicht — das Gerät weiß die Antwort schon. Übersetzt sind
-  Beschriftungen, Begründungen, Meldungen, Fehlertexte, die Datumsangaben und
-  die Notizen der Ausgangssammlung.
-- Der Name unter dem Symbol folgt derselben Regel: „Spieleabend" auf deutschen
-  Geräten, sonst „Game Night".
+- **The app is now also available in English** and follows the system
+  language: a German device gets German, every other one English. There is
+  deliberately no setting for it — the device already knows the answer.
+  Translated are labels, reasons, messages, error texts, the dates and the
+  notes of the starting collection.
+- The name under the icon follows the same rule: "Spieleabend" on German
+  devices, "Game Night" otherwise.
 
-### Geändert
+### Changed
 
-- Die Fassungsnummer steht im Fuß als Angabe `data-fassung` am Element statt im
-  Text; das Skript schreibt daraus „Fassung 2.7.0" oder „Version 2.7.0". Die
-  Nummer bleibt damit eine einzige Stelle. Der Bauplan prüft entsprechend.
-- Das README ist jetzt englisch; die deutsche Fassung ist entfallen.
+- The version number now sits in the footer as a `data-fassung` attribute on
+  the element instead of in the text; the script turns it into "Fassung 2.7.0"
+  or "Version 2.7.0". The number thus stays in a single place. The build
+  workflow checks accordingly.
+- The README is now in English; the German version is gone.
 
-### Unverändert — mit Absicht
+### Unchanged — on purpose
 
-- Die Schlüssel der gespeicherten Daten (`party`, `gruebeln`, `leicht` …)
-  bleiben in jeder Sprache dieselben. Eine Sicherung aus der deutschen App lässt
-  sich in der englischen einlesen und umgekehrt; nachgemessen in beide
-  Richtungen. Selbst getippte Notizen bleiben so, wie sie getippt wurden.
+- The keys of the saved data (`party`, `gruebeln`, `leicht` …) stay the same
+  in every language. A backup from the German app can be read into the English
+  one and vice versa; measured in both directions. Notes you typed yourself
+  stay exactly as typed.
 
 ## [2.6.1] – 2026-10-22
 
-### Geändert
+### Changed
 
-- Der Fuß der App nennt nur noch die Fassung. Der Hinweis auf die Lizenz ist
-  dort weg — die Lizenz steht im Repo (`LICENSE`), und das genügt.
+- The footer of the app now shows only the version. The note about the
+  license is gone from there — the license is in the repo (`LICENSE`), and
+  that is enough.
 
 ## [2.6.0] – 2026-10-22
 
-### Hinzugefügt
+### Added
 
-- **Die App folgt auf Android 12 und neuer den Material-You-Farben.** Android
-  leitet aus dem Hintergrundbild eine Palette ab; die übernimmt die App für
-  Flächen, Schrift, Linien und Akzente. Auf älteren Geräten und im Browser
-  bleibt alles wie bisher.
+- **On Android 12 and newer the app follows the Material You colours.**
+  Android derives a palette from the wallpaper; the app adopts it for
+  surfaces, text, lines and accents. On older devices and in the browser
+  everything stays as before.
 
-  Jede Schriftfarbe wird dabei nachgerechnet: Reicht der Abstand zu ihrem
-  Untergrund nicht für 4,5:1, rückt die Seite so lange zur nächsten Tonstufe
-  weiter, bis er reicht. Beim gefüllten Knopf wird notfalls die Fläche
-  nachgedunkelt — heller als die hellste Stufe geht die Schrift nicht. Taugt
-  eine Palette am Ende gar nicht, bleibt die eigene stehen; halb eingefärbt
-  sähe kaputt aus.
+  Every text colour is recalculated in the process: if the contrast against
+  its background is not enough for 4.5:1, the page moves on to the next tone
+  step until it is. For the filled button the surface is darkened if
+  necessary — the text cannot go lighter than the lightest step. If a palette
+  turns out to be no good at all, the app's own stays in place; half-tinted
+  would look broken.
 
-- **Das Projekt steht jetzt unter der GNU General Public License, Version 3
-  oder jeder späteren.** Der vollständige Text liegt als `LICENSE` im
-  Projekt. Bisher war bewusst keine Lizenz vergeben; damit war eine
-  Weiterverwendung ohne Absprache nicht gestattet. Die beiden mitgelieferten
-  Schriften behalten ihre eigene Lizenz, die SIL Open Font License 1.1.
-- Unten auf der Seite steht jetzt, unter welcher Lizenz die App steht.
+- **The project is now under the GNU General Public License, version 3 or any
+  later version.** The full text is in the project as `LICENSE`. Until now no
+  license had been chosen on purpose; that meant reuse without prior
+  agreement was not permitted. The two bundled fonts keep their own license,
+  the SIL Open Font License 1.1.
+- The bottom of the page now states which license the app is under.
 
 ## [2.5.1] – 2026-10-21
 
-### Behoben
+### Fixed
 
-- **Unter „Einspielen" berührten sich zwei Knopfreihen.** „Datei einlesen" und
-  die Reihe darunter standen auf null Punkte aneinander, ihre Umrisse lagen
-  aufeinander. Der Abstand von 8 Punkten galt nur innerhalb einer Reihe, nicht
-  zwischen zweien.
+- **Under "Read in", two rows of buttons touched.** "Read a file" and the row
+  below sat at zero points from each other, their outlines lying on top of one
+  another. The gap of 8 points only applied within a row, not between two.
 
 ## [2.5.0] – 2026-10-21
 
-### Hinzugefügt
+### Added
 
-- **Zwei grobe Datumsknöpfe beim Ändern eines Spiels:** *Vor einem Monat* und
-  *Vor einem halben Jahr*, neben *Heute*, *Gestern* und *Leeren*. Gedacht für
-  Spiele, die man längst gespielt, hier aber nie eingetragen hat: Ohne Datum
-  hält die Seite ein Spiel für neu, gibt ihm einen Bonus in der Rangfolge und
-  schreibt „noch nie gespielt" darauf. Ungefähr richtig ist dafür besser als
-  gar nichts.
+- **Two coarse date buttons when editing a game:** *A month ago* and *Six
+  months ago*, next to *Today*, *Yesterday* and *Clear*. Meant for games you
+  played long ago but never entered here: without a date, the page considers
+  a game new, gives it a bonus in the ranking and writes "never played" on it.
+  Roughly right beats nothing at all.
 
-### Geändert
+### Changed
 
-- **Weniger Luft unter „Eure Runde".** Die Zeile muss 48 Punkte hoch bleiben —
-  sie ist die Fläche zum Antippen —, der ganze Rest fiel aber unter den Text.
-  Jetzt sitzt er mittig: 26 statt 41 Punkte bis zur ersten Überschrift, bei
-  gleich großer Antippfläche.
-- **Die Knöpfe unter „Sicherung & Umzug" sind nach Richtung geordnet.** Vorher
-  standen fünf Knöpfe in zwei Reihen, die ungleich umbrachen. Jetzt
-  „Sichern" (Text kopieren, Als Datei sichern) und „Einspielen" (erst Datei
-  einlesen, dann dazu oder ersetzen), in vollen Reihen.
-- Die Zeile unter dem Datumsfeld sagt jetzt auch bei älteren Daten, wie lange
-  es her ist („vor 6 Monaten"). Sie hörte vorher bei 31 Tagen auf — gerade da,
-  wo die neuen Knöpfe hinzielen. Karte, Liste und Echo benutzen dafür nun
-  dieselbe Formulierung.
+- **Less air under "Your group".** The row has to stay 48 points high — it is
+  the tap area —, but all the rest fell below the text. Now the text sits in
+  the middle: 26 instead of 41 points to the first heading, with a tap area of
+  the same size.
+- **The buttons under "Backup & moving" are ordered by direction.** Before,
+  there were five buttons in two rows that wrapped unevenly. Now "Back up"
+  ("Copy as text", "Save as file") and "Read in" (first "Read a file", then
+  "Merge in" or "Replace collection"), in full rows.
+- The line under the date field now says how long ago it was even for older
+  dates ("6 months ago"). It used to stop at 31 days — just where the new
+  buttons aim. Card, list and echo now use the same wording.
 
 ## [2.4.0] – 2026-10-20
 
-Eine Durchsicht des Aufbaus: Dopplungen raus, gleiche Dinge gleich darstellen,
-Überflüssiges weg.
+A review of the structure: duplicates out, the same things shown the same way,
+superfluous things gone.
 
-### Geändert
+### Changed
 
-- **Der Anspruch steht überall als Wort** — „Anspruch: Leicht" statt drei
-  Punkten. Die Punkte waren nirgends erklärt, in der kurzen Trefferzeile sogar
-  ohne jede Beschriftung, und für eine Vorlesefunktion bedeutungslos. In der
-  Sammlungsliste stand das Wort ohnehin schon.
-- **Die Zusammenfassung nennt nur noch, was eingestellt ist.** Vorher stand im
-  Normalfall „4 Personen · Stimmung egal · jeder Anspruch · Zeit egal" — drei
-  von vier Angaben sagten „nichts ausgewählt".
-- **„Zurücksetzen" im Filter heißt „Filter leeren".** Dasselbe Wort stand
-  vorher auch über dem Wegwerfen der ganzen Sammlung.
-- **Der Filter heißt „Nur lange nicht Gespieltes"** und ist damit von der
-  gleichnamigen Sortierung unterscheidbar; seine Überschrift „Regal" heißt
-  jetzt „Zusätzlich".
-- **Die Sortierung hat eine sichtbare Überschrift bekommen.** Ihre Pillen sahen
-  aus wie die Filter und taten etwas anderes.
-- **„Am besten zu" heißt „Glänzt bei (optional, Spielerzahl)".**
-- **„Würfel entscheiden" ist umrandet statt gefüllt.** Es war der auffälligste
-  Knopf der Startseite und tut das, was man am seltensten braucht; die Antwort
-  steht in der Liste darunter.
-- **Das Datumsfeld erscheint nur beim Ändern.** Beim Hinzufügen eines frisch
-  gekauften Spiels ist „zuletzt gespielt" so gut wie nie gemeint, kostete aber
-  vier Zeilen. Ein neu angelegtes Spiel gilt als noch nie gespielt.
+- **Difficulty is now shown as a word everywhere** — "Difficulty: Light"
+  instead of three dots. The dots were explained nowhere, in the short result
+  line even without any label, and meaningless for a screen reader. In the
+  collection list the word was already there.
+- **The summary now names only what is set.** Before, it normally read "4
+  people · any mood · any difficulty · any time" — three of four items said
+  "nothing selected".
+- **"Reset" in the filter is now called "Clear filters".** The same word also
+  stood above throwing away the whole collection.
+- **The filter is called "Only long-unplayed"** and can thus be told apart
+  from the sort of the same name; its heading "Shelf" is now "Additionally".
+- **The sort now has a visible heading.** Its pills looked like the filters
+  and did something different.
+- **"Best for" is now called "Shines at (optional, player count)".**
+- **"Let the dice decide" is outlined instead of filled.** It was the most
+  conspicuous button on the start page and does what is needed least often;
+  the answer is in the list below.
+- **The date field appears only when editing.** When adding a freshly bought
+  game, "last played" is almost never meant, but it cost four lines. A newly
+  created game counts as never played.
 
-### Entfernt
+### Removed
 
-- **„Auf Ausgangssammlung zurücksetzen".** Der Knopf holte die 21 Beispielspiele
-  zurück und warf die eigenen weg — für eine gewachsene Sammlung nur ein Risiko.
-  Wer wirklich neu anfangen will, nimmt „Sicherung & Umzug" → „Sammlung
-  ersetzen".
-- Die Zahl der Spiele stand zweimal auf der Seite, oben im Kopf und an der
-  Sammlung. Jetzt nur noch oben.
-- Ein Satz im Fußtext, der wiederholte, was die Sammlung ohnehin anbietet.
+- **"Reset to starting collection".** The button brought back the 21 example
+  games and threw away your own — only a risk for a grown collection. Whoever
+  really wants to start over uses "Backup & moving" → "Replace collection".
+- The number of games appeared twice on the page, in the header and at the
+  collection. Now only at the top.
+- A sentence in the footer text that repeated what the collection offers
+  anyway.
 
-### Behoben
+### Fixed
 
-- **Die Warnfarbe für gefährliche Knöpfe gab es nur beim Überfahren mit der
-  Maus** — am Handy also nie. „Sammlung ersetzen" ist jetzt immer rot.
+- **The warning colour for dangerous buttons existed only on mouse hover** —
+  so never on a phone. "Replace collection" is now always red.
 
 ## [2.3.0] – 2026-10-13
 
-### Hinzugefügt
+### Added
 
-- **Die Zurück-Taste geht eine Ebene zurück, statt die App zu schließen.** Erst
-  das Formular, dann der Sicherungsabschnitt, dann die Sammlung, dann die Liste
-  der ausgeschiedenen Spiele, dann nach oben — und erst oben hinaus. Bisher war
-  jedes Antippen von Zurück ein sofortiges Ende, egal wo man war.
+- **The Back button goes up one level instead of closing the app.** First the
+  form, then the backup section, then the collection, then the list of games
+  that dropped out, then to the top — and only from the top out of the app.
+  Until now every tap on Back was an immediate end, no matter where you were.
 
-### Geändert
+### Changed
 
-- **Alle Flächen zum Antippen sind jetzt mindestens 48 Punkte hoch** statt 44.
-  48 ist das Mindestmaß, das Android dafür nennt; 44 stammt von Apple.
+- **All tap areas are now at least 48 points high** instead of 44. 48 is the
+  minimum Android names for this; 44 comes from Apple.
 
-### Behoben
+### Fixed
 
-- **Die beiden Hauptknöpfe waren im Hellmodus zu blass.** Helle Schrift auf dem
-  Ocker kam gemessen auf 4,11:1 und blieb damit unter den geforderten 4,5:1.
-  Sie haben jetzt einen eigenen, dunkleren Ton — 5,6:1. Der Ocker bleibt, wo er
-  nur schmückt.
-- **Bei vergrößerter Systemschrift lief die Seite seitlich aus dem Bild.** Die
-  Knopfzeile, das Kartenraster und die Kopfzeile einer Karte konnten nicht
-  umbrechen. Jetzt steht bis zur doppelten Schriftgröße nichts mehr über dem
-  Rand.
-- Die Farbe der Systemleisten folgt jetzt dem Hell- und Dunkelmodus statt immer
-  ocker zu sein.
-- Im Querformat waren die Zeilen der Sammlung nur 44 Punkte hoch.
+- **The two main buttons were too pale in light mode.** Light text on the
+  ochre measured 4.11:1 and so stayed below the required 4.5:1. They now have
+  their own, darker tone — 5.6:1. The ochre stays where it only decorates.
+- **With an enlarged system font the page ran off the side of the screen.**
+  The button row, the card grid and the header of a card could not wrap. Now
+  nothing sticks out past the edge up to double the font size.
+- The colour of the system bars now follows light and dark mode instead of
+  always being ochre.
+- In landscape the rows of the collection were only 44 points high.
 
 ## [2.2.5] – 2026-10-13
 
-### Behoben
+### Fixed
 
-- **Eine eingelesene Sicherung konnte vor dem Einspielen still verschwinden.**
-  Das Feld unter „Sicherung & Umzug" zeigt sonst immer die aktuelle Sammlung
-  und schrieb sich bei jedem Neuzeichnen neu — ein Tipp auf einen Filter
-  genügte, und die gerade eingelesene Datei war weg. „Sammlung ersetzen"
-  ersetzte sie danach durch sich selbst, ohne ein Wort. Auf einem neuen Gerät
-  wäre die alte Sammlung so nie angekommen. Jetzt bleibt stehen, was du
-  eingelesen oder eingefügt hast, bis es eingespielt ist; den Abschnitt
-  zuzuklappen zeigt wieder die eigene Sammlung.
-- Einzahl und Mehrzahl beim Einspielen: „1 Spiel eingespielt" statt „1 Spiele",
-  „eines war schon da" statt „1 waren schon da".
+- **A backup that had been read in could silently vanish before being read
+  into the collection.** The field under "Backup & moving" otherwise always
+  shows the current collection and rewrote itself on every redraw — a tap on a
+  filter was enough, and the file just read in was gone. "Replace collection"
+  then replaced it with itself, without a word. On a new device the old
+  collection would never have arrived that way. Now what you have read in or
+  pasted stays until it has been merged in; closing the section shows your own
+  collection again.
+- Singular and plural when merging in: "1 game merged in" instead of "1
+  games", "one was already there" instead of "1 were already there".
 
 ## [2.2.4] – 2026-10-13
 
-### Behoben
+### Fixed
 
-- **„Als Datei sichern" tat in der App immer noch nichts.** Die Reparatur aus
-  2.2.1 hat den Knopf an der falschen Stelle angefasst: Sie meldete die beiden
-  Bausteine für Datei und Teilen erst an, statt die zu benutzen, die die App
-  beim Start selbst bereitstellt. Den dafür nötigen Befehl gibt es in der App
-  gar nicht, also brach der Knopf ab, bevor etwas passieren konnte — ohne
-  Meldung. Jetzt greift er auf das zu, was da ist.
-- **Der Knopf schweigt nicht mehr, wenn etwas schiefgeht.** Jeder Fehler landet
-  sichtbar in der Zeile darunter, statt lautlos zu verpuffen.
+- **"Save as file" still did nothing in the app.** The repair from 2.2.1
+  touched the button in the wrong place: it first registered the two building
+  blocks for file and sharing instead of using the ones the app provides
+  itself at start. The command needed for that does not exist in the app at
+  all, so the button aborted before anything could happen — without a message.
+  Now it uses what is there.
+- **The button no longer stays silent when something goes wrong.** Every error
+  ends up visibly in the line below instead of fizzling out unheard.
 
 ## [2.2.3] – 2026-10-12
 
-### Geändert
+### Changed
 
-- **Der Einleitungssatz ist kürzer:** „Du sagst die Runde, das Regal schlägt
-  vor." Damit passt er in zwei Zeilen neben den Knopf statt in drei darunter;
-  der Kopf der Seite misst noch 145 statt 169 Punkte. Der Knopf daneben ist
-  dafür acht Punkte schmaler geworden — ohne das griffe die Ersparnis erst ab
-  390 Punkten Bildschirmbreite, mit ihm schon ab 370 und damit auf den
-  üblichen Handys.
+- **The introductory sentence is shorter:** "You describe the group, the
+  shelf makes suggestions." That way it fits in two lines next to the button
+  instead of three below it; the header of the page now measures 145 instead
+  of 169 points. The button next to it has become eight points narrower for
+  that — without it the saving would only apply from 390 points of screen
+  width, with it from 370 and so on the usual phones.
 
 ## [2.2.2] – 2026-10-12
 
-### Geändert
+### Changed
 
-- **Einleitungssatz und „Sammlung bearbeiten" stehen jetzt auf einer Höhe.**
-  Der Knopf sitzt rechts, der Satz läuft links daneben und unter ihm weiter,
-  statt eine eigene Reihe zu belegen. Der Kopf der Seite ist dadurch von 201
-  auf 169 Punkte geschrumpft; die Filter beginnen entsprechend früher.
+- **The introductory sentence and "Edit collection" now sit at the same
+  height.** The button sits on the right, the sentence runs to its left and
+  continues below it instead of taking a row of its own. The header of the
+  page has shrunk from 201 to 169 points as a result; the filters start
+  correspondingly earlier.
 
 ## [2.2.1] – 2026-10-12
 
-### Behoben
+### Fixed
 
-- **„Als Datei sichern" tat in der App nichts** — und meldete trotzdem „Datei
-  gespeichert". Der Grund: Das Fenster, in dem die App läuft, hat niemanden,
-  der einen Download entgegennimmt; der Klick verpuffte. Die App schreibt die
-  Datei jetzt selbst und reicht sie an Androids Teilen-Blatt weiter. Dort
-  wählst du, wohin — „In Dateien speichern" legt sie in den Download-Ordner,
-  genauso gehen Mail, Drive oder ein Chat. Bricht man ab, sagt die App das
-  auch. Im Browser bleibt alles wie es war.
+- **"Save as file" did nothing in the app** — and still reported "File
+  saved". The reason: the window the app runs in has nobody to accept a
+  download; the click fizzled out. The app now writes the file itself and
+  hands it to Android's share sheet. There you choose where to — "Save to
+  Files" puts it in the Downloads folder, and mail, Drive or a chat work just
+  as well. If you cancel, the app says so too. In the browser everything stays
+  as it was.
 
 ## [2.2.0] – 2026-10-12
 
-### Geändert
+### Changed
 
-- **Der Zeitfilter ist jetzt ein Balken.** Vorher vier gleich aussehende
-  Kacheln im Quadrat — als wären es Stimmungen, obwohl Zeit als einziges Feld
-  eine Reihenfolge hat. Jetzt eine durchgehende Leiste, von links nach rechts
-  zu lesen: Egal · 30 · 60 · 90 Minuten, das „höchstens" steht in der
-  Überschrift. Angetippt wird weiter, nicht geschoben: Bei vier Werten ist ein
-  Tipp eine Bewegung und Ziehen sind drei, und „Egal" ist kein Punkt auf einer
-  Zeitachse. Der Block ist dabei von 128 auf 77 Punkte geschrumpft, jede
-  Fläche misst weiterhin 86 × 44 Punkte.
+- **The time filter is now a bar.** Before, four tiles that looked the same,
+  arranged in a square — as if they were moods, although time is the only
+  field that has an order. Now one continuous strip, to be read from left to
+  right: Any · 30 · 60 · 90 minutes, with the "at most" in the heading. It is
+  still tapped, not slid: with four values a tap is one movement and dragging
+  is three, and "Any" is not a point on a time axis. The block shrank from 128
+  to 77 points in the process, and every area still measures 86 × 44 points.
 
 ## [2.1.3] – 2026-10-12
 
-### Geändert
+### Changed
 
-- **„Sammlung bearbeiten" steht jetzt rechts.** Der Kopf liest sich von links
-  nach rechts, der Knopf ist der Absprung ans Seitenende — er sitzt am Ende
-  der Zeile.
+- **"Edit collection" is now on the right.** The header reads from left to
+  right, the button is the jump to the end of the page — it sits at the end of
+  the row.
 
-### Behoben
+### Fixed
 
-- **Die Überschriften im Filter klebten auf ihren Knöpfen.** Gemeint waren
-  8 Punkte Abstand, tatsächlich waren es null: Ein `<legend>` ist kein
-  Flex-Element, der dafür vorgesehene Spaltenabstand greift bei ihm nicht.
-  Jetzt stehen überall 12 Punkte, im Filter wie im Formular.
-- **Unter „Zurücksetzen" und „Würfel entscheiden" war zu viel Luft.** Der
-  Platz für die Navigationsleiste des Handys wurde doppelt gerechnet — einmal
-  in der Position der Knopfzeile, einmal in ihrer Polsterung. Gemessen
-  80 Punkte statt 46.
+- **The headings in the filter stuck to their buttons.** 8 points of space
+  were intended, in fact it was zero: a `<legend>` is not a flex item, so the
+  column gap provided for that does not apply to it. Now it is 12 points
+  everywhere, in the filter as in the form.
+- **There was too much air under "Reset" and "Let the dice decide".** The
+  space for the phone's navigation bar was counted twice — once in the
+  position of the button row, once in its padding. Measured 80 points instead
+  of 46.
 
 ## [2.1.2] – 2026-10-12
 
-### Behoben
+### Fixed
 
-- **Die drei Sechsecke im Symbol haben ihre hellen Umrisse zurück.** Beim
-  Freistellen des Motivs waren sie mit weggefallen; auf dem grünen Teil war
-  das linke Sechseck danach kaum noch zu ahnen. Jetzt stehen alle drei wieder
-  klar auf der Scheibe.
+- **The three hexagons in the icon have their light outlines back.** They had
+  been lost when the motif was cut out; on the green part the left hexagon was
+  then barely recognisable. Now all three stand out clearly on the disc again.
 
 ## [2.1.1] – 2026-10-12
 
-### Behoben
+### Fixed
 
-- **Das Symbol saß zu klein in seiner Scheibe.** Der Rand war viel zu breit,
-  das Motiv wirkte herausgezoomt. Ursache: Android zeigt von einer Symbolebene
-  nur die mittlere Fläche, und darauf hatte ich das Motiv gerechnet — das
-  Baukastenwerkzeug legt die Ebenen aber ohnehin schon passend hinein, so dass
-  verkleinert wurde. Das Motiv füllt die Scheibe jetzt so aus wie überall
-  sonst; es ist rund die Hälfte größer als in 2.1.0.
+- **The icon sat too small in its disc.** The margin was far too wide, the
+  motif looked zoomed out. Cause: Android shows only the middle area of an
+  icon layer, and I had calculated the motif for that — but the toolkit
+  already places the layers suitably, so it was scaled down twice. The motif
+  now fills the disc the way it does everywhere else; it is roughly half as
+  large again as in 2.1.0.
 
 ## [2.1.0] – 2026-10-12
 
-### Geändert
+### Changed
 
-- **Das App-Symbol ist jetzt eine runde Scheibe.** Vorher saß das Motiv auf
-  einer Kachel, die Android je nach Startbildschirm selbst zurechtschnitt —
-  mal rund, mal mit abgerundeten Ecken, und an den Rändern blieb die alte
-  Kachelform sichtbar. Die Marke ist nun von sich aus rund: links grün,
-  rechts ocker, das Motiv mittig darauf, nichts angeschnitten.
-- Das Logo oben auf der Seite ist dazu passend rund statt abgerundet-eckig.
+- **The app icon is now a round disc.** Before, the motif sat on a tile that
+  Android cut to size depending on the home screen — sometimes round,
+  sometimes with rounded corners, and the old tile shape remained visible at
+  the edges. The mark is now round by itself: green on the left, ochre on the
+  right, the motif in the middle, nothing cut off.
+- The logo at the top of the page is round to match, instead of rounded-square.
 
 ## [2.0.1] – 2026-10-12
 
-### Behoben
+### Fixed
 
-- **Die Stimmungen standen zweimal auf der Karte.** Einmal grün als Begründung
-  („deshalb passt es"), einmal grau als Etikett („das sind seine Stimmungen").
-  Die Etikettenzeile zeigt jetzt nur noch, was die Begründung nicht schon
-  genannt hat — und entfällt ganz, wenn nichts übrig bleibt.
-- Die Begründung zählt auf Deutsch auf: „A, B und C" statt „A und B und C".
+- **The moods appeared twice on the card.** Once in green as the reason ("this
+  is why it fits"), once in grey as a label ("these are its moods"). The label
+  line now shows only what the reason has not already named — and is dropped
+  entirely if nothing is left.
+- The reason enumerates the German way: "A, B und C" instead of "A und B und
+  C". (In English: "A, B and C" instead of "A and B and C".)
 
 ## [2.0.0] – 2026-10-12
 
-Das Projekt ist von nun an eine Android-App. Alles, was zum Heimserver gehörte,
-ist raus.
+From now on the project is an Android app. Everything that belonged to the
+home server is gone.
 
-### Entfernt
+### Removed
 
-- **Der mitgelieferte Heimserver und die Windows-Skripte.** `spieleabend-server.mjs`,
-  `windows-dienst.ps1`, die vier `dienst-*.cmd` und `start-windows.cmd` sind
-  gelöscht, ebenso der Code in der Seite, der nach `api/sammlung` suchte. Beim
-  Start der App entfällt damit eine Anfrage, die ohnehin immer ins Leere lief.
-  Wer den Server noch braucht: Er steht in der Geschichte, `git log`.
-- Von drei Speicherwegen bleiben zwei: **Gerät** und, nur in der
-  veröffentlichten Claude-Fassung, **Konto**. Der Hinweis über dem Formular
-  sagt „auf diesem Gerät" statt „in diesem Browser" — in einer App ist Browser
-  das falsche Wort.
+- **The bundled home server and the Windows scripts.**
+  `spieleabend-server.mjs`, `windows-dienst.ps1`, the four `dienst-*.cmd` and
+  `start-windows.cmd` are deleted, as is the code in the page that looked for
+  `api/sammlung`. At app start one request is thereby dropped that always went
+  nowhere anyway. Whoever still needs the server: it is in the history, `git
+  log`.
+- Of three storage routes, two remain: **device** and, only in the published
+  Claude version, **account**. The note above the form says "on this device"
+  instead of "in this browser" — in an app, browser is the wrong word.
 
-### Geändert
+### Changed
 
-- **Das App-Symbol füllt die Maske aus.** Vorher saß das Logo klein in einem
-  ockernen Ring; jetzt reicht es bis an den Rand. Nachgemessen: bei jeder
-  üblichen Maskenform ist kein Punkt Hintergrund mehr zu sehen. Die Ecken des
-  Motivs werden dafür beschnitten.
-- **Eine Abstandsleiter statt sieben Einzelwerten.** Im Quelltext standen
-  8, 10, 14, 16, 18, 22 und 26 Pixel ohne Zusammenhang — das ist der Grund für
-  einen unruhigen Satzspiegel, nicht ein einzelner falscher Wert. Jetzt vier
-  Stufen: 8 innerhalb einer Beschriftung, 12 in einer Karte, 20 zwischen
-  Feldern, 24 zwischen Blöcken.
-- **Der Zähler für die Personenanzahl steht mittig**, Minus und Plus
-  gleich weit vom Rand. Das Wort „Personen" ist entfallen: Es stand zwischen
-  Zahl und Plus und riss die Gruppe auseinander — die Beschriftung darüber
-  fragt ohnehin „Wie viele seid ihr?".
+- **The app icon fills the mask.** Before, the logo sat small in an ochre
+  ring; now it reaches to the edge. Measured: with every usual mask shape not
+  a single point of background is visible any more. The corners of the motif
+  are cropped for that.
+- **One ladder of spacing instead of seven single values.** The source had 8,
+  10, 14, 16, 18, 22 and 26 pixels with no connection — that is the reason
+  for a restless layout, not any single wrong value. Now four steps: 8 within
+  a label, 12 in a card, 20 between fields, 24 between blocks.
+- **The counter for the number of people sits in the middle**, minus and plus
+  equally far from the edge. The word "people" is gone: it stood between the
+  number and the plus and tore the group apart — the label above asks "How
+  many of you are there?" anyway.
 
-### Behoben
+### Fixed
 
-- **Der Filterblock klappte sich wieder auf**, wenn man unmittelbar nach dem
-  Zuklappen einen Chip antippte. `renderFilters()` erzwang den Klappzustand bei
-  jedem Neuaufbau, während das `toggle`-Ereignis verzögert eintrifft. Jetzt wird
-  er einmal beim Start gesetzt; danach führt das Element selbst Buch.
+- **The filter block opened up again** when you tapped a chip right after
+  collapsing it. `renderFilters()` forced the open/closed state on every
+  rebuild, while the `toggle` event arrives delayed. Now it is set once at
+  start; after that the element keeps track itself.
 
 ## [1.4.1] – 2026-10-12
 
-Aufräumen am Layout. An der Funktion ändert sich nichts.
+Tidying up the layout. Nothing changes in the function.
 
-### Geändert
+### Changed
 
-- **Der Kopfbereich hing rechts.** Titel, Absatz und der Knopf standen alle in
-  einer Spalte neben dem Logo; links davon blieb eine leere Fläche. Jetzt teilt
-  sich nur die Titelzeile den Platz mit dem Logo, alles andere nutzt die volle
-  Breite.
-- **Die Chips brechen nicht mehr unregelmäßig um.** Acht Stimmungen und vier
-  Zeiten standen mal zu zweit nebeneinander, mal einzeln — der rechte Rand war
-  ausgefranst. Jetzt ein Raster mit gleich breiten Feldern, im Formular
-  genauso wie im Filter.
-- **„Würfel entscheiden" nimmt die freie Breite.** Vorher klebten beide Knöpfe
-  rechts und ließen die halbe Zeile leer.
-- **Die Etiketten auf den Karten sind keine Pillen mehr.** Zwei Reihen Knöpfe,
-  die keine waren, sind jetzt eine ruhige Zeile mit Trennpunkten.
-- **„Spieler 2–5 Spieler"** auf den Karten sagte das Wort zweimal.
-- Kürzere Einleitung, kürzere Erklärung unter „Passt heute", etwas größere
-  Abstände zwischen den Chips.
+- **The header area hung to the right.** Title, paragraph and the button all
+  stood in one column next to the logo; to its left an empty area remained.
+  Now only the title row shares the space with the logo, everything else uses
+  the full width.
+- **The chips no longer wrap irregularly.** Eight moods and four times stood
+  now two side by side, now singly — the right edge was ragged. Now a grid
+  with fields of equal width, in the form just as in the filter.
+- **"Let the dice decide" takes the free width.** Before, both buttons stuck
+  to the right and left half the row empty.
+- **The labels on the cards are no longer pills.** Two rows of buttons that
+  were none are now one calm line with separator dots.
+- **"Players 2–5 players"** on the cards said the word twice.
+- Shorter introduction, shorter explanation under "Fits tonight", somewhat
+  larger gaps between the chips.
 
 ## [1.4.0] – 2026-10-12
 
-Ein Durchgang auf Bedienfreundlichkeit, mit Messungen statt Meinungen.
+A pass on ease of use, with measurements instead of opinions.
 
-### Geändert
+### Changed
 
-- **Die Spielerzahl ist ein Zähler statt zwölf Knöpfen.** Minus, Feld, Plus.
-  Die Obergrenze von 12 war keine Entscheidung, sondern eine Schleife im
-  Quelltext — jetzt sind es 99, und wer zu fünfzehnt ist, tippt die Zahl
-  einfach ein. Die Reihe schrumpft dabei von 93 auf 66 Pixel.
-- **Alles, was angetippt wird, ist mindestens 44 Pixel hoch.** Vorher waren
-  72 von 112 Bedienelementen kleiner: die Chips 34, die kleinen Textknöpfe
-  ebenfalls 34, die Sortierknöpfe 27 und die Zeile „N Spiele fallen heute
-  raus" ganze 18. Android empfiehlt 48, Apple 44.
-- **Die Knopfzeile bleibt am unteren Rand stehen, solange der Filter offen
-  ist.** „Würfel entscheiden" begann vorher bei Pixel 882 von 915 — also
-  unterhalb des Bildschirms, obwohl es der Hauptknopf der App ist.
-- **„Heute gespielt" zieht die Karte nicht mehr weg.** Frisch Gespieltes
-  rutscht in der Rangfolge nach unten; dadurch verschwand genau die Karte, die
-  man gerade bestätigt hatte, und eine fremde rutschte unter den Finger. Jetzt
-  wird nur diese eine Karte aufgefrischt und bleibt stehen. Die neue Rangfolge
-  greift beim nächsten Würfeln oder Filterwechsel.
+- **The player count is a counter instead of twelve buttons.** Minus, field,
+  plus. The upper limit of 12 was not a decision but a loop in the source —
+  now it is 99, and whoever is fifteen simply types the number. The row
+  shrinks from 93 to 66 pixels in the process.
+- **Everything that is tapped is at least 44 pixels high.** Before, 72 of 112
+  controls were smaller: the chips 34, the small text buttons likewise 34, the
+  sort buttons 27 and the line "N games drop out today" a mere 18. Android
+  recommends 48, Apple 44.
+- **The button row stays at the bottom edge while the filter is open.** "Let
+  the dice decide" used to begin at pixel 882 of 915 — that is, below the
+  screen, although it is the main button of the app.
+- **"Played today" no longer pulls the card away.** Freshly played games slide
+  down the ranking; as a result exactly the card you had just confirmed
+  disappeared, and a different one slid under your finger. Now only this one
+  card is refreshed and stays put. The new ranking takes effect at the next
+  roll or filter change.
 
-### Hinzugefügt
+### Added
 
-- **Mehrfachauswahl ist erkennbar.** „Worauf habt ihr Lust?" und „Wie viel
-  Kopf?" tragen den Zusatz „mehrere möglich", ausgewählte Chips ein Häkchen.
-  Vorher sahen „eins von" und „mehrere davon" identisch aus.
-- **„Sammlung bearbeiten ↓" im Kopfbereich.** Die Sammlung beginnt rund drei
-  Bildschirmhöhen weiter unten; von hier ist sie einen Tipp entfernt.
+- **Multiple selection is recognisable.** "What are you in the mood for?" and
+  "How much thinking?" carry the addition "several possible", selected chips a
+  checkmark. Before, "one of" and "several of them" looked identical.
+- **"Edit collection ↓" in the header.** The collection begins roughly three
+  screen heights further down; from here it is one tap away.
 
-### Nicht geändert
+### Not changed
 
-Der Kontrast wurde durchgerechnet: Der schlechteste Wert liegt bei 6,29 — die
-Norm verlangt 4,5. Hier war nichts zu tun.
+The contrast was calculated through: the worst value is 6.29 — the standard
+requires 4.5. Nothing to do here.
 
 ## [1.3.0] – 2026-10-12
 
-### Entfernt
+### Removed
 
-- **Der Schalter „Dunkel/Hell".** Hell oder dunkel entscheidet jetzt allein das
-  Gerät. In der Android-App reicht die WebView die Systemeinstellung durch: Sie
-  leitet `prefers-color-scheme` aus dem Attribut `isLightTheme` des App-Themes
-  ab, und Capacitors `Theme.AppCompat.DayNight` schaltet genau danach um. Stellt
-  man das Handy während des Betriebs um, geht die Seite ohne Neustart mit.
+- **The "Dark/Light" switch.** Light or dark is now decided by the device
+  alone. In the Android app the WebView passes the system setting through: it
+  derives `prefers-color-scheme` from the `isLightTheme` attribute of the app
+  theme, and Capacitor's `Theme.AppCompat.DayNight` switches exactly by that.
+  If you change the phone's setting while the app is running, the page follows
+  without a restart.
 
-  Nebenbei verschwindet damit die doppelte Farbpalette: Vorher stand jeder
-  dunkle Wert zweimal im Quelltext — einmal für die Systemeinstellung, einmal
-  für den Schalter. Jetzt nur noch einmal.
+  Incidentally, this removes the double colour palette: before, every dark
+  value stood twice in the source — once for the system setting, once for the
+  switch. Now only once.
 
-### Hinzugefügt
+### Added
 
-- `color-scheme: light dark` als Vermerk und in der Gestaltung. Damit richten
-  sich auch Eingabefelder, Bildlaufleisten und der Kalender des Datumsfelds
-  nach dem gewählten Schema statt hell zu bleiben.
+- `color-scheme: light dark` as a declaration and in the styling. With it,
+  input fields, scroll bars and the calendar of the date field also follow the
+  chosen scheme instead of staying light.
 
 ## [1.2.2] – 2026-10-12
 
-An der App selbst ändert sich nichts; 1.2.1 war bereits richtig signiert. Was
-fehlte, war der Nachweis darüber.
+Nothing changes in the app itself; 1.2.1 was already signed correctly. What
+was missing was the proof of it.
 
-### Behoben
+### Fixed
 
-- **Der Fingerabdruck der Signatur blieb leer.** Gelesen wurde er mit
-  `keytool`, das nur die alte JAR-Signatur (v1) versteht — ab `minSdk 24`
-  erzeugt Gradle die aber nicht mehr. Der Fehlschlag blieb unbemerkt, weil in
-  einer Rohrleitung nur der Ausgang des letzten Glieds zählt und das
-  nachfolgende `sed` mit leerer Eingabe zufrieden war. Jetzt liest `apksigner`
-  den Abdruck, und `set -o pipefail` lässt solche Fehler nicht mehr
-  durchrutschen.
-- **Der Bauplan prüft die Signatur gegen einen erwarteten Fingerabdruck** und
-  bricht ab, bevor etwas veröffentlicht wird, falls sie abweicht. Außerdem
-  verifiziert er die Signatur der fertigen APK.
+- **The fingerprint of the signature stayed empty.** It was read with
+  `keytool`, which understands only the old JAR signature (v1) — but from
+  `minSdk 24` on, Gradle no longer produces that. The failure went unnoticed
+  because in a pipeline only the exit status of the last link counts, and the
+  following `sed` was happy with empty input. Now `apksigner` reads the
+  fingerprint, and `set -o pipefail` no longer lets such failures slip
+  through.
+- **The build workflow checks the signature against an expected fingerprint**
+  and aborts before anything is published if it differs. It also verifies the
+  signature of the finished APK.
 
 ## [1.2.1] – 2026-10-12
 
-### Behoben
+### Fixed
 
-- **Die App ließ sich nicht über die vorige Fassung aktualisieren.** Gebaut
-  wurde bisher mit `assembleDebug`. Debug-Pakete werden mit dem Debug-Schlüssel
-  signiert, der auf dem Entwicklerrechner liegt — GitHubs Maschinen sind bei
-  jedem Lauf frisch, also legte Gradle jedes Mal einen neuen Zufallsschlüssel
-  an. Für Android ist die Signatur der Ausweis einer App; mit neuem Ausweis ist
-  es eine fremde App, und die Aktualisierung scheitert. Jede Fassung bis
-  einschließlich 1.2.0 war davon betroffen.
+- **The app could not be updated over the previous version.** Until now it
+  was built with `assembleDebug`. Debug packages are signed with the debug
+  key, which lives on the developer's machine — GitHub's machines are fresh on
+  every run, so Gradle created a new random key each time. For Android the
+  signature is an app's identity card; with a new identity card it is a
+  foreign app, and the update fails. Every version up to and including 1.2.0
+  was affected.
 
-  Gebaut wird jetzt mit `assembleRelease` und einem festen Schlüssel aus den
-  GitHub-Geheimnissen. Der Fingerabdruck der Signatur steht im Bauprotokoll
-  und bei jeder Veröffentlichung.
+  It is now built with `assembleRelease` and a fixed key from the GitHub
+  secrets. The fingerprint of the signature is in the build log and with every
+  release.
 
-  **Einmalig nötig:** Die installierte App trägt noch einen der alten
-  Zufallsausweise. Sie muss ein letztes Mal deinstalliert werden — **vorher
-  die Sammlung sichern**, Deinstallieren löscht den Speicher der App mit.
-  Ab 1.2.1 laufen Aktualisierungen dann normal durch.
+  **Needed once:** The installed app still carries one of the old random
+  identity cards. It has to be uninstalled one last time — **back up the
+  collection first**, uninstalling deletes the app's storage too. From 1.2.1
+  on, updates then go through normally.
 
 ## [1.2.0] – 2026-10-12
 
-Der Kleinkram aus dem Rundgang.
+The small stuff from the walkthrough.
 
-### Hinzugefügt
+### Added
 
-- **Das Datum steht ausgeschrieben darunter.** Welches Format das Eingabefeld
-  anzeigt, bestimmt allein die Systemsprache des Geräts — bei englischer
-  Einstellung also `mm/dd/yyyy`. Die Seite kann das nicht ändern (`lang` am
-  Feld wirkt nicht, nachgeprüft). Stattdessen steht der gewählte Tag jetzt
-  darunter deutsch ausgeschrieben, samt Wochentag: „Montag, 12.10.2026 —
-  heute". Damit ist egal, was das Feld selbst zeigt.
-- **Knöpfe „Heute", „Gestern" und „Leeren"** am Datumsfeld. Nach einem
-  Spieleabend will man meist genau eines davon.
-- **Der Balken ist erklärt.** Unter „Passt heute" steht einmal, was er bedeutet
-  und warum einer ocker ist — bisher stand das nirgends. Einmal, nicht auf
-  jeder Karte.
+- **The date is written out below.** Which format the input field shows is
+  decided solely by the device's system language — with an English setting
+  that is `mm/dd/yyyy`. The page cannot change this (`lang` on the field has
+  no effect, checked). Instead, the chosen day now appears below it written
+  out, in German at the time, with the weekday: "Montag, 12.10.2026 — heute"
+  (Monday, 12.10.2026 — today). That makes it irrelevant what the field itself
+  shows.
+- **Buttons "Today", "Yesterday" and "Clear"** at the date field. After a game
+  night you usually want exactly one of them.
+- **The bar is explained.** Under "Fits tonight" it says once what it means
+  and why one is ochre — before, that was written nowhere. Once, not on every
+  card.
 
 ## [1.1.0] – 2026-10-12
 
-Ein Rundgang durch die App auf einem Handy hat fünf Stellen zutage gefördert,
-an denen sie mehr Arbeit macht als nötig. Alle fünf sind hier erledigt.
+A walkthrough of the app on a phone turned up five places where it makes more
+work than necessary. All five are dealt with here.
 
-### Geändert
+### Changed
 
-- **Der Würfel zeigt sein Ergebnis oben.** Bisher landete man mitten in einer
-  langen Liste — das gewürfelte Spiel stand auf Platz 6 von 19, und warum,
-  stand nirgends. Jetzt rückt es an die erste Stelle, bekommt das Kennzeichen
-  „Der Würfel sagt" und einen Knopf „Nochmal würfeln". Welches Spiel die beste
-  Passung hat, steht weiterhin daneben.
-- **„Runde beschreiben" klappt zu.** Zugeklappt bleibt die Zusammenfassung
-  stehen, und der erste Vorschlag rückt von Pixel 1065 auf 489 — auf den ersten
-  Bildschirm statt dahinter. Ob auf- oder zugeklappt, wird gemerkt.
-- **Nur die ersten drei Treffer sind volle Karten**, der Rest je eine Zeile mit
-  Name, Eckwerten und Grund. Antippen macht eine Karte daraus. Die Seite ist
-  damit 3500 statt 6600 Pixel lang.
-- **Die Regalliste ist halb so hoch.** „Ändern" und „Entfernen" standen unter
-  jedem der 21 Einträge und sagten dort nichts; sie erscheinen jetzt an der
-  Zeile, die man antippt.
+- **The dice show their result at the top.** Before, you landed in the middle
+  of a long list — the rolled game was in place 6 of 19, and why was written
+  nowhere. Now it moves to the first place, gets the badge "The dice say" and
+  a button "Roll again". Which game has the best fit is still shown next to
+  it.
+- **"Describe the group" collapses.** Collapsed, the summary stays, and the
+  first suggestion moves from pixel 1065 to 489 — onto the first screen
+  instead of behind it. Whether it is open or closed is remembered.
+- **Only the first three hits are full cards**, the rest one line each with
+  name, key figures and reason. Tapping turns it into a card. The page is thus
+  3500 instead of 6600 pixels long.
+- **The shelf list is half as tall.** "Change" and "Remove" stood under each
+  of the 21 entries and said nothing there; they now appear at the row you
+  tap.
 
-### Hinzugefügt
+### Added
 
-- **Die Schriften stecken in der Datei.** Vorher kamen sie von Google: ohne
-  Internet sah die App anders aus, obwohl sie „kein Netz nötig" verspricht.
-  Jetzt gibt es keine einzige Anfrage mehr nach draußen. Kostet 120 KB,
-  Lizenznachweis in `SCHRIFTEN.md`.
-- Die Seite nennt ihre Fassung unten im Fuß.
+- **The fonts are inside the file.** Before, they came from Google: without
+  internet the app looked different, although it promises "no network
+  needed". Now there is not a single request to the outside any more. Costs
+  120 KB, license notice in `FONTS.md`.
+- The page states its version at the bottom, in the footer.
 
-### Behoben
+### Fixed
 
-- Sprungziele landeten hinter dem Band der Statusleiste.
+- Jump targets landed behind the status bar band.
 
 ## [1.0.1] – 2026-10-12
 
-### Behoben
+### Fixed
 
-- Beim Scrollen lief der Inhalt weiterhin sichtbar unter die Statusleiste und
-  die Navigationsleiste. 1.0.0 hatte nur den Abstand beim Start gesetzt — das
-  ist etwas anderes. Oben und unten liegt jetzt je ein mitlaufendes Band in
-  der Seitenfarbe, hinter dem der Inhalt verschwindet.
+- When scrolling, the content still ran visibly under the status bar and the
+  navigation bar. 1.0.0 had only set the spacing at start — that is something
+  else. At the top and at the bottom there is now a band in the page colour
+  that moves along, behind which the content disappears.
 
 ## [1.0.0] – 2026-10-12
 
-Erste gezählte Fassung. Sie fasst zusammen, was bis hierher entstanden ist.
+First numbered version. It sums up what has been built up to here.
 
-### Enthalten
+### Included
 
-- **Empfehlung.** Spielerzahl, Stimmung, Anspruch und Zeit eingeben, die
-  Sammlung wird bewertet und geordnet. Was durchfällt, steht mit Begründung
-  darunter statt einfach zu verschwinden.
-- **Erklärzeit.** Auf Wunsch wird die Zeit zum Erklären eingerechnet —
-  abgestuft nach Anspruch, nicht pauschal.
-- **Sammlung bearbeiten.** Spiele anlegen, ändern, entfernen; Suche und
-  Sortierung; „zuletzt gespielt" pflegen, damit frisch Gespieltes nach unten
-  rutscht.
-- **Titel genügt.** In der Claude-Fassung füllt sich der Rest der Angaben
-  selbst; sonst führt ein Knopf zur Suche auf BoardGameGeek.
-- **Drei Speicherwege.** Eigener Server, Claude-Konto oder Browser — in dieser
-  Reihenfolge, der erste Treffer gewinnt. Welcher greift, steht sichtbar da.
-- **Sicherung und Umzug.** Sammlung als Text kopieren, als Datei sichern und
-  wieder einlesen.
-- **Android-App.** Die Seite als installierbare App, ohne Netz und ohne Server.
-- **Heimserver für Windows** (optional, für mehrere Geräte): Hintergrunddienst,
-  Sicherungskopien, Protokoll, Skripte zum Einrichten, Prüfen, Neustarten und
-  Entfernen.
+- **Recommendation.** Enter player count, mood, difficulty and time; the
+  collection is rated and ordered. What falls through is listed with a reason
+  below instead of simply vanishing.
+- **Explanation time.** On request the time for explaining is included —
+  graded by difficulty, not flat.
+- **Editing the collection.** Create, change, remove games; search and sort;
+  maintain "last played" so that freshly played games slide down.
+- **A title is enough.** In the Claude version the rest of the details fill in
+  by themselves; otherwise a button leads to the search on BoardGameGeek.
+- **Three storage routes.** Own server, Claude account or browser — in this
+  order, the first hit wins. Which one applies is visibly shown.
+- **Backup and moving.** Copy the collection as text, save it as a file and
+  read it in again.
+- **Android app.** The page as an installable app, without network and
+  without a server.
+- **Home server for Windows** (optional, for several devices): background
+  service, backup copies, log, scripts for setting up, checking, restarting
+  and removing.
 
-### Behoben
+### Fixed
 
-- Unter Android 15 zeichnete die App unter der Statusleiste hindurch; die
-  Überschrift lag hinter der Uhr. Die Seite hält jetzt Abstand zu Status- und
-  Navigationsleiste.
-- Das App-Symbol wurde von Androids runder Maske beschnitten. Vorder- und
-  Hintergrund liegen nun als eigene Ebenen vor.
+- Under Android 15 the app drew underneath the status bar; the heading lay
+  behind the clock. The page now keeps its distance from the status and
+  navigation bars.
+- The app icon was cropped by Android's round mask. Foreground and background
+  now exist as separate layers.
 
-[Unveröffentlicht]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/compare/v3.0.0...HEAD
 [3.0.0]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v3.0.0
 [2.9.2]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.2
 [2.9.1]: https://github.com/Dr-Nerdlove/Board-Game-Recommender/releases/tag/v2.9.1

@@ -1,199 +1,166 @@
-# Hinweise für KI-Assistenten
+# Notes for AI assistants
 
-Kurzorientierung für eine neue Sitzung an diesem Projekt — egal mit welchem
-Werkzeug. Ausführlicher und mit Begründungen: `ENTWICKLUNG.md`. Für Benutzer:
-`README.md` (englisch).
+A short orientation for a new session on this project - whatever tool you use. More detail, with the reasons:
+`DEVELOPMENT.md`. For users: `README.md` (English).
 
-## Was das ist
+## What this is
 
-Entscheidungshilfe für den Spieleabend: Welches Brettspiel aus der eigenen
-Sammlung passt zur heutigen Runde (Spielerzahl, Stimmung, Anspruch, Zeit)?
-Alles steckt in `index.html` — eine Datei, kein Baukasten, keine
-Abhängigkeiten, kein Übersetzungsschritt. Das Regal beginnt **leer**; die neun
-`BEISPIELSPIELE` kommen nur auf Knopfdruck hinein.
+A decision helper for game night: which board game from your own collection suits tonight's group (number of
+players, mood, complexity, time)? Everything lives in `index.html` - one file, no toolkit, no dependencies, no
+build step. The shelf starts **empty**; the nine `BEISPIELSPIELE` (sample games) only go in when the user taps
+the button.
 
-**Zwei Wege zum Benutzer, dieselbe Datei:**
+**Two ways to the user, the same file:**
 
-- **Android-App** (Capacitor): `apk.yml` baut sie, nur auf Abruf.
-- **Web-Version auf GitHub Pages**, vor allem fürs iPhone: `pages.yml`
-  veröffentlicht bei **jedem Push auf `main`**, der die Webdateien berührt.
-  Das Repo ist deshalb öffentlich — es gehört nichts hinein, was geheim bleiben
-  muss (Schlüssel und Passwort liegen als GitHub-Secrets).
+- **Android app** (Capacitor): `apk.yml` builds it, on demand only.
+- **Web version on GitHub Pages**, mainly for the iPhone: `pages.yml` publishes on **every push to `main`** that
+  touches the web files. The repo is public for that reason - nothing that has to stay secret belongs in it (key
+  and password are kept as GitHub secrets).
 
-Es gibt weder Heimserver noch Windows-Skripte noch eine Claude-Artifact-Fassung
-mehr; die Geschichte steht in `ENTWICKLUNG.md`. Alles speichert auf dem Gerät,
-ein Konto gibt es nicht.
+There is no home server, no Windows scripts and no Claude artifact version any more; the history is in
+`DEVELOPMENT.md`. Everything is stored on the device, there is no account.
 
-## Sprache
+## Language
 
-**Die Entwicklung läuft auf Deutsch**: Kommentare, Variablennamen in neuerem
-Code und Commit-Meldungen. Bitte beibehalten.
+**Since October 2026 the repository is English** (the owner's decision, because the repository is public):
+documentation, code comments and commit messages. Please keep it that way. Code identifiers that are German
+already (`frischeKarte`, `TEXTE`, `BEISPIELSPIELE` ...) keep their names; renaming them was deliberately not done.
 
-**Die Oberfläche ist zweisprachig** und folgt der Systemsprache — ohne
-Einstellung im Programm; auf Android 13 aufwärts lässt sie sich über die
-Systemeinstellungen der App festlegen. Wer Text ändert, ändert ihn in *beiden*
-Sprachen (`MARKUP_EN` für feste Beschriftungen, `TEXTE` für alles, was das
-Skript baut); Näheres in `ENTWICKLUNG.md` unter „Zwei Sprachen".
+**The interface is bilingual** and follows the system language - there is no setting in the program; on Android 13
+and up it can be set per app in the system settings. Whoever changes a text changes it in *both* languages
+(`MARKUP_EN` for fixed labels, `TEXTE` for everything the script builds); details in `DEVELOPMENT.md` under "Two
+languages".
 
-**Die Schlüssel der gespeicherten Daten werden nie übersetzt** (`party`,
-`gruebeln`, `leicht` …). Sie stecken in jeder Sicherung; wer sie ändert, macht
-vorhandene Sicherungen unlesbar.
+**The keys of the stored data are never translated** (`party`, `gruebeln`, `leicht` ...). They are in every
+backup; changing them makes existing backups unreadable.
 
-**Das README ist englisch**, es ist die Außenseite des Projekts.
+**The README is English**, it is the project's outward face.
 
-Ausnahme: **Bauplan und Commit-Meldungen** sind reines ASCII, Umlaute
-umschrieben („moeglicherweise").
+Exception: **the build workflow and commit messages** are plain ASCII, umlauts spelled out ("moeglicherweise").
 
-## Dateien
+## Files
 
-| Datei | Zweck |
+| File | Purpose |
 | --- | --- |
-| `index.html` | die ganze Anwendung |
-| `.github/workflows/apk.yml` | baut die Android-App auf GitHubs Maschinen; schreibt dabei auch die nativen Bausteine (Java) und die Android-Sprachlisten |
-| `sw.js` | Service Worker der Web-Version (nicht in der App) |
-| `.github/workflows/pages.yml` | veröffentlicht die Web-Version auf GitHub Pages |
-| `icon-*.png`, `app-icon-*.png`, `manifest.webmanifest` | Symbole |
-| `logo.png`, `screenshots/` | Bilder für das README |
-| `CHANGELOG.md` | Änderungshistorie, gepflegt bei jeder Fassung |
-| `README.md` | Anleitung für Benutzer, auf Englisch |
-| `ENTWICKLUNG.md` | Begründungen und Geschichte der Entscheidungen |
-| `SCHRIFTEN.md` | Lizenznachweis der eingebetteten Schriften |
-| `LICENSE` | GPL-3.0-oder-später (die Schriften behalten die OFL 1.1) |
+| `index.html` | the whole application |
+| `.github/workflows/apk.yml` | builds the Android app on GitHub's machines; also writes the native parts (Java) and the Android language lists |
+| `sw.js` | service worker of the web version (not in the app) |
+| `.github/workflows/pages.yml` | publishes the web version on GitHub Pages |
+| `icon-*.png`, `app-icon-*.png`, `manifest.webmanifest` | icons |
+| `logo.png`, `screenshots/` | images for the README |
+| `CHANGELOG.md` | change history, updated with every version |
+| `README.md` | user guide, in English |
+| `DEVELOPMENT.md` | reasons and history of the decisions |
+| `FONTS.md` | license notice for the embedded fonts |
+| `LICENSE` | GPL-3.0-or-later (the fonts keep the OFL 1.1) |
 
-## Vor dem Ändern von `index.html` lesen
+## Read before changing `index.html`
 
-Ein neues Feld am Spiel muss an **vier** Stellen mitgeführt werden, sonst geht
-es beim Bearbeiten still verloren: `normalize()`, `submitGame()`, die
-Export-Projektion in `renderCollection()` und gegebenenfalls `startEdit()` /
-`resetForm()`. Dieser Fehler ist schon einmal passiert.
+A new field on a game has to be carried in **four** places, otherwise it is silently lost on editing:
+`normalize()`, `submitGame()`, the export projection in `renderCollection()` and, where needed, `startEdit()` /
+`resetForm()`. This mistake has happened once already.
 
-Die Datei ist rund 250 KB groß, weil zwei Schriften als Daten darin stecken. Nicht
-erschrecken und nicht „aufräumen": Sie sind der Grund, warum die App ohne Netz
-aussieht wie mit. Lizenznachweis in `SCHRIFTEN.md`, Begründung in
-`ENTWICKLUNG.md`.
+The file is around 250 KB because two fonts are embedded in it as data. Don't be alarmed and don't "tidy up": they
+are the reason the app looks the same offline as online. License notice in `FONTS.md`, reasoning in
+`DEVELOPMENT.md`.
 
-Die Fassungsnummer steht im Fuß als `data-fassung="1.2.3"` am Element, nicht
-als Text; das Skript setzt daraus „Fassung" bzw. „Version". Der Bauplan sucht
-genau diese Schreibweise.
+The version number sits in the footer as `data-fassung="1.2.3"` on the element, not as text; the script turns it
+into "Version" (or "Fassung" in German). The build workflow looks for exactly this spelling.
 
-Der Innenabstand von `.wrap` steht an **zwei** Stellen (normale Regel und
-`@media (max-width:520px)`) und enthält in beiden die Variablen `--sicher-*`.
-Die halten in der Android-App die Statusleiste von der Überschrift fern;
-Näheres in `ENTWICKLUNG.md` unter „Systemleisten".
+The inner padding of `.wrap` is in **two** places (the normal rule and `@media (max-width:520px)`) and contains the
+`--sicher-*` variables in both. They keep the status bar away from the heading in the Android app; details in
+`DEVELOPMENT.md` under "System bars".
 
-## Signatur: nicht anfassen
+## Signing: do not touch
 
-Die APK wird mit einem festen Schlüssel aus den Geheimnissen
-`SIGNIER_SCHLUESSEL` und `SIGNIER_PASSWORT` signiert. Ändert sich der Schlüssel,
-lässt sich die App nicht mehr über die vorige Fassung aktualisieren, und jeder
-Benutzer verliert beim nötigen Deinstallieren seine Sammlung. Jeder Bau schreibt
-den Fingerabdruck ins Protokoll — er muss gleich bleiben. Hintergrund in
-`ENTWICKLUNG.md`.
+The APK is signed with a fixed key from the secrets `SIGNIER_SCHLUESSEL` and `SIGNIER_PASSWORT`. If the key
+changes, the app can no longer be updated over the previous version, and every user loses their collection when
+they have to uninstall. Every build writes the fingerprint to the log - it must stay the same. Background in
+`DEVELOPMENT.md`.
 
-## Eine neue Fassung herausgeben
+## Releasing a new version
 
-Die Nummer steht an drei Stellen und muss überall gleich sein, sonst bricht der
-Bau ab: `package.json`, `data-fassung="1.2.3"` in `index.html` und ein
-Abschnitt `## [1.2.3]` in `CHANGELOG.md`.
+The number is in three places and must be the same everywhere, otherwise the build aborts: `package.json`,
+`data-fassung="1.2.3"` in `index.html` and a section `## [1.2.3]` in `CHANGELOG.md`.
 
-**Keine zweistelligen Stellen** in der Nummer (Wunsch des Besitzers): nach x.9.z
-kommt die nächste Hauptfassung, also 2.9.2 → 3.0.0, nicht 2.10.0. Niemals
-zurück auf eine kleinere Nummer: Android rechnet 1.2.3 zu 10203 und verweigert
-jede Aktualisierung auf eine kleinere Zahl.
+**No two-digit parts** in the number (the owner's wish): after x.9.z comes the next major version, so 2.9.2 →
+3.0.0, not 2.10.0. Never go back to a smaller number: Android turns 1.2.3 into 10203 and refuses any update to a
+smaller value.
 
-Ein Push auf `main` aktualisiert die **Web-Version** von selbst. Die **APK**
-entsteht nur auf Abruf, und zwar entweder `git tag v1.2.3 && git push origin v1.2.3` — oder, **aus einer
-Sitzung heraus notwendig**, im Reiter „Actions" den Bauplan mit dem Haken
-`veroeffentlichen` (über die GitHub-Werkzeuge: `run_workflow` mit der Eingabe
-`veroeffentlichen`). Marken lassen sich von hier aus nicht schieben,
-der Server antwortet mit HTTP 403; Branch-Pushes gehen. Näheres in
-`ENTWICKLUNG.md`.
+A push to `main` updates the **web version** by itself. The **APK** is only built on demand, either with
+`git tag v1.2.3 && git push origin v1.2.3` - or, **necessarily from a session**, by starting the workflow in the
+"Actions" tab with the box `veroeffentlichen` ticked (through the GitHub tools: `run_workflow` with the input
+`veroeffentlichen`). Tags cannot be pushed from here, the server answers with HTTP 403; branch pushes work. Details
+in `DEVELOPMENT.md`.
 
-**Nach einer Änderung an den nativen Bausteinen** (Java in `apk.yml`,
-Manifest, Sprachlisten) erst einen **Probelauf ohne Haken** machen: Java lässt
-sich hier nicht übersetzen, erst der Bau zeigt, ob es trägt. Ein Fehler dort
-kostet sonst eine verbrannte Fassungsnummer.
+**After a change to the native parts** (Java in `apk.yml`, manifest, language lists) do a **trial run without the
+box ticked** first: Java cannot be compiled here, only the build shows whether it holds. An error there otherwise
+costs a burnt version number.
 
-## Zwei Regeln für die Oberfläche
+## Two rules for the interface
 
-- **Nichts Antippbares unter 44 Pixel.** Chips, Textknöpfe, Aufklappzeilen,
-  Kontrollkästchen samt Beschriftung. Das war schon einmal verletzt — 72 von
-  112 Elementen.
-- **„Heute gespielt" sortiert die Liste nicht neu** (`frischeKarte()` statt
-  `render()`), sonst verschwindet die bestätigte Karte unter dem Finger.
-  Begründung in `ENTWICKLUNG.md`.
+- **Nothing tappable under 44 pixels.** Chips, text buttons, expandable rows, checkboxes together with their label.
+  This was violated once already - 72 of 112 elements.
+- **"Played today" does not re-sort the list** (`frischeKarte()` instead of `render()`), otherwise the confirmed
+  card disappears from under the finger. Reasoning in `DEVELOPMENT.md`.
 
-## Prüfen statt hoffen
+## Check, don't hope
 
-Es gibt keine automatischen Tests. Bewährt hat sich:
+There are no automated tests. What has proven itself:
 
 ```bash
-# Syntax der Seite (und des Service Workers)
+# Syntax of the page (and of the service worker)
 sed -n '/^<script>/,/^<\/script>/p' index.html | sed '1d;$d' > /tmp/app.js
 node --check /tmp/app.js && node --check sw.js
 
-# Ausliefern, um sie im Browser zu pruefen (localhost darf den Service Worker)
+# Serve it to check it in the browser (localhost may use the service worker)
 python3 -m http.server 8111
 ```
 
-Für Oberflächenprüfungen hat sich **puppeteer-core** gegen das vorhandene
-Chromium (`/opt/pw-browsers/...`) bewährt: echte Geräteemulation (412×915,
-Pixeldichte 2), `emulateMediaFeatures` für hell/dunkel, Klicks auf die
-Oberfläche, und am Ende messen statt schauen — Trefferflächen, Abstände,
-Kontraste. Auf Konsolenfehler horchen (`pageerror`), sonst entgehen einem
-stille Ausfälle.
+For interface checks, **puppeteer-core** against the existing Chromium (`/opt/pw-browsers/...`) has proven itself:
+real device emulation (412×915, pixel density 2), `emulateMediaFeatures` for light/dark, clicks on the interface,
+and in the end measuring instead of looking - hit areas, spacing, contrast. Listen for console errors
+(`pageerror`), otherwise silent failures slip through.
 
-**Achtung bei `getComputedStyle` nach einem Klick:** `render()` baut die Chips
-neu auf, das alte Element ist dann abgehängt und liefert leere Werte. Nach dem
-Klick neu suchen.
+**Careful with `getComputedStyle` after a click:** `render()` rebuilds the chips, the old element is then detached
+and returns empty values. Look it up again after the click.
 
-**Vorsicht bei `pkill -f`**: Das Muster trifft auch die eigene
-Kommandozeile und beendet die laufende Shell. `pkill -x node` benutzen oder
-die Prozessnummer merken.
+**Careful with `pkill -f`**: the pattern also matches your own command line and kills the running shell. Use
+`pkill -x node` or remember the process number.
 
-**Das Regal ist beim Start leer.** Ein Test, der Spiele braucht, klickt zuerst
-`[data-leer="beispiele"]` (oder schreibt `spieleabend.sammlung` in den Speicher).
+**The shelf is empty at the start.** A test that needs games first clicks `[data-leer="beispiele"]` (or writes
+`spieleabend.sammlung` into the storage).
 
-**Die Capacitor-Brücke nachbauen**, wenn ein Test „in der App" laufen soll: als
-fertige Objekte unter `window.Capacitor.Plugins` (`isNativePlatform`,
-`Sprache.lesen`, …). Ein `registerPlugin` gibt es dort nicht — das hat schon
-einmal einen Fehler verdeckt, weil der Test es still mitlieferte.
+**Rebuild the Capacitor bridge** when a test is meant to run "in the app": as ready-made objects under
+`window.Capacitor.Plugins` (`isNativePlatform`, `Sprache.lesen`, ...). There is no `registerPlugin` there - that
+once hid an error because the test silently supplied it.
 
-**Wikidata drosselt Cloud-Maschinen** mit HTTP 429 (ohne CORS-Kopf, der Browser
-meldet nur einen Netzfehler). Die Auswertung darum mit Antworten im
-Wikidata-Format testen (`page.setRequestInterception`), nur einzelne Fälle live.
+**Wikidata throttles cloud machines** with HTTP 429 (without a CORS header, the browser only reports a network
+error). So test the evaluation with answers in the Wikidata format (`page.setRequestInterception`), and only
+individual cases live.
 
-## Haltung, die sich bewährt hat
+## What has proven itself
 
-**Wer der Besitzer ist und wie er arbeiten will:**
+**Who the owner is and how they want to work:**
 
-- Der Besitzer ist **kein Programmierer**. Antworten auf **Deutsch**, ohne
-  Fachwörter, wo es auch einfacher geht; bei Entscheidungen ein klarer Vorschlag
-  statt einer Aufzählung aller Möglichkeiten.
-- **Bauen und veröffentlichen darf ohne Rückfrage geschehen**, wenn die Änderung
-  geprüft ist („du darfst einfach bauen"). Fragen kosten ihn mehr, als sie
-  nützen. Ausnahme: alles, was sich nicht zurücknehmen lässt (Schlüssel
-  tauschen, Verlauf umschreiben, etwas löschen, das nicht im Repo liegt).
-- **Direkt auf `main` arbeiten ist hier der eingespielte Weg**; Pull Requests
-  nur, wenn er darum bittet.
-- **Erst messen, dann behaupten — und Fehler offen sagen.** Er verlässt sich auf
-  die Zusicherung „geprüft"; wo etwas nur im Browser statt auf einem echten
-  Gerät geprüft werden konnte, gehört das dazu. Was sich hier nicht prüfen lässt
-  (Wirkung auf dem Handy, Java-Übersetzung), ausdrücklich benennen.
-- **Ein Gerät hat er nur zum Ausprobieren:** Rückmeldungen kommen mit
-  Bildschirmfoto vom Handy. Danach messen, nicht nach Gefühl nachbessern.
-- **Vor jedem Update mit Folgen für gespeicherte Daten** daran erinnern, vorher
-  eine Sicherung zu machen („Sicherung & Umzug").
-- **Kleine, klar umrissene Aufträge** darf ein günstigeres Modell als Hilfskraft
-  erledigen; das Ergebnis trotzdem selbst nachmessen, bevor es veröffentlicht
-  wird.
+- The owner is **not a programmer**. Answer in **German**, without technical terms where something simpler will do;
+  for decisions, one clear proposal instead of a list of all possibilities.
+- **Building and publishing may happen without asking** once the change is checked ("you can just build"). Asking
+  costs them more than it helps. Exception: anything that cannot be undone (swapping the key, rewriting history,
+  deleting something that is not in the repo).
+- **Working directly on `main` is the established way here**; pull requests only if they ask for one.
+- **Measure first, then claim - and say mistakes openly.** They rely on the assurance "checked"; where something
+  could only be checked in the browser instead of on a real device, that belongs to it. Name explicitly what cannot
+  be checked here (effect on the phone, Java compilation).
+- **They have one device, for trying things out:** feedback comes with a screenshot from the phone. Then measure,
+  don't tweak by feel.
+- **Before any update with consequences for stored data**, remind them to make a backup first ("Backup & moving").
+- **Small, clearly defined jobs** may be done by a cheaper model as a helper; still measure the result yourself
+  before it is published.
 
-- Erst nachsehen, dann behaupten. Mehrere Fehler in diesem Projekt entstanden
-  aus geratenen Adressen und Annahmen über Dateien.
-- Keine Zeile einbauen, die auf jeder Karte steht — was alle teilen, sagt
-  nichts.
-- Nichts hart ausschließen, was der Benutzer noch wollen könnte: lieber in der
-  Rangfolge senken und den Grund nennen.
+- Look first, then claim. Several mistakes in this project came from guessed addresses and assumptions about files.
+- Don't add a line that appears on every card - what everyone shares says nothing.
+- Don't hard-exclude anything the user might still want: lower it in the ranking and name the reason instead.
 
 <!-- owner-rules v6: general (AGENTS.md) - begin -->
 
@@ -285,26 +252,26 @@ Wikidata-Format testen (`page.setRequestInterception`), nur einzelne Fälle live
 
 ## Project knowledge
 
-Most of this project's knowledge is in the German sections above and in `ENTWICKLUNG.md`; this list points to it.
+Most of this project's knowledge is in the sections above and in `DEVELOPMENT.md`; this list points to it.
 
 - **People:** the owner (GitHub: Dr-Nerdlove) works on it alone, with AI assistants, and does not program. They
-  decide about merging and releases; as "Haltung, die sich bewährt hat" says, tested changes may be built and
+  decide about merging and releases; as "What has proven itself" says, tested changes may be built and
   published without asking, and work happens directly on `main`.
-- **Repository language:** this project keeps its instructions, code comments and commit messages in German (see
-  "Sprache"; commit messages and the build workflow in plain ASCII). That is the project's own rule and wins over
-  "everything in the repository is English"; `README.md` is English.
+- **Repository language:** English since October 2026 (the owner's decision, because the repository is public):
+  documentation, comments and commit messages. German identifiers in the code stay as they are. Older commit
+  messages and GitHub releases from before that stay German. Commit messages and the build workflow are plain ASCII.
 - **Product languages:** German and English, following the system language. Fixed labels in `MARKUP_EN`, script
   texts in `TEXTE` (both in `index.html`); Android language lists are written by `apk.yml`. Stored data keys are
   never translated.
-- **Build and test:** no automated tests. Syntax check and local server as under "Prüfen statt hoffen";
+- **Build and test:** no automated tests. Syntax check and local server as under "Check, don't hope";
   interface checks with puppeteer-core against the preinstalled Chromium. Not checkable here: the Java parts
   (only the GitHub build shows it) and the real effect on a phone (the owner sends a phone screenshot).
-- **Release:** see "Eine neue Fassung herausgeben": version in `package.json`, `data-fassung` and
+- **Release:** see "Releasing a new version": version in `package.json`, `data-fassung` and
   `CHANGELOG.md`, no two-digit parts, never lower. A push to `main` publishes the web version; the APK comes from
   the `apk.yml` workflow with `veroeffentlichen`. Never change the signing key.
 - **Traps:** a new game field must be carried in four places; the embedded fonts are not clutter; `.wrap`
-  padding in two places; touch targets of at least 44 px; "Heute gespielt" must not re-sort; the test traps under
-  "Prüfen statt hoffen" (`getComputedStyle` after `render()`, `pkill -f`, empty shelf, Capacitor bridge,
+  padding in two places; touch targets of at least 44 px; "Played today" must not re-sort; the test traps under
+  "Check, don't hope" (`getComputedStyle` after `render()`, `pkill -f`, empty shelf, Capacitor bridge,
   Wikidata 429).
 - **Limits of the environment:** a cloud session cannot push tags (HTTP 403; use the workflow instead) and cannot
   compile Java. Wikidata throttles cloud machines.

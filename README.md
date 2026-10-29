@@ -279,7 +279,7 @@ something is fixed. What happened in which version is in the
 ## Fonts
 
 The two bundled fonts are under the SIL Open Font License 1.1; attribution is in
-[`SCHRIFTEN.md`](SCHRIFTEN.md).
+[`FONTS.md`](FONTS.md).
 
 ## Licence
 

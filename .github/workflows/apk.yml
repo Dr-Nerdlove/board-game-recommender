@@ -1,18 +1,18 @@
 name: Android-App bauen
 
-# Eine Veroeffentlichung entsteht aus einer Fassungsnummer, nie aus einem
-# beliebigen Stand. Zwei Wege fuehren dorthin:
+# A release comes from a version number, never from an arbitrary state. Two
+# ways lead there:
 #
-#   A) Im Browser: Reiter "Actions" -> "Android-App bauen" -> "Run workflow",
-#      Haken bei "veroeffentlichen". Die Marke wird dabei angelegt.
-#   B) Auf der Kommandozeile: git tag v1.2.3 && git push origin v1.2.3
+#   A) In the browser: "Actions" tab -> "Android-App bauen" -> "Run workflow",
+#      tick "veroeffentlichen". The tag is created in the process.
+#   B) On the command line: git tag v1.2.3 && git push origin v1.2.3
 #
-# Beide Male prueft der Bauplan zuerst, ob package.json, der Fuss von
-# index.html und CHANGELOG.md dieselbe Nummer nennen, baut dann die APK mit
-# genau dieser Nummer und legt die Veroeffentlichung v1.2.3 an. Die bleibt
-# danach unveraendert - jede neue Fassung bekommt eine eigene.
+# Either way the build plan first checks that package.json, the footer of
+# index.html and CHANGELOG.md name the same number, then builds the APK with
+# exactly that number and creates the release v1.2.3. That stays unchanged
+# afterwards - every new version gets its own.
 #
-# "Run workflow" ohne den Haken baut nur zum Ausprobieren.
+# "Run workflow" without the tick only builds for trying things out.
 
 on:
   push:
@@ -29,23 +29,22 @@ permissions:
   contents: write
 
 env:
-  # Der Fingerabdruck des Signaturschluessels. Kein Geheimnis - er steht in
-  # jeder veroeffentlichten APK und ist genau dafuer da, oeffentlich geprueft
-  # zu werden. Weicht ein Bau davon ab, wurde mit einem anderen Schluessel
-  # signiert und die App liesse sich nicht mehr aktualisieren: Dann bricht der
-  # Bau ab, bevor etwas veroeffentlicht wird.
+  # The fingerprint of the signing key. Not a secret - it is in every
+  # published APK and is there precisely to be checked publicly. If a build
+  # differs from it, it was signed with a different key and the app could no
+  # longer be updated: then the build aborts before anything is published.
   ERWARTETE_SIGNATUR: "82:B8:A1:99:A0:D6:A3:0B:B8:2E:9B:87:E0:A2:C8:75:31:F6:66:0F:9B:8F:67:3C:D1:4C:C9:80:ED:97:9C:A9"
 
 jobs:
   bauen:
     runs-on: ubuntu-latest
     steps:
-      - name: Quelltext holen
+      - name: Fetch source
         uses: actions/checkout@v7
 
-      - name: Fassung bestimmen und Stellen vergleichen
-        # Drei Stellen nennen die Fassung. Weichen sie voneinander ab,
-        # bricht der Bau ab - lieber hier als in der Hand des Benutzers.
+      - name: Determine version and compare locations
+        # Three places name the version. If they differ, the build aborts -
+        # better here than in the user's hands.
         id: fassung
         run: |
           set -eu
@@ -55,13 +54,13 @@ jobs:
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
             RAUS=ja
             if [ "${GITHUB_REF_NAME#v}" != "$PAKET" ]; then
-              echo "::error::Marke $GITHUB_REF_NAME passt nicht zu package.json ($PAKET)."
+              echo "::error::Tag $GITHUB_REF_NAME does not match package.json ($PAKET)."
               exit 1
             fi
           elif [ "${{ inputs.veroeffentlichen }}" = "true" ]; then
             RAUS=ja
             if git ls-remote --exit-code --tags origin "refs/tags/v$PAKET" >/dev/null 2>&1; then
-              echo "::error::Die Marke v$PAKET gibt es schon. Erst die Fassung erhoehen."
+              echo "::error::The tag v$PAKET already exists. Raise the version first."
               exit 1
             fi
           fi
@@ -69,91 +68,91 @@ jobs:
           if [ "$RAUS" = "ja" ]; then
             FEHLER=0
             if ! grep -q "data-fassung=\"$PAKET\"" index.html; then
-              echo "::error::index.html nennt im Fuss nicht die Fassung $PAKET."
-              echo "::error::Erwartet wird <p class=\"fassung\" id=\"fassung\" data-fassung=\"$PAKET\">."
+              echo "::error::The footer of index.html does not name version $PAKET."
+              echo "::error::Expected is <p class=\"fassung\" id=\"fassung\" data-fassung=\"$PAKET\">."
               FEHLER=1
             fi
             if ! grep -q "^## \[$PAKET\]" CHANGELOG.md; then
-              echo "::error::CHANGELOG.md hat keinen Abschnitt [$PAKET]."
+              echo "::error::CHANGELOG.md has no section [$PAKET]."
               FEHLER=1
             fi
             [ "$FEHLER" -eq 0 ] || exit 1
           fi
           echo "raus=$RAUS" >> "$GITHUB_OUTPUT"
 
-          # Android zaehlt Fassungen als ganze Zahl, die nie kleiner werden
-          # darf. 1.2.3 wird zu 10203.
+          # Android counts versions as a whole number that must never get
+          # smaller. 1.2.3 becomes 10203.
           MA="$(echo "$PAKET" | cut -d. -f1)"
           MI="$(echo "$PAKET" | cut -d. -f2)"
           PA="$(echo "$PAKET" | cut -d. -f3)"
           echo "nummer=$PAKET"                        >> "$GITHUB_OUTPUT"
           echo "code=$((MA * 10000 + MI * 100 + PA))" >> "$GITHUB_OUTPUT"
-          echo "Fassung $PAKET, Android-Zaehler $((MA * 10000 + MI * 100 + PA))"
+          echo "Version $PAKET, Android counter $((MA * 10000 + MI * 100 + PA))"
 
-      - name: Signaturschluessel bereitlegen
-        # Ohne festen Schluessel signiert Gradle jeden Bau mit einem neuen
-        # Zufallsschluessel. Fuer Android ist die Signatur der Ausweis der App:
-        # Zwei Pakete mit verschiedenen Ausweisen sind zwei verschiedene Apps,
-        # und eine Aktualisierung scheitert mit "App nicht installiert".
+      - name: Provide signing key
+        # Without a fixed key Gradle signs every build with a new random key.
+        # For Android the signature is the app's identity: two packages with
+        # different identities are two different apps, and an update fails
+        # with "App not installed".
         env:
           SCHLUESSEL: ${{ secrets.SIGNIER_SCHLUESSEL }}
           PASSWORT: ${{ secrets.SIGNIER_PASSWORT }}
         run: |
           set -eu
           if [ -z "${SCHLUESSEL:-}" ] || [ -z "${PASSWORT:-}" ]; then
-            echo "::error::Die Geheimnisse SIGNIER_SCHLUESSEL und SIGNIER_PASSWORT fehlen."
-            echo "::error::Anzulegen unter Settings -> Secrets and variables -> Actions."
-            echo "::error::Naeheres in ENTWICKLUNG.md, Abschnitt \"Signatur\"."
+            echo "::error::The secrets SIGNIER_SCHLUESSEL and SIGNIER_PASSWORT are missing."
+            echo "::error::To be created under Settings -> Secrets and variables -> Actions."
+            echo "::error::More in DEVELOPMENT.md, section \"Signing\"."
             exit 1
           fi
           printf '%s' "$SCHLUESSEL" | base64 -d > "$RUNNER_TEMP/spieleabend.keystore"
           test -s "$RUNNER_TEMP/spieleabend.keystore"
-          echo "Schluessel bereit ($(wc -c < "$RUNNER_TEMP/spieleabend.keystore") Bytes)."
+          echo "Key ready ($(wc -c < "$RUNNER_TEMP/spieleabend.keystore") bytes)."
 
-      - name: Node einrichten
+      - name: Set up Node
         uses: actions/setup-node@v7
         with:
           node-version: '22'
 
-      - name: Java einrichten
+      - name: Set up Java
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
 
-      - name: Webdateien einsammeln
-        # Capacitor erwartet die Seite in einem eigenen Ordner. Der Server und
-        # die Windows-Skripte gehoeren nicht in die App.
+      - name: Collect web files
+        # Capacitor expects the page in a folder of its own. The server and
+        # the Windows scripts do not belong in the app.
         run: |
           mkdir -p www
           cp index.html manifest.webmanifest www/
           cp icon-32.png icon-180.png icon-192.png icon-512.png www/
           ls -la www
 
-      - name: Symbol fuer die App vorbereiten
-        # icon-only ist das Symbol fuer Oberflaechen ohne adaptive Darstellung:
-        # die fertige runde Scheibe. Fuer adaptive Symbole liefern wir zwei
-        # Ebenen - app-icon-background traegt die Zweiteilung, app-icon-foreground
-        # das Motiv.
+      - name: Prepare the app icon
+        # icon-only is the icon for surfaces without adaptive display: the
+        # finished round disc. For adaptive icons we supply two layers -
+        # app-icon-background carries the two-part split, app-icon-foreground
+        # the motif.
         run: |
           mkdir -p assets
           cp icon-512.png assets/icon-only.png
           cp app-icon-foreground.png assets/icon-foreground.png
           cp app-icon-background.png assets/icon-background.png
 
-      - name: Abhaengigkeiten installieren
+      - name: Install dependencies
         run: npm install
 
-      - name: Android-Projekt erzeugen
+      - name: Generate Android project
         run: npx cap add android
 
-      - name: Baustein fuer die Systemfarben einsetzen
-        # Android leitet ab Version 12 eine Palette aus dem Hintergrundbild ab
-        # und stellt sie nur nativen Apps bereit. Dieser Baustein liest sie aus
-        # und reicht sie an die Seite weiter; dort werden daraus die Farben der
-        # App. Er muss bei jedem Bau neu hinein, weil "cap add android" das
-        # Projekt jedes Mal frisch erzeugt - dasselbe Muster wie bei der
-        # Signatur weiter unten.
+      - name: Insert the system colours component
+        # From version 12 on, Android derives a palette from the wallpaper and
+        # only makes it available to native apps. This component reads it out
+        # and passes it on to the page, where the app's colours are made from
+        # it. It has to go in again with every build, because "cap add
+        # android" creates the project afresh each time - the same pattern as
+        # with the signature further down.
         run: |
           set -eu
           ORDNER=android/app/src/main/java/de/drnerdlove/spieleabend
@@ -188,8 +187,8 @@ jobs:
                       JSObject stufen = new JSObject();
                       for (int stufe : STUFEN) {
                           String name = "system_" + palette + "_" + stufe;
-                          // Ueber den Namen statt ueber android.R.color.*: So faellt
-                          // es auf aelteren Geraeten einfach weg, statt zu scheitern.
+                          // By name instead of via android.R.color.*: that way it
+                          // simply drops out on older devices instead of failing.
                           int kennung = getContext().getResources().getIdentifier(name, "color", "android");
                           if (kennung == 0) continue;
                           int wert = getContext().getResources().getColor(kennung, getContext().getTheme());
@@ -216,11 +215,11 @@ jobs:
           import com.getcapacitor.PluginMethod;
           import com.getcapacitor.annotation.CapacitorPlugin;
 
-          // Android laesst ab Version 13 die Sprache einzelner Apps einstellen.
-          // Die WebView bekommt davon nichts mit: navigator.language nennt dort
-          // weiter die Sprache des Systems, und das ist so vorgesehen. Dieser
-          // Baustein liest die Sprache der Activity - die folgt der Einstellung -
-          // und reicht sie an die Seite weiter.
+          // From version 13 on, Android lets the language of individual apps
+          // be set. The WebView does not notice: navigator.language keeps
+          // naming the system language there, and that is by design. This
+          // component reads the language of the Activity - which follows the
+          // setting - and passes it on to the page.
           @CapacitorPlugin(name = "Sprache")
           public class SprachePlugin extends Plugin {
 
@@ -235,8 +234,8 @@ jobs:
 
               @PluginMethod
               public void lesen(PluginCall call) {
-                  // Die Activity, nicht der Anwendungszusammenhang: Nur ihre
-                  // Einstellungen tragen die App-Sprache.
+                  // The Activity, not the application context: only its
+                  // settings carry the app language.
                   android.content.Context ctx = getActivity() != null ? getActivity() : getContext();
                   Locale ort = jetzigeSprache(ctx);
                   JSObject antwort = new JSObject();
@@ -259,19 +258,19 @@ jobs:
 
               @Override
               protected void onCreate(Bundle savedInstanceState) {
-                  // Muss vor super.onCreate stehen: Dort wird die Bruecke gebaut,
-                  // danach angemeldete Bausteine kommen zu spaet.
+                  // Must come before super.onCreate: the bridge is built there,
+                  // components registered afterwards come too late.
                   registerPlugin(SystemfarbenPlugin.class);
                   registerPlugin(SprachePlugin.class);
                   super.onCreate(savedInstanceState);
                   letzteSprache = SprachePlugin.jetzigeSprache(this).getLanguage();
               }
 
-              // Im Manifest steht "locale" unter configChanges - Android baut die
-              // Activity bei einem Sprachwechsel also nicht neu auf, und die Seite
-              // bliebe in der alten Sprache stehen, bis jemand die App beendet.
-              // Darum hier selbst nachsehen und die Seite neu laden. Die Sammlung
-              // liegt im Speicher der Seite, es geht dabei nichts verloren.
+              // The manifest lists "locale" under configChanges - so Android does
+              // not rebuild the Activity on a language change, and the page would
+              // stay in the old language until someone closes the app. Hence we
+              // check ourselves here and reload the page. The collection is in
+              // the page's storage, nothing is lost in the process.
               @Override
               public void onConfigurationChanged(Configuration newConfig) {
                   super.onConfigurationChanged(newConfig);
@@ -287,12 +286,12 @@ jobs:
           JAVA
           ls -la "$ORDNER"
 
-      - name: Deutschen Namen fuers App-Menue hinterlegen
-        # Der Name unter dem Symbol folgt derselben Regel wie die Seite: Auf
-        # einem deutschen Geraet "Spieleabend", sonst der englische Name aus
-        # capacitor.config.json. Android waehlt das anhand des Ordnernamens
-        # aus - values-de gilt fuer deutschsprachige Geraete, values fuer alle
-        # uebrigen. Ohne diesen Schritt stuende ueberall nur der englische.
+      - name: Store the German name for the app menu
+        # The name under the icon follows the same rule as the page: on a
+        # German device "Spieleabend", otherwise the English name from
+        # capacitor.config.json. Android picks it by the folder name -
+        # values-de applies to German-speaking devices, values to all others.
+        # Without this step only the English one would appear everywhere.
         run: |
           set -eu
           ZIEL=android/app/src/main/res/values-de
@@ -304,14 +303,14 @@ jobs:
               <string name="title_activity_main">Spieleabend</string>
           </resources>
           XML
-          echo "Deutscher Name hinterlegt:"
+          echo "German name stored:"
           cat "$ZIEL/strings.xml"
 
-      - name: Sprachen der App bei Android anmelden
-        # Ab Android 13 steht unter Einstellungen -> Apps -> Spieleabend ein
-        # Punkt "Sprache" - aber nur, wenn die App sagt, welche Sprachen sie
-        # kann. Genau das ist locales_config.xml; ohne den Verweis im Manifest
-        # erscheint der Punkt gar nicht erst.
+      - name: Register the app's languages with Android
+        # From Android 13 on, Settings -> Apps -> Spieleabend has a
+        # "Language" entry - but only if the app says which languages it
+        # supports. That is exactly what locales_config.xml is; without the
+        # reference in the manifest the entry does not even appear.
         run: |
           set -eu
           mkdir -p android/app/src/main/res/xml
@@ -326,22 +325,22 @@ jobs:
           grep -q 'android:localeConfig' "$MANIFEST" ||
             sed -i 's|<application$|<application\n        android:localeConfig="@xml/locales_config"|' "$MANIFEST"
           grep -q 'android:localeConfig' "$MANIFEST" || {
-            echo "::error::localeConfig liess sich nicht ins Manifest eintragen."
+            echo "::error::localeConfig could not be added to the manifest."
             exit 1
           }
-          echo "Sprachliste angemeldet:"
+          echo "Language list registered:"
           sed -n '1,8p' "$MANIFEST"
 
-      - name: Fassung ins Android-Projekt schreiben
+      - name: Write the version into the Android project
         run: |
           set -eu
           sed -i 's/versionCode .*/versionCode ${{ steps.fassung.outputs.code }}/' android/app/build.gradle
           sed -i 's/versionName .*/versionName "${{ steps.fassung.outputs.nummer }}"/' android/app/build.gradle
           grep -n 'version\(Code\|Name\)' android/app/build.gradle
 
-      - name: Signatur ins Android-Projekt eintragen
-        # Ein zweiter android-Block ergaenzt den aus der Vorlage; das ist
-        # stabiler als in den vorhandenen hineinzuschneiden.
+      - name: Add the signature to the Android project
+        # A second android block supplements the one from the template; that
+        # is more stable than cutting into the existing one.
         run: |
           cat >> android/app/build.gradle <<'GRADLE'
 
@@ -363,15 +362,15 @@ jobs:
           GRADLE
           tail -18 android/app/build.gradle
 
-      - name: Symbole erzeugen
-        # Schlaegt das fehl, baut die App trotzdem - nur mit Standardsymbol.
+      - name: Generate icons
+        # If this fails, the app is still built - just with the default icon.
         continue-on-error: true
         run: npx capacitor-assets generate --android
 
-      - name: Webdateien ins Projekt kopieren
+      - name: Copy web files into the project
         run: npx cap sync android
 
-      - name: APK bauen
+      - name: Build APK
         env:
           SPIELEABEND_KEYSTORE: ${{ runner.temp }}/spieleabend.keystore
           SPIELEABEND_PASSWORT: ${{ secrets.SIGNIER_PASSWORT }}
@@ -380,11 +379,11 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
 
-      - name: APK benennen und Signatur pruefen
+      - name: Name the APK and check the signature
         id: apk
-        # pipefail ist hier wesentlich: Ohne das zaehlt nur der Ausgang des
-        # letzten Glieds einer Rohrleitung. Ein gescheitertes keytool blieb so
-        # unbemerkt, weil das nachfolgende sed mit leerer Eingabe zufrieden war.
+        # pipefail is essential here: without it only the exit status of the
+        # last link of a pipeline counts. A failed keytool thus went unnoticed,
+        # because the following sed was content with empty input.
         run: |
           set -euo pipefail
           NAME="spieleabend-${{ steps.fassung.outputs.nummer }}.apk"
@@ -392,8 +391,8 @@ jobs:
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           ls -la "$NAME"
 
-          # apksigner statt keytool: Letzteres liest nur die alte JAR-Signatur
-          # (v1), die ab minSdk 24 gar nicht mehr erzeugt wird.
+          # apksigner instead of keytool: the latter only reads the old JAR
+          # signature (v1), which is no longer produced at all from minSdk 24.
           SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
           APKSIGNER="$(ls -d "$SDK"/build-tools/*/apksigner | sort -V | tail -1)"
           test -x "$APKSIGNER"
@@ -402,41 +401,41 @@ jobs:
           ROH="$("$APKSIGNER" verify --print-certs "$NAME" | grep -m1 'SHA-256 digest' | sed 's/.*digest: *//')"
           test -n "$ROH"
           ABDRUCK="$(printf '%s' "$ROH" | tr 'a-f' 'A-F' | sed 's/../&:/g; s/:$//')"
-          echo "Fingerabdruck der Signatur: $ABDRUCK"
+          echo "Signature fingerprint: $ABDRUCK"
 
           if [ "$ABDRUCK" != "$ERWARTETE_SIGNATUR" ]; then
-            echo "::error::Mit einem anderen Schluessel signiert als erwartet."
-            echo "::error::erwartet: $ERWARTETE_SIGNATUR"
-            echo "::error::erhalten: $ABDRUCK"
-            echo "::error::So signiert liesse sich die App nicht aktualisieren."
+            echo "::error::Signed with a different key than expected."
+            echo "::error::expected: $ERWARTETE_SIGNATUR"
+            echo "::error::received: $ABDRUCK"
+            echo "::error::Signed like this, the app could not be updated."
             exit 1
           fi
           echo "abdruck=$ABDRUCK" >> "$GITHUB_OUTPUT"
 
-      - name: APK als Arbeitsergebnis anhaengen
-        # Nur bei Probelaeufen. Bei einer Veroeffentlichung haengt dieselbe
-        # Datei ohnehin am Release und bleibt dort dauerhaft - der Anhang waere
-        # eine zweite Kopie, die dieses Projekt nach sieben Tagen wegraeumt
-        # (am Anhang eines Probelaufs nachgesehen: angelegt am 21.10., laeuft
-        # ab am 28.10.). Bei einem Probelauf ist er der einzige Weg an die
-        # gebaute Datei, dort bleibt er.
+      - name: Attach the APK as a build artifact
+        # Only for trial runs. In a release the same file is attached to the
+        # release anyway and stays there permanently - the attachment would be
+        # a second copy, which this project clears away after seven days
+        # (checked on the attachment of a trial run: created 21 Oct, expires
+        # 28 Oct). In a trial run it is the only way to get at the built file,
+        # so it stays there.
         if: steps.fassung.outputs.raus != 'ja'
         uses: actions/upload-artifact@v7
         with:
           name: spieleabend-apk
           path: ${{ steps.apk.outputs.name }}
 
-      - name: Begleittext aus der Aenderungshistorie holen
+      - name: Get the release text from the changelog
         if: steps.fassung.outputs.raus == 'ja'
         run: |
           set -eu
           {
-            echo "**Installieren:** Datei \`${{ steps.apk.outputs.name }}\` auf dem"
-            echo "Handy oeffnen. Android fragt beim ersten Mal, ob Apps aus dieser"
-            echo "Quelle erlaubt sind - das muss einmalig bestaetigt werden. Eine"
-            echo "bereits vorhandene Fassung wird ersetzt, die Sammlung bleibt."
+            echo "**Install:** Open the file \`${{ steps.apk.outputs.name }}\` on the"
+            echo "phone. The first time, Android asks whether apps from this source"
+            echo "are allowed - this has to be confirmed once. An existing version"
+            echo "is replaced, the collection stays."
             echo
-            echo "Signatur: \`${{ steps.apk.outputs.abdruck }}\`"
+            echo "Signature: \`${{ steps.apk.outputs.abdruck }}\`"
             echo
             echo "---"
             echo
@@ -449,9 +448,9 @@ jobs:
           } > begleittext.md
           cat begleittext.md
 
-      - name: Veroeffentlichen
-        # Gibt es die Marke noch nicht, legt GitHub sie beim Anlegen der
-        # Veroeffentlichung auf diesem Stand an.
+      - name: Publish
+        # If the tag does not exist yet, GitHub creates it at this state when
+        # the release is created.
         if: steps.fassung.outputs.raus == 'ja'
         uses: softprops/action-gh-release@v3
         with:

@@ -1,20 +1,18 @@
-# Schriften
+# Fonts
 
-Diese Seite bringt zwei Schriften mit. Sie stecken als Daten in `index.html`,
-damit die Anwendung eine einzige Datei bleibt und ohne Internet genauso
-aussieht wie mit. Zeichensatz: lateinisch.
+This page ships with two fonts. They are embedded as data in `index.html`, so that the application stays a single
+file and looks the same offline as online. Character set: Latin.
 
-| Schrift | verwendet für | Rechteinhaber |
+| Font | used for | Copyright holder |
 | --- | --- | --- |
-| **Fraunces** | Überschriften und Spielnamen | Copyright 2018 The Fraunces Project Authors (https://github.com/undercasetype/Fraunces) |
-| **Karla** | Fließtext und Bedienelemente | Copyright 2019 The Karla Project Authors (https://github.com/googlefonts/karla) |
+| **Fraunces** | headings and game names | Copyright 2018 The Fraunces Project Authors (https://github.com/undercasetype/Fraunces) |
+| **Karla** | body text and controls | Copyright 2019 The Karla Project Authors (https://github.com/googlefonts/karla) |
 
-Beide stehen unter der **SIL Open Font License, Version 1.1**. Die erlaubt
-Weitergabe und Einbettung, auch in dieser Form — verlangt aber, dass dieser
-Nachweis und der Lizenztext mitgeliefert werden. Genau dafür gibt es diese
-Datei.
+Both are under the **SIL Open Font License, Version 1.1**. It allows redistribution and embedding, also in this
+form - but requires that this notice and the license text are supplied with it. That is exactly what this file is
+for.
 
-Der Lizenztext gilt wortgleich für beide Schriften:
+The license text applies word for word to both fonts:
 
 ---
 

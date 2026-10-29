@@ -1,11 +1,10 @@
 @AGENTS.md
 
-# Hinweise für Claude
+# Notes for Claude
 
-Die Projekthinweise stehen in **[`AGENTS.md`](AGENTS.md)** (oben eingebunden) —
-das ist die werkzeugübergreifende Konvention, damit nicht jedes Programm eine
-eigene Datei braucht. Bitte dort nachlesen, bevor du etwas änderst.
-Ausführlicher und mit Begründungen: [`ENTWICKLUNG.md`](ENTWICKLUNG.md).
+The project notes are in **[`AGENTS.md`](AGENTS.md)** (included above) - that is the convention that works across
+tools, so that not every program needs its own file. Please read it before you change anything.
+More detail, with the reasons: [`DEVELOPMENT.md`](DEVELOPMENT.md).
 
 <!-- owner-rules v6: claude (CLAUDE.md) - begin -->
 
