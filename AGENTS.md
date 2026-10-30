@@ -148,7 +148,9 @@ individual cases live.
 - **Building and publishing may happen without asking** once the change is checked ("you can just build"). Asking
   costs them more than it helps. Exception: anything that cannot be undone (swapping the key, rewriting history,
   deleting something that is not in the repo).
-- **Working directly on `main` is the established way here**; pull requests only if they ask for one.
+- **One branch per task** (see "Changes"), named like `fix/short-topic`, instead of the session's random branch.
+  Merge into `main` once the owner agrees; that push also publishes the web version. Pull requests only if they
+  ask for one.
 - **Measure first, then claim - and say mistakes openly.** They rely on the assurance "checked"; where something
   could only be checked in the browser instead of on a real device, that belongs to it. Name explicitly what cannot
   be checked here (effect on the phone, Java compilation).
@@ -162,7 +164,7 @@ individual cases live.
 - Don't add a line that appears on every card - what everyone shares says nothing.
 - Don't hard-exclude anything the user might still want: lower it in the ranking and name the reason instead.
 
-<!-- owner-rules v8: general (AGENTS.md) - begin -->
+<!-- owner-rules v9: general (AGENTS.md) - begin -->
 
 ## General rules
 
@@ -225,11 +227,15 @@ individual cases live.
 ### Changes
 
 - **One topic per change** (branch, pull request): easier to check, to release and to undo.
-- **Branch names say what the change is about**: `type/short-topic`, lower case, English, words joined by
-  hyphens - `feature/` for something new, `fix/` for a bug, `docs/` for documentation, `chore/` for tidying
-  up (e.g. `feature/online-update`, `fix/ota-redirect-query`, `docs/ai-rules`). Not who or when, and nothing
-  vague like `test` or `update2`. Where the project has its own naming habits, follow them; where the
-  environment gives the session a fixed branch name, use that unless the person asks for another.
+- **One branch per task.** Create it from the latest default branch (usually `main`) with a name that says
+  what the change is about: `type/short-topic`, lower case, English, words joined by hyphens - `feature/` for
+  something new, `fix/` for a bug, `docs/` for documentation, `chore/` for tidying up (e.g.
+  `feature/online-update`, `fix/ota-redirect-query`, `docs/ai-rules`). Not who or when, and nothing vague like
+  `test` or `update2`. Push to that branch instead of the random branch name the environment gives the
+  session; this is the owner's standing permission to push to such branches. A new task in the same session
+  gets a new branch. Merge into the default branch only when the person asks for it; where others work on the
+  project, propose the merge as a pull request instead. Where the project has its own naming habits, follow
+  them.
 - **Commit messages and pull request titles** say in one line what changes, e.g. "Fix online update: keep
   the signed download URL"; more detail, and why, goes below.
 - Changes that users notice go into the release notes or changelog in plain words (in English, like
@@ -274,7 +280,7 @@ missing, with a recommendation, and let the people choose.
   conversation: decisions and why, traps that cost time, how to build, test and release, and the limits of
   the environment (what a cloud session cannot do there).
 
-<!-- owner-rules v8: general (AGENTS.md) - end -->
+<!-- owner-rules v9: general (AGENTS.md) - end -->
 
 ## Project knowledge
 
@@ -282,7 +288,7 @@ Most of this project's knowledge is in the sections above and in `DEVELOPMENT.md
 
 - **People:** the owner (GitHub: Dr-Nerdlove) works on it alone, with AI assistants, and does not program. They
   decide about merging and releases; as "What has proven itself" says, tested changes may be built and
-  published without asking, and work happens directly on `main`.
+  published without asking; each task gets its own branch, merged into `main` once they agree.
 - **Repository language:** English since October 2026 (the owner's decision, because the repository is public):
   documentation, comments and commit messages. German identifiers in the code stay as they are. Older commit
   messages and GitHub releases from before that stay German. Commit messages and the build workflow are plain ASCII.
