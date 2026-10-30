@@ -9,6 +9,16 @@ added, with x.y.**Z** something is repaired.
 
 ## [Unreleased]
 
+## [3.0.1] – 2026-10-30
+
+### Changed
+
+- The repository was renamed to `game-night`. The links in this changelog and
+  the web address now point to the new name; the app itself is unchanged and
+  stored data is not affected. The web version lives at
+  `https://dr-nerdlove.github.io/game-night/` (a new address means a new, empty
+  storage there: move the collection over via "Backup & moving").
+
 ## [3.0.0] – 2026-10-27
 
 ### Added
@@ -659,7 +669,8 @@ First numbered version. It sums up what has been built up to here.
 - The app icon was cropped by Android's round mask. Foreground and background
   now exist as separate layers.
 
-[Unreleased]: https://github.com/Dr-Nerdlove/game-night/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/Dr-Nerdlove/game-night/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/Dr-Nerdlove/game-night/releases/tag/v3.0.1
 [3.0.0]: https://github.com/Dr-Nerdlove/game-night/releases/tag/v3.0.0
 [2.9.2]: https://github.com/Dr-Nerdlove/game-night/releases/tag/v2.9.2
 [2.9.1]: https://github.com/Dr-Nerdlove/game-night/releases/tag/v2.9.1
